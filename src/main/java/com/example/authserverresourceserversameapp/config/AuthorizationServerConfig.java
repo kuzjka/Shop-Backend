@@ -1,13 +1,12 @@
 package com.example.authserverresourceserversameapp.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.token.TokenService;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -17,18 +16,23 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.util.UUID;
+import java.util.Arrays;
 
 @Configuration
+@EnableWebSecurity
 public class AuthorizationServerConfig {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("bean1");
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        http.cors(Customizer.withDefaults());
         return http.formLogin(Customizer.withDefaults()).build();
     }
 
@@ -36,13 +40,13 @@ public class AuthorizationServerConfig {
     public RegisteredClientRepository registeredClientRepository() {
 
         RegisteredClient registeredClient = RegisteredClient.withId("client_id")
-                .clientId("articles-client").tokenSettings(tokenSettings())
+                .clientId("app-client").tokenSettings(tokenSettings())
                 .clientSecret("$2a$12$pUDZvOUvf3Fgy1s.SxOuYO6CCX1JZ66bcpMkGAQpfTpkQCKhvVoAm")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
 //                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 //                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:8080/books")
+//                .redirectUri("http://localhost:8080/books")
 //                .redirectUri("http://127.0.0.1:8080/authorized")
                 .scope(OidcScopes.OPENID)
                 .scope("articles.read")
