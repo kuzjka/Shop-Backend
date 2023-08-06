@@ -39,14 +39,15 @@ public class AuthorizationServerConfig {
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
 
-        RegisteredClient registeredClient = RegisteredClient.withId("client_id")
+        RegisteredClient registeredClient = RegisteredClient.withId("app-client")
                 .clientId("app-client").tokenSettings(tokenSettings())
                 .clientSecret("$2a$12$pUDZvOUvf3Fgy1s.SxOuYO6CCX1JZ66bcpMkGAQpfTpkQCKhvVoAm")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 //                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .redirectUri("http://localhost:8080/books")
+                .redirectUri("http://localhost:4200")
+                .postLogoutRedirectUri("http://localhost:4200")
 //                .redirectUri("http://127.0.0.1:8080/authorized")
                 .scope(OidcScopes.OPENID)
                 .scope("articles.read")

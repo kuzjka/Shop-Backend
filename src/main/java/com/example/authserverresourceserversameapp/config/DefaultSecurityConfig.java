@@ -41,6 +41,7 @@ public class DefaultSecurityConfig {
                 )
                 .formLogin(withDefaults());
         http.cors(withDefaults());
+
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt).apply(authorizationServerConfigurer);
         http.authenticationProvider(authenticationProvider());
