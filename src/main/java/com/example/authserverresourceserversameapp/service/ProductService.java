@@ -11,9 +11,13 @@ public interface ProductService {
 
     List<Product> getProducts(long typeId, long brandId);
 
-    List<Type> getTypes();
+    List<Type> getAllTypes();
 
-    List<Brand> getBrands(long typeId);
+    List<Brand> getAllBrands();
+
+    List<Type> getProductTypes();
+
+    List<Brand> getProductBrands(long typeId);
 
     long addProduct(ProductDto dto);
 }

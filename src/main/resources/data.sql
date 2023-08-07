@@ -12,6 +12,10 @@ insert into brand(id, name)
 values (3, 'Apple');
 insert into brand(id, name)
 values (4, 'Samsung');
+insert into brand(id, name)
+values (5, 'Audi');
+insert into brand(id, name)
+values (6, 'Volvo');
 insert into type_brand(type_id, brand_id)
 values (1, 1);
 insert into type_brand(type_id, brand_id)

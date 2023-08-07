@@ -37,14 +37,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Type> getTypes() {
+    public List<Type> getAllTypes() {
         return typeRepository.findAll();
     }
 
     @Override
-    public List<Brand> getBrands(long typeId) {
+    public List<Brand> getAllBrands() {
+        return brandRepository.findAll();
+    }
+
+    @Override
+    public List<Type> getProductTypes() {
+        return typeRepository.getProductTypes();
+    }
+
+    @Override
+    public List<Brand> getProductBrands(long typeId) {
         if (typeId == 0) {
-            return brandRepository.findAll();
+            return brandRepository.getProductBrands();
         }
         return brandRepository.getAllByTypesId(typeId);
     }
