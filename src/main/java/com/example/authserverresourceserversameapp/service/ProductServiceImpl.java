@@ -77,4 +77,17 @@ public class ProductServiceImpl implements ProductService {
             type.addBrand(brand);
         return productRepository.save(product).getId();
     }
+
+    @Override
+    public long deleteProduct(long productId) {
+        Product product = productRepository.findById(productId).get();
+        long id = product.getId();
+        Brand brand = brandRepository.findById(product.getBrand().getId()).get();
+        Type type = typeRepository.findById(product.getType().getId()).get();
+        brand.removeProduct(product);
+        type.removeProduct(product);
+        type.removeBrand(brand);
+        productRepository.deleteById(id);
+        return id;
+    }
 }

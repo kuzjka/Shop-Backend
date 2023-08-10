@@ -26,10 +26,7 @@ public class Type {
     @EqualsAndHashCode.Exclude
     private List<Product> products = new ArrayList<>();
 
-    public void addProduct(Product product) {
-        this.products.add(product);
-        product.setType(this);
-    }
+
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "type_brand",
@@ -38,9 +35,20 @@ public class Type {
     )
     @EqualsAndHashCode.Exclude
     List<Brand> brands = new ArrayList<>();
-
+    public void addProduct(Product product) {
+        this.products.add(product);
+        product.setType(this);
+    }
+    public void removeProduct(Product product){
+        this.products.remove(product);
+        product.setBrand(null);
+    }
     public void addBrand(Brand brand) {
         this.brands.add(brand);
         brand.getTypes().add(this);
+    }
+    public void removeBrand(Brand brand){
+        this.brands.remove(brand);
+        brand.getTypes().remove(this);
     }
 }

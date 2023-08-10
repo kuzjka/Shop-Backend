@@ -20,4 +20,6 @@ public interface ProductService {
     List<Brand> getProductBrands(long typeId);
 
     long addProduct(ProductDto dto);
+
+    long deleteProduct(long id);
 }
