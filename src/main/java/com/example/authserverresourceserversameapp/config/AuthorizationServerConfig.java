@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +31,6 @@ public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("bean1");
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.cors(Customizer.withDefaults());
         return http.formLogin(Customizer.withDefaults()).build();
@@ -43,14 +43,13 @@ public class AuthorizationServerConfig {
                 .clientId("app-client").tokenSettings(tokenSettings())
                 .clientSecret("$2a$12$pUDZvOUvf3Fgy1s.SxOuYO6CCX1JZ66bcpMkGAQpfTpkQCKhvVoAm")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://localhost:4200")
-                .postLogoutRedirectUri("http://localhost:4200")
-//                .redirectUri("http://127.0.0.1:8080/authorized")
-                .scope(OidcScopes.OPENID)
-                .scope("articles.read")
+//                .scope(OidcScopes.OPENID)
+                .scope("read-write")
 
                 .build();
 
@@ -61,7 +60,6 @@ public class AuthorizationServerConfig {
     public TokenSettings tokenSettings() {
         return TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build();
     }
-
 
 
 }

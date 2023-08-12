@@ -15,7 +15,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-
     private final ProductRepository productRepository;
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
@@ -24,7 +23,6 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProducts(long typeId, long brandId) {
         if (typeId == 0 && brandId == 0) {
             return productRepository.findAll();
-
         } else if (typeId > 0 && brandId == 0) {
             return productRepository.getAllByTypeId(typeId);
         } else if (typeId == 0 && brandId > 0) {
@@ -69,7 +67,6 @@ public class ProductServiceImpl implements ProductService {
         } else {
             product = productRepository.findById(dto.getId()).get();
         }
-
         product.setName(dto.getName());
         type.addProduct(product);
         brand.addProduct(product);
@@ -82,8 +79,8 @@ public class ProductServiceImpl implements ProductService {
     public long deleteProduct(long productId) {
         Product product = productRepository.findById(productId).get();
         long id = product.getId();
-        Brand brand = brandRepository.findById(product.getBrand().getId()).get();
-        Type type = typeRepository.findById(product.getType().getId()).get();
+        Brand brand = product.getBrand();
+        Type type = product.getType();
         brand.removeProduct(product);
         type.removeProduct(product);
         type.removeBrand(brand);
