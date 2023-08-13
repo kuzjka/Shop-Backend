@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.RegisterDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
@@ -40,8 +41,8 @@ public class ProductController {
         return productService.getProducts(typeId, brandId);
     }
 
-    @PostMapping("/user")
-    public User addUser(@RequestBody User user) {
+    @PostMapping("/register")
+    public User addUser(@RequestBody RegisterDto user) {
         return userService.addUser(user);
     }
 

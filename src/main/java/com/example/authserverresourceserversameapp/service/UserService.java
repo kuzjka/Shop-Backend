@@ -1,13 +1,14 @@
 package com.example.authserverresourceserversameapp.service;
 
+import com.example.authserverresourceserversameapp.dto.RegisterDto;
 import com.example.authserverresourceserversameapp.model.User;
+
+import java.util.List;
 
 
 public interface UserService {
 
-    User addUser(User user);
+    User addUser(RegisterDto dto);}
 
 
-
-}
 
