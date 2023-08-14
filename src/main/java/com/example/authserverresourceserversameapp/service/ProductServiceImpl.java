@@ -8,6 +8,8 @@ import com.example.authserverresourceserversameapp.repository.BrandRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,16 +22,22 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
 
     @Override
-    public List<Product> getProducts(long typeId, long brandId) {
+    public List<Product> getProducts(long typeId, long brandId, String sort, String dir, int page, int size) {
+        if(sort.equals("type")){
+            sort = "type.name";
+        }
+        if(sort.equals("brand")){
+            sort = "brand.name";
+        }
         if (typeId == 0 && brandId == 0) {
-            return productRepository.findAll();
+            return productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort)).getContent();
         } else if (typeId > 0 && brandId == 0) {
-            return productRepository.getAllByTypeId(typeId);
+            return productRepository.getAllByTypeId(typeId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         } else if (typeId == 0 && brandId > 0) {
-            return productRepository.getAllByBrandId(brandId);
+            return productRepository.getAllByBrandId(brandId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
 
         } else if (typeId > 0 && brandId > 0) {
-            return productRepository.getAllByTypeIdAndBrandId(typeId, brandId);
+            return productRepository.getAllByTypeIdAndBrandId(typeId, brandId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         }
         return productRepository.findAll();
     }

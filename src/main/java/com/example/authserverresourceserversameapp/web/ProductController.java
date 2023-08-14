@@ -37,8 +37,13 @@ public class ProductController {
     }
     @GetMapping("/product")
     public List<Product> getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
-                                     @RequestParam(required = false, defaultValue = "0") long brandId) {
-        return productService.getProducts(typeId, brandId);
+                                     @RequestParam(required = false, defaultValue = "0") long brandId,
+                                     @RequestParam(required = false, defaultValue = "name") String sort,
+                                     @RequestParam(required = false, defaultValue = "ASC") String dir,
+                                     @RequestParam(required = false, defaultValue = "0") int page,
+                                     @RequestParam(required = false, defaultValue = "20") int size
+                                     ) {
+        return productService.getProducts(typeId, brandId, sort, dir, page, size);
     }
 
     @PostMapping("/register")
