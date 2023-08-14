@@ -24,11 +24,11 @@ insert into type_brand(type_id, brand_id)
 values (2, 3);
 insert into type_brand(type_id, brand_id)
 values (2, 4);
-insert into product (id, name, type_id, brand_id)
-values (1, 'S600', 1, 1);
-insert into product (id, name, type_id, brand_id)
-values (2, '750i', 1, 2);
-insert into product (id, name, type_id, brand_id)
-values (3, 'iPhone 15', 2, 3);
-insert into product (id, name, type_id, brand_id)
-values (4, 'Galaxy A32', 2, 4);
+insert into product (id, name, price, type_id, brand_id)
+values (1, 'S600', 200000, 1, 1);
+insert into product (id, name, price, type_id, brand_id)
+values (2, '750i', 150000, 1, 2);
+insert into product (id, name, price, type_id, brand_id)
+values (3, 'iPhone 15', 1000, 2, 3);
+insert into product (id, name, price, type_id, brand_id)
+values (4, 'Galaxy A32', 500, 2, 4);

@@ -68,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findById(dto.getId()).get();
         }
         product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
         type.addProduct(product);
         brand.addProduct(product);
         if (!typeRepository.existsByBrands(brand))

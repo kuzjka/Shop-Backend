@@ -15,6 +15,8 @@ public class Product {
     @EqualsAndHashCode.Exclude
     private long id;
     private String name;
+    @EqualsAndHashCode.Exclude
+    private int price;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @EqualsAndHashCode.Exclude
     private Type type;

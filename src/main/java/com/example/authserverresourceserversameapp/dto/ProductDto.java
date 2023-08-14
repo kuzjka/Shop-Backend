@@ -11,5 +11,6 @@ public class ProductDto {
     private long brandId;
     private long id;
     private String name;
+    private int price;
 
 }
