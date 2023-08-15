@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.ProductDto;
 import com.example.authserverresourceserversameapp.dto.RegisterDto;
+import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
@@ -36,12 +37,12 @@ public class ProductController {
         return productService.getProductBrands(typeId);
     }
     @GetMapping("/product")
-    public List<Product> getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
-                                     @RequestParam(required = false, defaultValue = "0") long brandId,
-                                     @RequestParam(required = false, defaultValue = "name") String sort,
-                                     @RequestParam(required = false, defaultValue = "ASC") String dir,
-                                     @RequestParam(required = false, defaultValue = "0") int page,
-                                     @RequestParam(required = false, defaultValue = "20") int size
+    public ResponseProductDto getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
+                                          @RequestParam(required = false, defaultValue = "0") long brandId,
+                                          @RequestParam(required = false, defaultValue = "name") String sort,
+                                          @RequestParam(required = false, defaultValue = "ASC") String dir,
+                                          @RequestParam(required = false, defaultValue = "0") int page,
+                                          @RequestParam(required = false, defaultValue = "2") int size
                                      ) {
         return productService.getProducts(typeId, brandId, sort, dir, page, size);
     }
