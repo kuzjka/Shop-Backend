@@ -46,8 +46,8 @@ public class AuthorizationServerConfig {
 
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://localhost:4200")
-//                .scope(OidcScopes.OPENID)
-                .scope("read-write")
+                .scope("read")
+                .scope("write")
 
                 .build();
 
