@@ -39,13 +39,13 @@ public class ProductController {
     }
     @GetMapping("/product")
     public ResponseProductDto getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
-                                          @RequestParam(required = false, defaultValue = "0") long brandId,
+                                          @RequestParam(required = false) List<Long> brandIds,
                                           @RequestParam(required = false, defaultValue = "name") String sort,
                                           @RequestParam(required = false, defaultValue = "ASC") String dir,
                                           @RequestParam(required = false, defaultValue = "0") int page,
                                           @RequestParam(required = false, defaultValue = "2") int size
                                      ) {
-        return productService.getProducts(typeId, brandId, sort, dir, page, size);
+        return productService.getProducts(typeId, brandIds, sort, dir, page, size);
     }
 
     @PostMapping("/register")
