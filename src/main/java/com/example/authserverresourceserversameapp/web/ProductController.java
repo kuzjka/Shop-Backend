@@ -34,18 +34,18 @@ public class ProductController {
         return productService.getProductTypes();
     }
     @GetMapping("/productBrand")
-    public List<Brand> getProductBrands(@RequestParam(required = false, defaultValue = "0") long typeId) {
-        return productService.getProductBrands(typeId);
+    public List<Brand> getProductBrands(@RequestParam(required = false) List<Long> typeIds) {
+        return productService.getProductBrands(typeIds);
     }
     @GetMapping("/product")
-    public ResponseProductDto getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
+    public ResponseProductDto getProducts(@RequestParam(required = false) List<Long> typeIds,
                                           @RequestParam(required = false) List<Long> brandIds,
                                           @RequestParam(required = false, defaultValue = "name") String sort,
                                           @RequestParam(required = false, defaultValue = "ASC") String dir,
                                           @RequestParam(required = false, defaultValue = "0") int page,
                                           @RequestParam(required = false, defaultValue = "2") int size
                                      ) {
-        return productService.getProducts(typeId, brandIds, sort, dir, page, size);
+        return productService.getProducts(typeIds, brandIds, sort, dir, page, size);
     }
 
     @PostMapping("/register")

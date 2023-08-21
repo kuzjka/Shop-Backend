@@ -25,7 +25,8 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
 
     @Override
-    public ResponseProductDto  getProducts(long typeId, List<Long> brandIds, String sort, String dir, int page, int size) {
+    public ResponseProductDto getProducts(List<Long> typeIds, List<Long> brandIds, String sort,
+                                          String dir, int page, int size) {
 
         ResponseProductDto dto = new ResponseProductDto();
         Page<Product> products = null;
@@ -36,20 +37,20 @@ public class ProductServiceImpl implements ProductService {
         if (sort.equals("brand")) {
             sort = "brand.name";
         }
-        if (typeId == 0 && brandIds.size() == 0) {
+        if (typeIds.size() == 0 && brandIds.size() == 0) {
 
             products = productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0 && brandIds.size() == 0) {
-            products = productRepository.getAllByTypeId(typeId,
+        } else if (typeIds.size() > 0 && brandIds.size() == 0) {
+            products = productRepository.getAllByTypeIdIn(typeIds,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
 
-        } else if (typeId == 0 && brandIds.size() > 0) {
+        } else if (typeIds.size() == 0 && brandIds.size() > 0) {
             products = productRepository.getAllByBrandIdIn(brandIds,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
 
 
-        } else if (typeId > 0 && brandIds.size() > 0) {
-            products = productRepository.getAllByTypeIdAndBrandIdIn(typeId,
+        } else if (typeIds.size() > 0 && brandIds.size() > 0) {
+            products = productRepository.getAllByTypeIdInAndBrandIdIn(typeIds,
                     brandIds, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         }
 
@@ -75,11 +76,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Brand> getProductBrands(long typeId) {
-        if (typeId == 0) {
-            return brandRepository.getProductBrands();
-        }
-        return brandRepository.getAllByTypesId(typeId);
+    public List<Brand> getProductBrands(List<Long> typeIds) {
+
+        return brandRepository.getAllByTypesIdIn(typeIds);
     }
 
     @Override
