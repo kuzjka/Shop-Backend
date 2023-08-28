@@ -48,10 +48,10 @@ public class ProductController {
         return productService.getProducts(typeIds, brandIds, sort, dir, page, size);
     }
 
-    @PostMapping("/register")
-    public User addUser(@RequestBody RegisterDto user) {
-        return userService.addUser(user);
-    }
+//    @PostMapping("/register")
+//    public User addUser(@RequestBody RegisterDto user) {
+//        return userService.addUser(user);
+//    }
 
     @PostMapping("/product")
     public long addProduct(@RequestBody ProductDto dto) {
