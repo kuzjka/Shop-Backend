@@ -2,5 +2,3 @@ spring:
   jpa:
     defer-datasource-initialization: true
     show-sql: true
-  autoconfigure:
-     exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration

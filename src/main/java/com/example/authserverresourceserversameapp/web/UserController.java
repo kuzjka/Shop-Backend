@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    @PostMapping("/register")
-    public ResponseEntity<RegistrationResponse> register(@RequestBody RegisterDto dto){
-         userService.addUser(dto);
-         RegistrationResponse response = new RegistrationResponse("registration success");
 
-         return  ResponseEntity.ok(response);
+    @PostMapping("/register")
+    public ResponseEntity<RegistrationResponse> register(@RequestBody RegisterDto dto) {
+        String username = userService.addUser(dto).getUsername();
+
+            RegistrationResponse response = new RegistrationResponse("user with username: " + username + " successfully registered!");
+
+            return ResponseEntity.ok(response);
+
     }
 }
