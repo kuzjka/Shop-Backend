@@ -1,7 +1,9 @@
 package com.example.authserverresourceserversameapp.service;
 
+import com.example.authserverresourceserversameapp.dto.BrandDto;
 import com.example.authserverresourceserversameapp.dto.ProductDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
@@ -98,6 +100,32 @@ public class ProductServiceImpl implements ProductService {
         if (!typeRepository.existsByBrands(brand))
             type.addBrand(brand);
         return productRepository.save(product).getId();
+    }
+
+    @Override
+    public long addType(TypeDto dto) {
+        Type type;
+
+        if (dto.getId() <= 0) {
+            type = new Type();
+        } else {
+            type = typeRepository.findById(dto.getId()).get();
+        }
+        type.setName(dto.getName());
+        return typeRepository.save(type).getId();
+    }
+
+    @Override
+    public long addBrand(BrandDto dto) {
+        Brand brand;
+
+        if (dto.getId() <= 0) {
+            brand = new Brand();
+        } else {
+            brand = brandRepository.findById(dto.getId()).get();
+        }
+        brand.setName(dto.getName());
+        return brandRepository.save(brand).getId();
     }
 
     @Override

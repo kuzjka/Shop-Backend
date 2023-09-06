@@ -1,7 +1,9 @@
 package com.example.authserverresourceserversameapp.service;
 
+import com.example.authserverresourceserversameapp.dto.BrandDto;
 import com.example.authserverresourceserversameapp.dto.ProductDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
@@ -21,6 +23,10 @@ public interface ProductService {
     List<Brand> getProductBrands(List<Long> typeIds);
 
     long addProduct(ProductDto dto);
+
+    long addType(TypeDto dto);
+
+    long addBrand(BrandDto dto);
 
     long deleteProduct(long id);
 }
