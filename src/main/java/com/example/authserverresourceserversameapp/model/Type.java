@@ -51,4 +51,6 @@ public class Type {
         this.brands.remove(brand);
         brand.getTypes().remove(this);
     }
+
+
 }

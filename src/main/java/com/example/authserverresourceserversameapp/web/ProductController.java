@@ -80,4 +80,12 @@ public class ProductController {
     public long deleteProduct(@PathVariable long id) {
         return productService.deleteProduct(id);
     }
+    @DeleteMapping("/type/{id}")
+    public long deleteType(@PathVariable long id) {
+        return productService.deleteType(id);
+    }
+    @DeleteMapping("/brand/{id}")
+    public long deleteBrand(@PathVariable long id) {
+        return productService.deleteBrand(id);
+    }
 }

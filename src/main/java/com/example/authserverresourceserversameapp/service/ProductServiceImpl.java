@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -138,6 +137,22 @@ public class ProductServiceImpl implements ProductService {
         type.removeProduct(product);
         type.removeBrand(brand);
         productRepository.deleteById(id);
+        return id;
+    }
+
+    @Override
+    public long deleteType(long typeId) {
+        Type type = typeRepository.findById(typeId).get();
+        long id = type.getId();
+        typeRepository.deleteById(id);
+        return id;
+    }
+
+    @Override
+    public long deleteBrand(long brandId) {
+        Brand brand = brandRepository.findById(brandId).get();
+        long id = brand.getId();
+        brandRepository.deleteById(id);
         return id;
     }
 }

@@ -38,4 +38,6 @@ public class Brand {
         this.products.remove(product);
         product.setBrand(null);
     }
+
+
 }
