@@ -25,7 +25,7 @@ public class Brand {
     @EqualsAndHashCode.Exclude
     private List<Product> products = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brands")
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "brands")
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private List<Type> types = new ArrayList<>();
