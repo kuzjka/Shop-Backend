@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Brand {
-
     @Id
     @SequenceGenerator(name = "brandGen", sequenceName = "brandSeq", initialValue = 10)
     @GeneratedValue(generator = "brandGen")
@@ -24,20 +23,22 @@ public class Brand {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private List<Product> products = new ArrayList<>();
-
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "brands")
+    @ManyToMany(mappedBy = "brands")
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private List<Type> types = new ArrayList<>();
-
     public void addProduct(Product product) {
         this.products.add(product);
         product.setBrand(this);
     }
-    public void removeProduct(Product product){
+    public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
     }
-
-
+    @PreRemove
+    public void removeTypeAssociations() {
+        for (Type type : this.types) {
+            type.getBrands().remove(this);
+        }
+    }
 }
