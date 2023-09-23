@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class AppUser implements UserDetails {
-
     private User user;
 
     public AppUser(User user) {

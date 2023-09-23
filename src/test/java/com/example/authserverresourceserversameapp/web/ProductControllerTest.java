@@ -52,9 +52,9 @@ public class ProductControllerTest {
         dto.setProducts(products);
         dto.setTotalProducts(2L);
         dto.setPageSize(5);
-        given(productService.getProducts(typeIds, brandIds, "name", "ASC", 0, 5)).willReturn(dto);
+        given(productService.getProducts(1L, brandIds, "name", "ASC", 0, 5)).willReturn(dto);
 
-        String body = this.mockMvc.perform(get("/api/product?typeIds=1&brandIds=1,2").accept(MediaType.APPLICATION_JSON))
+          this.mockMvc.perform(get("/api/product?typeId=1&brandIds=1,2").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$.products", hasSize(2)))
@@ -62,8 +62,8 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.products[0].id").value(1))
                 .andExpect(jsonPath("$.products[0].name").value("Mercedes S600"))
                 .andExpect(jsonPath("$.products[1].id").value(2))
-                .andExpect(jsonPath("$.products[1].name").value("BMW 750i"))
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(jsonPath("$.products[1].name").value("BMW 750i"));
+
 
 
     }

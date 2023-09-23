@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    ResponseProductDto getProducts(List<Long> typeIds, List<Long> brandIds, String sort, String dir, int page, int size);
+    ResponseProductDto getProducts(long typeId, List<Long> brandIds, String sort, String dir, int page, int size);
 
     List<Type> getAllTypes();
 
@@ -20,7 +20,7 @@ public interface ProductService {
 
     List<Type> getProductTypes();
 
-    List<Brand> getProductBrands(List<Long> typeIds);
+    List<Brand> getProductBrands(long typeId);
 
     long addProduct(ProductDto dto);
 
