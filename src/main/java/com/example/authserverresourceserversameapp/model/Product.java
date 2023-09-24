@@ -7,20 +7,18 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 public class Product {
     @Id
     @SequenceGenerator(name = "productGen", sequenceName = "productSeq", initialValue = 10)
     @GeneratedValue(generator = "productGen")
-    @EqualsAndHashCode.Exclude
     private long id;
+    @EqualsAndHashCode.Include
     private String name;
-    @EqualsAndHashCode.Exclude
     private int price;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @EqualsAndHashCode.Exclude
     private Type type;
-    @EqualsAndHashCode.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Brand brand;
 

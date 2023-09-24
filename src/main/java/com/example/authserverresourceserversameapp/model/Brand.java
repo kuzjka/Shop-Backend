@@ -11,21 +11,23 @@ import java.util.List;
 
 @Entity
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 public class Brand {
     @Id
     @SequenceGenerator(name = "brandGen", sequenceName = "brandSeq", initialValue = 10)
     @GeneratedValue(generator = "brandGen")
-    @EqualsAndHashCode.Exclude
+
     private long id;
+    @EqualsAndHashCode.Include
     private String name;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
     @JsonIgnore
-    @EqualsAndHashCode.Exclude
+
     private List<Product> products = new ArrayList<>();
     @ManyToMany(mappedBy = "brands")
     @JsonIgnore
-    @EqualsAndHashCode.Exclude
+
     private List<Type> types = new ArrayList<>();
 
     public void addProduct(Product product) {
