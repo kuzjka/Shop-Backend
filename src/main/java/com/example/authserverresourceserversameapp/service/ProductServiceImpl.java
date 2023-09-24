@@ -144,6 +144,9 @@ public class ProductServiceImpl implements ProductService {
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
         long id = type.getId();
+        Type other = typeRepository.getAllByName("Other");
+        List<Product> products = type.getProducts();
+        products.forEach(x->x.setType(other));
         typeRepository.deleteById(id);
         return id;
     }
@@ -152,6 +155,9 @@ public class ProductServiceImpl implements ProductService {
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
         long id = brand.getId();
+        Brand other = brandRepository.getAllByName("Other");
+        List<Product> products = brand.getProducts();
+        products.forEach(x -> x.setBrand(other));
         brandRepository.deleteById(id);
         return id;
     }

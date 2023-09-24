@@ -12,7 +12,7 @@ public class Product {
     @Id
     @SequenceGenerator(name = "productGen", sequenceName = "productSeq", initialValue = 10)
     @GeneratedValue(generator = "productGen")
-
+    @EqualsAndHashCode.Exclude
     private long id;
     private String name;
     @EqualsAndHashCode.Exclude

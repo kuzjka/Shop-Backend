@@ -1,12 +1,12 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.dto.BrandDto;
+import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
-import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
-import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.ProductService;
-import com.example.authserverresourceserversameapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +46,7 @@ public class ProductController {
                                           @RequestParam(required = false, defaultValue = "name") String sort,
                                           @RequestParam(required = false, defaultValue = "ASC") String dir,
                                           @RequestParam(required = false, defaultValue = "0") int page,
-                                          @RequestParam(required = false, defaultValue = "5") int size) {
+                                          @RequestParam(required = false, defaultValue = "10") int size) {
 
         return productService.getProducts(typeId, brandIds, sort, dir, page, size);
     }

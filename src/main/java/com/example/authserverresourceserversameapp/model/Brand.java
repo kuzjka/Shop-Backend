@@ -19,7 +19,7 @@ public class Brand {
     @EqualsAndHashCode.Exclude
     private long id;
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private List<Product> products = new ArrayList<>();
@@ -27,18 +27,22 @@ public class Brand {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private List<Type> types = new ArrayList<>();
+
     public void addProduct(Product product) {
         this.products.add(product);
         product.setBrand(this);
     }
+
     public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
     }
+
     @PreRemove
     public void removeTypeAssociations() {
-        for (Type type : this.types) {
-            type.getBrands().remove(this);
-        }
+        this.types.forEach(x -> x.getBrands().remove(this));
+
     }
+
+
 }

@@ -51,8 +51,8 @@ public class ProductControllerTest {
         brandIds.add(2L);
         dto.setProducts(products);
         dto.setTotalProducts(2L);
-        dto.setPageSize(5);
-        given(productService.getProducts(1L, brandIds, "name", "ASC", 0, 5)).willReturn(dto);
+        dto.setPageSize(10);
+        given(productService.getProducts(1L, brandIds, "name", "ASC", 0, 10)).willReturn(dto);
 
           this.mockMvc.perform(get("/api/product?typeId=1&brandIds=1,2").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

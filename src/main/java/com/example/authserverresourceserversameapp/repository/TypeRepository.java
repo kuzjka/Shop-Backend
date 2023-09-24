@@ -11,6 +11,8 @@ public interface TypeRepository extends JpaRepository<Type, Long> {
 
     boolean existsByBrands(Brand brand);
 
+    Type getAllByName(String name);
+
     @Query("select  t from Type t  where  ( select count(p) from t.products p)>0")
     List<Type> getProductTypes();
 }

@@ -21,7 +21,7 @@ public class Type {
     @EqualsAndHashCode.Exclude
     private long id;
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "type")
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private List<Product> products = new ArrayList<>();
