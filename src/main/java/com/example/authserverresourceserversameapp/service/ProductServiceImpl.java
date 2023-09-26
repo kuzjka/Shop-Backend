@@ -146,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
         long id = type.getId();
         Type other = typeRepository.getAllByName("Other");
         List<Product> products = type.getProducts();
-        products.forEach(x->x.setType(other));
+        products.forEach(x -> x.setType(other));
         typeRepository.deleteById(id);
         return id;
     }

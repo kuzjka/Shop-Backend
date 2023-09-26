@@ -2,32 +2,28 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
 @NoArgsConstructor
 public class Brand {
     @Id
     @SequenceGenerator(name = "brandGen", sequenceName = "brandSeq", initialValue = 10)
     @GeneratedValue(generator = "brandGen")
-
-    private long id;
-    @EqualsAndHashCode.Include
+    private Long id;
     private String name;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
     @JsonIgnore
-
     private List<Product> products = new ArrayList<>();
     @ManyToMany(mappedBy = "brands")
     @JsonIgnore
-
     private List<Type> types = new ArrayList<>();
 
     public void addProduct(Product product) {
@@ -43,8 +39,5 @@ public class Brand {
     @PreRemove
     public void removeTypeAssociations() {
         this.types.forEach(x -> x.getBrands().remove(this));
-
     }
-
-
 }

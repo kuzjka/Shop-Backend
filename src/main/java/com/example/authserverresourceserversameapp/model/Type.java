@@ -2,56 +2,50 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
 @NoArgsConstructor
 public class Type {
-
     @Id
     @SequenceGenerator(name = "typeGen", sequenceName = "typeSeq", initialValue = 10)
     @GeneratedValue(generator = "typeGen")
-
-    private long id;
-    @EqualsAndHashCode.Include
+    private Long id;
     private String name;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "type")
     @JsonIgnore
-
     private List<Product> products = new ArrayList<>();
-
-
-
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "type_brand",
             joinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
     )
-
     List<Brand> brands = new ArrayList<>();
+
     public void addProduct(Product product) {
         this.products.add(product);
         product.setType(this);
     }
-    public void removeProduct(Product product){
+
+    public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
     }
+
     public void addBrand(Brand brand) {
         this.brands.add(brand);
         brand.getTypes().add(this);
     }
-    public void removeBrand(Brand brand){
+
+    public void removeBrand(Brand brand) {
         this.brands.remove(brand);
         brand.getTypes().remove(this);
     }
-
-
 }

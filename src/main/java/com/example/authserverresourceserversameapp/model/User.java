@@ -6,17 +6,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jdk.jfr.Enabled;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class User {
 
     @Id
     @SequenceGenerator(name = "userGen", sequenceName = "userSeq", initialValue = 10)
     @GeneratedValue(generator = "userGen")
-    private long id;
+    private Long id;
     private String username;
     private  String password;
 
