@@ -1,7 +1,6 @@
 package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.RegisterDto;
-import com.example.authserverresourceserversameapp.exception.PasswordsDoNotMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.UserService;

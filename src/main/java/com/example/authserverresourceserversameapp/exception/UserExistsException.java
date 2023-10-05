@@ -9,7 +9,6 @@ public class UserExistsException extends RuntimeException{
 
     }
 
-    @Override
     public String getMessage() {
         return message;
     }

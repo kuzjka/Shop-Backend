@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,13 +13,6 @@ public class ProductControllerExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleUserAlreadyExistsException(UserExistsException ex) {
-        return new ErrorResponse(ex.getMessage());
-    }
-
-    @ExceptionHandler(PasswordsDoNotMatchException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlePasswordsDonNotMatchException(PasswordsDoNotMatchException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 

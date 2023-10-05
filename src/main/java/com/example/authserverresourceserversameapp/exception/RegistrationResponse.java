@@ -1,14 +1,14 @@
 package com.example.authserverresourceserversameapp.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RegistrationResponse {
 
     private  String message;
+
+    public RegistrationResponse(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }
