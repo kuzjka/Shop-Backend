@@ -19,7 +19,7 @@ public class UserController {
     public ResponseEntity<RegistrationResponse> register(@RequestBody RegisterDto dto) {
         String username = userService.addUser(dto).getUsername();
 
-            RegistrationResponse response = new RegistrationResponse("user with username: " + username + " successfully registered!");
+            RegistrationResponse response = new RegistrationResponse("user with username: \"" + username + "\" successfully registered!");
 
             return ResponseEntity.ok(response);
 
