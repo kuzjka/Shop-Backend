@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     @GetMapping(value = "/product")
-    public ResponseProductDto getProducts(@RequestParam (required = false, defaultValue = "0") long typeId,
+    public ResponseProductDto getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
                                           @RequestParam List<Long> brandIds,
                                           @RequestParam(required = false, defaultValue = "name") String sort,
                                           @RequestParam(required = false, defaultValue = "ASC") String dir,
@@ -55,35 +55,43 @@ public class ProductController {
     public long addProduct(@RequestBody ProductDto dto) {
         return productService.addProduct(dto);
     }
+
     @PostMapping("/type")
     public long addType(@RequestBody TypeDto dto) {
         return productService.addType(dto);
     }
+
     @PostMapping("/brand")
     public long addBrand(@RequestBody BrandDto dto) {
         return productService.addBrand(dto);
     }
+
     @PutMapping("/product")
     public long editProduct(@RequestBody ProductDto dto) {
 
         return productService.addProduct(dto);
     }
+
     @PutMapping("/type")
     public long editType(@RequestBody TypeDto dto) {
         return productService.addType(dto);
     }
+
     @PutMapping("/brand")
     public long editBrand(@RequestBody BrandDto dto) {
         return productService.addBrand(dto);
     }
+
     @DeleteMapping("/product/{id}")
     public long deleteProduct(@PathVariable long id) {
         return productService.deleteProduct(id);
     }
+
     @DeleteMapping("/type/{id}")
     public long deleteType(@PathVariable long id) {
         return productService.deleteType(id);
     }
+
     @DeleteMapping("/brand/{id}")
     public long deleteBrand(@PathVariable long id) {
         return productService.deleteBrand(id);

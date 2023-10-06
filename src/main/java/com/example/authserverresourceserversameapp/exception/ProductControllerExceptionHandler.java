@@ -1,17 +1,14 @@
 package com.example.authserverresourceserversameapp.exception;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ProductControllerExceptionHandler  {
+public class ProductControllerExceptionHandler {
     @ExceptionHandler(UserExistsException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -19,6 +16,7 @@ public class ProductControllerExceptionHandler  {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(409).body(response);
     }
+
     @ExceptionHandler(PasswordsDontMatchException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -27,4 +25,43 @@ public class ProductControllerExceptionHandler  {
         return ResponseEntity.status(409).body(response);
     }
 
+    @ExceptionHandler(ProductExistsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleProductExistsException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
+
+    @ExceptionHandler(TypeExistsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleTypeExistsException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
+
+    @ExceptionHandler(BrandExistsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleBrandExistsException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
+
+    @ExceptionHandler(TypeOtherCantBeDeletedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleTypeOtherCantBeDeletedException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
+
+    @ExceptionHandler(BrandOtherCantBeDeletedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleBrandOtherCantBeDeletedException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
 }

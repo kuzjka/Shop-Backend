@@ -5,9 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ErrorResponse {
+public class ProductExistsException extends RuntimeException {
 
     private String message;
-
-
 }

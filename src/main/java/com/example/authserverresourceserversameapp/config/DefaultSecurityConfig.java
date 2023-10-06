@@ -29,7 +29,7 @@ public class DefaultSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers("/register**").permitAll()
+                        authorizeRequests.requestMatchers("/register/**").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/**").hasAnyAuthority("SCOPE_read", "SCOPE_write")
                                 .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("SCOPE_write")
                                 .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("SCOPE_write")
