@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
 
     @Override
-    public ResponseProductDto getProducts(long typeId, List<Long> brandIds, String sort,
+    public ResponseProductDto getProducts(long typeId, Long brandId, String sort,
                                           String dir, int page, int size) {
         ResponseProductDto dto = new ResponseProductDto();
         Page<Product> products = null;
@@ -37,19 +37,19 @@ public class ProductServiceImpl implements ProductService {
         if (sort.equals("brand")) {
             sort = "brand.name";
         }
-        if (typeId == 0 && brandIds.size() == 0) {
+        if (typeId == 0 && brandId == 0) {
             products = productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0 && brandIds.size() == 0) {
+        } else if (typeId > 0 && brandId == 0) {
             products = productRepository.getAllByTypeId(typeId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
 
-        } else if (typeId == 0 && brandIds.size() > 0) {
-            products = productRepository.getAllByBrandIdIn(brandIds,
+        } else if (typeId == 0 && brandId > 0) {
+            products = productRepository.getAllByBrandId(brandId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
 
-        } else if (typeId > 0 && brandIds.size() > 0) {
-            products = productRepository.getAllByTypeIdAndBrandIdIn(typeId,
-                    brandIds, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
+        } else if (typeId > 0 && brandId > 0) {
+            products = productRepository.getAllByTypeIdAndBrandId(typeId,
+                    brandId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         }
         dto.setProducts(products.getContent());
         dto.setPageSize(products.getSize());

@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.RegisterDto;
+import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.UserService;
@@ -38,7 +39,7 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password\", \"passwordConfirmed\": \"password\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("user with username: user successfully registered!")));
+                .andExpect(jsonPath("$.message", is("user with username: \"user\" successfully registered!")));
     }
 
     @Test
@@ -61,7 +62,7 @@ public class UserControllerTest {
 
         User user = new User();
         user.setUsername("user");
-        given(userService.addUser(any(RegisterDto.class))).willThrow(new PasswordsDoNotMatchException());
+        given(userService.addUser(any(RegisterDto.class))).willThrow(new PasswordsDontMatchException("passwords do not match!"));
         this.mockMvc.perform(post("/register").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password1\", \"passwordConfirmed\": \"password2\"}"))

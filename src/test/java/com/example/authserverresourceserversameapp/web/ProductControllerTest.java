@@ -43,28 +43,16 @@ public class ProductControllerTest {
         List<Product> products = new ArrayList<>();
         products.add(product1);
         products.add(product2);
-        List<Long> typeIds = new ArrayList<>();
-        typeIds.add(1L);
-
-        List<Long> brandIds = new ArrayList<>();
-        brandIds.add(1L);
-        brandIds.add(2L);
         dto.setProducts(products);
         dto.setTotalProducts(2L);
         dto.setPageSize(10);
-        given(productService.getProducts(1L, brandIds, "name", "ASC", 0, 10)).willReturn(dto);
-
-          this.mockMvc.perform(get("/api/product?typeId=1&brandIds=1,2").accept(MediaType.APPLICATION_JSON))
+        given(productService.getProducts(0L, 0L, "name", "ASC", 0, 10)).willReturn(dto);
+        this.mockMvc.perform(get("/api/product").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-
                 .andExpect(jsonPath("$.products", hasSize(2)))
-
                 .andExpect(jsonPath("$.products[0].id").value(1))
                 .andExpect(jsonPath("$.products[0].name").value("Mercedes S600"))
                 .andExpect(jsonPath("$.products[1].id").value(2))
                 .andExpect(jsonPath("$.products[1].name").value("BMW 750i"));
-
-
-
     }
 }
