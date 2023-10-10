@@ -7,6 +7,8 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product {
     @Id
     @SequenceGenerator(name = "productGen", sequenceName = "productSeq", initialValue = 10)
