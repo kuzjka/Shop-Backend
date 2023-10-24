@@ -17,6 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -78,8 +82,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public long addProduct(ProductDto dto) {
-
+    public long addProduct(ProductDto dto) throws IOException {
+        Path path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + ".jpg");
+        Files.write(path, dto.getPhoto());
         if (productRepository.getByName(dto.getName()) != null) {
             throw new ProductExistsException("Product with name: \"" + dto.getName() + "\" already exists!");
         }
@@ -93,10 +98,14 @@ public class ProductServiceImpl implements ProductService {
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
+        product.setUrl("http://localhost:8080/images/" + dto.getName() + ".jpg");
         type.addProduct(product);
         brand.addProduct(product);
+
         if (!typeRepository.existsByBrands(brand))
             type.addBrand(brand);
+
+
         return productRepository.save(product).getId();
     }
 

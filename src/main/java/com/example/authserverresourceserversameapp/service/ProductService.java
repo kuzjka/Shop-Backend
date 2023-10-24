@@ -8,6 +8,7 @@ import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
@@ -22,7 +23,7 @@ public interface ProductService {
 
     List<Brand> getProductBrands(long typeId);
 
-    long addProduct(ProductDto dto);
+    long addProduct(ProductDto dto) throws IOException;
 
     long addType(TypeDto dto);
 

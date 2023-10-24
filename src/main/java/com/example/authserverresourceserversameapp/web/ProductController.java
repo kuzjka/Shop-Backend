@@ -10,6 +10,7 @@ import com.example.authserverresourceserversameapp.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -52,7 +53,7 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public long addProduct(@RequestBody ProductDto dto) {
+    public long addProduct(@RequestBody ProductDto dto) throws IOException {
         return productService.addProduct(dto);
     }
 
@@ -67,7 +68,7 @@ public class ProductController {
     }
 
     @PutMapping("/product")
-    public long editProduct(@RequestBody ProductDto dto) {
+    public long editProduct(@RequestBody ProductDto dto) throws IOException {
 
         return productService.addProduct(dto);
     }
