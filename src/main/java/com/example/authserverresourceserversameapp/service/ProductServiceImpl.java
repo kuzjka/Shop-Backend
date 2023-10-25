@@ -29,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
+    private int count = 0;
 
     @Override
     public ResponseProductDto getProducts(long typeId, Long brandId, String sort,
@@ -83,32 +84,32 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public long addProduct(ProductDto dto) throws IOException {
-        Path path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + ".jpg");
-        Files.write(path, dto.getPhoto());
-        if (productRepository.getByName(dto.getName()) != null) {
-            throw new ProductExistsException("Product with name: \"" + dto.getName() + "\" already exists!");
-        }
+        this.count++;
+        Path path;
         Product product;
-        Type type = typeRepository.findById(dto.getTypeId()).get();
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
         if (dto.getId() == 0) {
             product = new Product();
         } else {
             product = productRepository.findById(dto.getId()).get();
         }
+        if (productRepository.getByName(dto.getName()) != null) {
+            path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + this.count + ".jpg");
+            product.setUrl("http://localhost:8080/images/" + dto.getName() + this.count + ".jpg");
+        } else {
+            path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + ".jpg");
+            product.setUrl("http://localhost:8080/images/" + dto.getName() + ".jpg");
+        }
+        Files.write(path, dto.getPhoto());
+        Type type = typeRepository.findById(dto.getTypeId()).get();
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-        product.setUrl("http://localhost:8080/images/" + dto.getName() + ".jpg");
         type.addProduct(product);
         brand.addProduct(product);
-
         if (!typeRepository.existsByBrands(brand))
             type.addBrand(brand);
-
-
         return productRepository.save(product).getId();
     }
-
     @Override
     public long addType(TypeDto dto) {
         if (typeRepository.getAllByName(dto.getName()) != null) {
@@ -123,7 +124,6 @@ public class ProductServiceImpl implements ProductService {
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
     }
-
     @Override
     public long addBrand(BrandDto dto) {
         if (brandRepository.getAllByName(dto.getName()) != null) {
