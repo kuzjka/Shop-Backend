@@ -29,7 +29,7 @@ public interface ProductService {
 
     long addBrand(BrandDto dto);
 
-    long deleteProduct(long id);
+    long deleteProduct(long id) throws IOException;
 
     long deleteType(long id);
 

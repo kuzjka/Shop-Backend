@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -85,20 +86,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addProduct(ProductDto dto) throws IOException {
         this.count++;
-        Path path;
-        Product product;
-        if (dto.getId() == 0) {
+        Path path = null;
+        Product product = null;
+        if (dto.getId() == 0 && productRepository.getByName(dto.getName()) != null) {
+            throw new ProductExistsException("Product with name:\"" + dto.getName() + "\" already exists!");
+        } else if (dto.getId() == 0 && productRepository.getByName(dto.getName()) == null) {
             product = new Product();
-        } else {
-            product = productRepository.findById(dto.getId()).get();
-        }
-        if (productRepository.getByName(dto.getName()) != null) {
-            path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + this.count + ".jpg");
-            product.setUrl("http://localhost:8080/images/" + dto.getName() + this.count + ".jpg");
-        } else {
             path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + ".jpg");
             product.setUrl("http://localhost:8080/images/" + dto.getName() + ".jpg");
+        } else if (dto.getId() > 0) {
+            product = productRepository.findById(dto.getId()).get();
+            path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + "_" + this.count + ".jpg");
+            product.setUrl("http://localhost:8080/images/" + dto.getName() + "_" + this.count + ".jpg");
         }
+
         Files.write(path, dto.getPhoto());
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
@@ -110,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
             type.addBrand(brand);
         return productRepository.save(product).getId();
     }
+
     @Override
     public long addType(TypeDto dto) {
         if (typeRepository.getAllByName(dto.getName()) != null) {
@@ -124,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
     }
+
     @Override
     public long addBrand(BrandDto dto) {
         if (brandRepository.getAllByName(dto.getName()) != null) {
@@ -140,8 +143,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public long deleteProduct(long productId) {
+    public long deleteProduct(long productId) throws IOException {
         Product product = productRepository.findById(productId).get();
+        String url = product.getUrl();
+        String[] split = url.split("/");
+        String file = split[split.length - 1];
         long id = product.getId();
         Brand brand = product.getBrand();
         Type type = product.getType();
@@ -149,6 +155,8 @@ public class ProductServiceImpl implements ProductService {
         type.removeProduct(product);
         type.removeBrand(brand);
         productRepository.deleteById(id);
+        Path path = Paths.get("src/main/webapp/WEB-INF/images/" + file);
+        Files.delete(path);
         return id;
     }
 
