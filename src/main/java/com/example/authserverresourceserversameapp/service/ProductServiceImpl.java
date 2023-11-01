@@ -6,16 +6,22 @@ import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.repository.BrandRepository;
+import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
 import lombok.RequiredArgsConstructor;
+
+
+import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +36,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
-    private int count = 0;
+    private final PhotoRepository photoRepository;
+
+    private static final String BASE_DIR = "src/main/webapp/WEB-INF/images/";
+    private static final String BASE_URL = "http://localhost:8080/images/";
 
     @Override
     public ResponseProductDto getProducts(long typeId, Long brandId, String sort,
@@ -85,22 +94,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public long addProduct(ProductDto dto) throws IOException {
-        this.count++;
-        Path path = null;
+
         Product product = null;
+
         if (dto.getId() == 0 && productRepository.getByName(dto.getName()) != null) {
             throw new ProductExistsException("Product with name:\"" + dto.getName() + "\" already exists!");
         } else if (dto.getId() == 0 && productRepository.getByName(dto.getName()) == null) {
             product = new Product();
-            path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + ".jpg");
-            product.setUrl("http://localhost:8080/images/" + dto.getName() + ".jpg");
+            Photo photo = new Photo();
+            long photoId = photoRepository.save(photo).getId();
+            FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"), dto.getPhoto());
+
+            product.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
-            path = Paths.get("src/main/webapp/WEB-INF/images/" + dto.getName() + "_" + this.count + ".jpg");
-            product.setUrl("http://localhost:8080/images/" + dto.getName() + "_" + this.count + ".jpg");
-        }
+            Photo photo = new Photo();
+            long photoId = photoRepository.save(photo).getId();
+            FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"),
+                    dto.getPhoto());
 
-        Files.write(path, dto.getPhoto());
+            product.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
+        }
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
         product.setName(dto.getName());
@@ -155,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
         type.removeProduct(product);
         type.removeBrand(brand);
         productRepository.deleteById(id);
-        Path path = Paths.get("src/main/webapp/WEB-INF/images/" + file);
+        Path path = Paths.get(BASE_DIR + file);
         Files.delete(path);
         return id;
     }

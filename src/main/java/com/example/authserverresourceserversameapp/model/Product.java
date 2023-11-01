@@ -16,6 +16,7 @@ public class Product {
     private Long id;
     private String name;
     private int price;
+
     private String url;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Type type;
