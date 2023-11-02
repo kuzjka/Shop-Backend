@@ -2,4 +2,3 @@ spring:
   jpa:
     defer-datasource-initialization: true
     show-sql: true
-    open-in-view: true

@@ -96,25 +96,29 @@ public class ProductServiceImpl implements ProductService {
     public long addProduct(ProductDto dto) throws IOException {
 
         Product product = null;
-
+        Photo photo = null;
         if (dto.getId() == 0 && productRepository.getByName(dto.getName()) != null) {
             throw new ProductExistsException("Product with name:\"" + dto.getName() + "\" already exists!");
         } else if (dto.getId() == 0 && productRepository.getByName(dto.getName()) == null) {
             product = new Product();
-            Photo photo = new Photo();
+            photo = new Photo();
             long photoId = photoRepository.save(photo).getId();
             FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"), dto.getPhoto());
 
-            product.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
+            photo.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
+
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
-            Photo photo = new Photo();
+            photo = new Photo();
             long photoId = photoRepository.save(photo).getId();
+
+
+            photo.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
+
             FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"),
                     dto.getPhoto());
-
-            product.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
         }
+        product.setPhoto(photo);
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
         product.setName(dto.getName());
@@ -159,7 +163,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteProduct(long productId) throws IOException {
         Product product = productRepository.findById(productId).get();
-        String url = product.getUrl();
+        String url = product.getPhoto().getUrl();
         String[] split = url.split("/");
         String file = split[split.length - 1];
         long id = product.getId();
