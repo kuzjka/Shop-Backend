@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public long addProduct(ProductDto dto) throws IOException {
-
+        Path path = Paths.get(BASE_DIR);
         Product product = null;
         Photo photo = null;
         if (dto.getId() == 0 && productRepository.getByName(dto.getName()) != null) {
@@ -106,24 +106,19 @@ public class ProductServiceImpl implements ProductService {
             product = new Product();
             photo = new Photo();
             long photoId = photoRepository.save(photo).getId();
-            Path path = Paths.get(BASE_DIR + dto.getName() + "_" + photoId + ".jpg");
             InputStream in = new ByteArrayInputStream(dto.getPhoto());
-            Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
-
-            photo.setUrl(BASE_URL + dto.getName() + "_" + photoId + ".jpg");
-
+            Files.copy(in, path.resolve("photo_" + dto.getId() + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+            photo.setUrl(BASE_URL + "photo_" + dto.getId() + photoId + ".jpg");
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
+            if (Files.exists(path.resolve("photo_" + dto.getId() + product.getPhoto().getId() + ".jpg"))) {
+                Files.delete(path.resolve("photo_" + dto.getId() + product.getPhoto().getId() + ".jpg"));
+            }
             photo = new Photo();
             long photoId = photoRepository.save(photo).getId();
-            Path path = Paths.get(BASE_DIR + dto.getName() + "_" + photoId + ".jpg");
             InputStream in = new ByteArrayInputStream(dto.getPhoto());
-            Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
-
-            photo.setUrl(BASE_URL + dto.getName() + "_" + photoId + ".jpg");
-
-//            FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"),
-//                    dto.getPhoto());
+            Files.copy(in, path.resolve("photo_" + dto.getId() + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+            photo.setUrl(BASE_URL + "photo_" + dto.getId() + photoId + ".jpg");
         }
         product.setPhoto(photo);
         Type type = typeRepository.findById(dto.getTypeId()).get();
@@ -134,6 +129,8 @@ public class ProductServiceImpl implements ProductService {
         brand.addProduct(product);
         if (!typeRepository.existsByBrands(brand))
             type.addBrand(brand);
+
+
         return productRepository.save(product).getId();
     }
 
