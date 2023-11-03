@@ -23,11 +23,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -103,20 +106,24 @@ public class ProductServiceImpl implements ProductService {
             product = new Product();
             photo = new Photo();
             long photoId = photoRepository.save(photo).getId();
-            FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"), dto.getPhoto());
+            Path path = Paths.get(BASE_DIR + dto.getName() + "_" + photoId + ".jpg");
+            InputStream in = new ByteArrayInputStream(dto.getPhoto());
+            Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
 
-            photo.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
+            photo.setUrl(BASE_URL + dto.getName() + "_" + photoId + ".jpg");
 
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
             photo = new Photo();
             long photoId = photoRepository.save(photo).getId();
+            Path path = Paths.get(BASE_DIR + dto.getName() + "_" + photoId + ".jpg");
+            InputStream in = new ByteArrayInputStream(dto.getPhoto());
+            Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
 
+            photo.setUrl(BASE_URL + dto.getName() + "_" + photoId + ".jpg");
 
-            photo.setUrl(BASE_URL + dto.getName() + photoId + ".jpg");
-
-            FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"),
-                    dto.getPhoto());
+//            FileUtils.writeByteArrayToFile(new File(BASE_DIR + dto.getName() + photoId + ".jpg"),
+//                    dto.getPhoto());
         }
         product.setPhoto(photo);
         Type type = typeRepository.findById(dto.getTypeId()).get();
