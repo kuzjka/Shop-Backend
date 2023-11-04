@@ -14,17 +14,12 @@ import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
 import lombok.RequiredArgsConstructor;
-
-
-import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -104,11 +99,11 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductExistsException("Product with name:\"" + dto.getName() + "\" already exists!");
         } else if (dto.getId() == 0 && productRepository.getByName(dto.getName()) == null) {
             product = new Product();
-
+            long productId = productRepository.save(product).getId();
             long photoId = photoRepository.save(photo).getId();
             InputStream in = new ByteArrayInputStream(dto.getPhoto());
-            Files.copy(in, path.resolve("photo_" + dto.getId() + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
-            photo.setUrl(BASE_URL + "photo_" + dto.getId() + photoId + ".jpg");
+            Files.copy(in, path.resolve("photo_" + productId + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+            photo.setUrl(BASE_URL + "photo_" + productId + photoId + ".jpg");
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
             if (Files.exists(path.resolve("photo_" + product.getId() + product.getPhoto().getId() + ".jpg"))) {
