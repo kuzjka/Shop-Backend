@@ -70,7 +70,7 @@ public class ProductController {
     @PutMapping("/product")
     public long editProduct(@RequestBody ProductDto dto) throws IOException {
 
-        return productService.addProduct(dto);
+        return productService.editProduct(dto);
     }
 
     @PutMapping("/type")

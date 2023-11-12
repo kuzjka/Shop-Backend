@@ -1,14 +1,11 @@
 package com.example.authserverresourceserversameapp.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Product {
     @Id
     @SequenceGenerator(name = "productGen", sequenceName = "productSeq", initialValue = 10)
@@ -16,10 +13,73 @@ public class Product {
     private Long id;
     private String name;
     private int price;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Photo photo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private List<Photo> photos = new ArrayList<>();
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Type type;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Brand brand;
+
+    public Product() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
+
+    public void addPhoto(Photo photo) {
+        this.photos.add(photo);
+        photo.setProduct(this);
+    }
+
+    public void removePhoto(Photo photo){
+        this.photos.remove(photo);
+        photo.setProduct(null);
+    }
+
+
 }

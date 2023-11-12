@@ -36,18 +36,18 @@ public class ProductServiceTest {
 
     @BeforeEach
     public void setup() {
-        product = Product.builder()
-                .id(1L)
-                .name("Mercedes S600")
-                .build();
+        product = new Product();
+                product.setId(1L);
+                product.setName("Mercedes S600");
+
     }
 
     @Test
     public void getProductsTest() {
-        Product product1 = Product.builder()
-                .id(2L)
-                .name("BMW 750i")
-                .build();
+        Product product1 = new Product();
+                product1.setId(2L);
+                product1.setName("BMW 750i");
+
         List<Product> products = new ArrayList<>();
         products.add(product);
         products.add(product1);

@@ -26,7 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
-
+    long count = 0;
     private static final String BASE_DIR = "src/main/webapp/WEB-INF/images/";
     private static final String BASE_URL = "http://localhost:8080/images/";
 
@@ -93,28 +96,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addProduct(ProductDto dto) throws IOException {
         Path path = Paths.get(BASE_DIR);
-        Product product = null;
-        Photo photo = new Photo();
-        if (dto.getId() == 0 && productRepository.getByName(dto.getName()) != null) {
+
+
+        if (productRepository.getByName(dto.getName()) != null) {
             throw new ProductExistsException("Product with name:\"" + dto.getName() + "\" already exists!");
-        } else if (dto.getId() == 0 && productRepository.getByName(dto.getName()) == null) {
-            product = new Product();
-            long productId = productRepository.save(product).getId();
-            long photoId = photoRepository.save(photo).getId();
-            InputStream in = new ByteArrayInputStream(dto.getPhoto());
-            Files.copy(in, path.resolve("photo_" + productId + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
-            photo.setUrl(BASE_URL + "photo_" + productId + photoId + ".jpg");
-        } else if (dto.getId() > 0) {
-            product = productRepository.findById(dto.getId()).get();
-            if (Files.exists(path.resolve("photo_" + product.getId() + product.getPhoto().getId() + ".jpg"))) {
-                Files.delete(path.resolve("photo_" + product.getId() + product.getPhoto().getId() + ".jpg"));
-            }
-            long photoId = photoRepository.save(photo).getId();
-            InputStream in = new ByteArrayInputStream(dto.getPhoto());
-            Files.copy(in, path.resolve("photo_" + product.getId() + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
-            photo.setUrl(BASE_URL + "photo_" + product.getId() + photoId + ".jpg");
         }
-        product.setPhoto(photo);
+
+        Product product = new Product();
+
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
         product.setName(dto.getName());
@@ -124,7 +113,54 @@ public class ProductServiceImpl implements ProductService {
         if (!typeRepository.existsByBrands(brand))
             type.addBrand(brand);
 
+        long productId = productRepository.save(product).getId();
+        for (byte[] photoBytes : dto.getPhotos()) {
+            Photo photo = new Photo();
+            product.addPhoto(photo);
+            long photoId = photoRepository.save(photo).getId();
+            InputStream in = new ByteArrayInputStream(photoBytes);
+            Files.copy(in, path.resolve("photo_" + productId + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+            photo.setUrl(BASE_URL + "photo_" + productId + photoId + ".jpg");
 
+        }
+
+        return productRepository.save(product).getId();
+    }
+
+    public long editProduct(ProductDto dto) {
+
+        Path path = Paths.get(BASE_DIR);
+        Product product = productRepository.findById(dto.getId()).get();
+
+        Type type = typeRepository.findById(dto.getTypeId()).get();
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+
+        List<Photo> photos = new ArrayList<>(product.getPhotos());
+        List<Photo> photos2 = new ArrayList<>();
+        for (Photo p : photos) {
+            product.removePhoto(p);
+        }
+
+
+        List<byte[]> photoBytes = new ArrayList<>(dto.getPhotos());
+        for (byte[] a : photoBytes) {
+            Photo photo = new Photo();
+
+
+            long photoId = photoRepository.save(photo).getId();
+            product.addPhoto(photo);
+
+            photo.setUrl(BASE_URL + "photo_" + product.getId() + photoId + ".jpg");
+
+            InputStream in = new ByteArrayInputStream(a);
+            try {
+                Files.copy(in, path.resolve("photo_" + product.getId() + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         return productRepository.save(product).getId();
     }
 
@@ -161,7 +197,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteProduct(long productId) throws IOException {
         Product product = productRepository.findById(productId).get();
-        String url = product.getPhoto().getUrl();
+        String url = product.getPhotos().get(0).getUrl();
         String[] split = url.split("/");
         String file = split[split.length - 1];
         long id = product.getId();
