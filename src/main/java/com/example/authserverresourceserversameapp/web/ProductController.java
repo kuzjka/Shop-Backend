@@ -7,7 +7,6 @@ import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -15,10 +14,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/type")
     public List<Type> getAllTypes() {
@@ -70,7 +72,7 @@ public class ProductController {
     @PutMapping("/product")
     public long editProduct(@RequestBody ProductDto dto) throws IOException {
 
-        return productService.editProduct(dto);
+        return productService.addProduct(dto);
     }
 
     @PutMapping("/type")

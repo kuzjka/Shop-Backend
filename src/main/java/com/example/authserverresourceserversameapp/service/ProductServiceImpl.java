@@ -13,7 +13,6 @@ import com.example.authserverresourceserversameapp.repository.BrandRepository;
 import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,20 +26,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+    private static final String BASE_DIR = "src/main/webapp/WEB-INF/images/";
+    private static final String BASE_URL = "http://localhost:8080/images/";
     private final ProductRepository productRepository;
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
-    long count = 0;
-    private static final String BASE_DIR = "src/main/webapp/WEB-INF/images/";
-    private static final String BASE_URL = "http://localhost:8080/images/";
+
+    public ProductServiceImpl(ProductRepository productRepository,
+                              TypeRepository typeRepository,
+                              BrandRepository brandRepository,
+                              PhotoRepository photoRepository) {
+        this.productRepository = productRepository;
+        this.typeRepository = typeRepository;
+        this.brandRepository = brandRepository;
+        this.photoRepository = photoRepository;
+    }
+
 
     @Override
     public ResponseProductDto getProducts(long typeId, Long brandId, String sort,
@@ -93,67 +99,37 @@ public class ProductServiceImpl implements ProductService {
         return brandRepository.getAllByTypesId(typeId);
     }
 
-    @Override
-    public long addProduct(ProductDto dto) throws IOException {
+
+    public long addProduct(ProductDto dto) {
         Path path = Paths.get(BASE_DIR);
-
-
-        if (productRepository.getByName(dto.getName()) != null) {
+        Product product = null;
+        if (dto.getId() == 0 && productRepository.getByName(dto.getName()) != null) {
             throw new ProductExistsException("Product with name:\"" + dto.getName() + "\" already exists!");
-        }
-
-        Product product = new Product();
-
-        Type type = typeRepository.findById(dto.getTypeId()).get();
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
-        product.setName(dto.getName());
-        product.setPrice(dto.getPrice());
-        type.addProduct(product);
-        brand.addProduct(product);
-        if (!typeRepository.existsByBrands(brand))
+        } else if (dto.getId() == 0 && productRepository.getByName(dto.getName()) == null) {
+            product = new Product();
+            Type type = typeRepository.findById(dto.getTypeId()).get();
+            Brand brand = brandRepository.findById(dto.getBrandId()).get();
+            type.addProduct(product);
+            brand.addProduct(product);
             type.addBrand(brand);
-
-        long productId = productRepository.save(product).getId();
-        for (byte[] photoBytes : dto.getPhotos()) {
-            Photo photo = new Photo();
-            product.addPhoto(photo);
-            long photoId = photoRepository.save(photo).getId();
-            InputStream in = new ByteArrayInputStream(photoBytes);
-            Files.copy(in, path.resolve("photo_" + productId + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
-            photo.setUrl(BASE_URL + "photo_" + productId + photoId + ".jpg");
-
+        } else if (dto.getId() > 0) {
+            product = productRepository.findById(dto.getId()).get();
         }
-
-        return productRepository.save(product).getId();
-    }
-
-    public long editProduct(ProductDto dto) {
-
-        Path path = Paths.get(BASE_DIR);
-        Product product = productRepository.findById(dto.getId()).get();
-
-        Type type = typeRepository.findById(dto.getTypeId()).get();
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-
         List<Photo> photos = new ArrayList<>(product.getPhotos());
-        List<Photo> photos2 = new ArrayList<>();
-        for (Photo p : photos) {
+        for (
+                Photo p : photos) {
             product.removePhoto(p);
         }
 
-
         List<byte[]> photoBytes = new ArrayList<>(dto.getPhotos());
-        for (byte[] a : photoBytes) {
+        for (
+                byte[] a : photoBytes) {
             Photo photo = new Photo();
-
-
             long photoId = photoRepository.save(photo).getId();
             product.addPhoto(photo);
-
             photo.setUrl(BASE_URL + "photo_" + product.getId() + photoId + ".jpg");
-
             InputStream in = new ByteArrayInputStream(a);
             try {
                 Files.copy(in, path.resolve("photo_" + product.getId() + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
@@ -161,7 +137,10 @@ public class ProductServiceImpl implements ProductService {
                 throw new RuntimeException(e);
             }
         }
-        return productRepository.save(product).getId();
+        return productRepository.save(product).
+
+                getId();
+
     }
 
     @Override

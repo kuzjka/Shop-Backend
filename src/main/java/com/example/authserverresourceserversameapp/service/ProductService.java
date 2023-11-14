@@ -5,7 +5,6 @@ import com.example.authserverresourceserversameapp.dto.ProductDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
-import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ public interface ProductService {
     List<Brand> getProductBrands(long typeId);
 
     long addProduct(ProductDto dto) throws IOException;
-long editProduct(ProductDto dto);
+
     long addType(TypeDto dto);
 
     long addBrand(BrandDto dto);

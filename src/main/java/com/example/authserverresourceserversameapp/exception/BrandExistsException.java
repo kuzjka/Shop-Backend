@@ -1,10 +1,15 @@
 package com.example.authserverresourceserversameapp.exception;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
 public class BrandExistsException extends RuntimeException {
-    private final String message;
+    private String message;
+
+    public BrandExistsException(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

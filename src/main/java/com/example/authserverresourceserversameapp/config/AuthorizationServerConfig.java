@@ -7,7 +7,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -15,7 +14,6 @@ import org.springframework.security.oauth2.server.authorization.client.InMemoryR
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -25,7 +23,6 @@ import java.util.UUID;
 @Configuration
 @EnableWebSecurity
 public class AuthorizationServerConfig {
-
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -36,7 +33,6 @@ public class AuthorizationServerConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("app-client").tokenSettings(tokenSettings())
                 .clientSecret("$2a$12$MyTjNEL1JGagTDhPTHYaOuFNTkpegx.WFXuZDRlDkH51R.QGfP3Be")
@@ -48,7 +44,6 @@ public class AuthorizationServerConfig {
                 .scope("write")
                 .scope(OidcScopes.OPENID)
                 .build();
-
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
 
@@ -56,6 +51,4 @@ public class AuthorizationServerConfig {
     public TokenSettings tokenSettings() {
         return TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build();
     }
-
-
 }

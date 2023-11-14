@@ -10,13 +10,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AppUserDetailsService implements UserDetailsService {
-
     private UserRepository userRepository;
-
 
     public AppUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-
     }
 
     @Override
@@ -25,10 +22,7 @@ public class AppUserDetailsService implements UserDetailsService {
         User user = userRepository.getByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User with username: " + username + " does not exists");
-
         }
         return new AppUser(user);
     }
-
-
 }

@@ -5,17 +5,19 @@ import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchE
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User addUser(RegisterDto dto) {

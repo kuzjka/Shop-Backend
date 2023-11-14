@@ -76,10 +76,8 @@ public class Product {
         photo.setProduct(this);
     }
 
-    public void removePhoto(Photo photo){
+    public void removePhoto(Photo photo) {
         this.photos.remove(photo);
         photo.setProduct(null);
     }
-
-
 }
