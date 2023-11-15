@@ -103,23 +103,30 @@ public class ProductServiceImpl implements ProductService {
     public long addProduct(ProductDto dto) {
         Path path = Paths.get(BASE_DIR);
         Product product = null;
-        if (dto.getId() == 0 && productRepository.getByName(dto.getName()) != null) {
-            throw new ProductExistsException("Product with name:\"" + dto.getName() + "\" already exists!");
-        } else if (dto.getId() == 0 && productRepository.getByName(dto.getName()) == null) {
+        Type type = typeRepository.findById(dto.getTypeId()).get();
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
+        if (dto.getId() == 0) {
             product = new Product();
-            Type type = typeRepository.findById(dto.getTypeId()).get();
-            Brand brand = brandRepository.findById(dto.getBrandId()).get();
-            type.addProduct(product);
-            brand.addProduct(product);
-            type.addBrand(brand);
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
+            List<Photo> photos = new ArrayList<>(product.getPhotos());
+            for (Photo photo : photos) {
+                String[] split = photo.getUrl().split("/");
+                String file = split[split.length - 1];
+            }
+            type.removeBrand(brand);
+            type.removeProduct(product);
+            brand.removeProduct(product);
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
+        type.addProduct(product);
+        brand.addProduct(product);
+        if (brandRepository.getAllByName(brand.getName()) == null) {
+            type.addBrand(brand);
+        }
         List<Photo> photos = new ArrayList<>(product.getPhotos());
-        for (
-                Photo p : photos) {
+        for (Photo p : photos) {
             product.removePhoto(p);
         }
 
@@ -137,9 +144,7 @@ public class ProductServiceImpl implements ProductService {
                 throw new RuntimeException(e);
             }
         }
-        return productRepository.save(product).
-
-                getId();
+        return productRepository.save(product).getId();
 
     }
 
@@ -176,9 +181,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteProduct(long productId) throws IOException {
         Product product = productRepository.findById(productId).get();
-        String url = product.getPhotos().get(0).getUrl();
-        String[] split = url.split("/");
-        String file = split[split.length - 1];
+        List<Photo> photos = new ArrayList<>(product.getPhotos());
+        for (Photo photo : photos) {
+            String[] split = photo.getUrl().split("/");
+            String file = split[split.length - 1];
+            Path path = Paths.get(BASE_DIR + file);
+            Files.delete(path);
+        }
+
         long id = product.getId();
         Brand brand = product.getBrand();
         Type type = product.getType();
@@ -186,8 +196,7 @@ public class ProductServiceImpl implements ProductService {
         type.removeProduct(product);
         type.removeBrand(brand);
         productRepository.deleteById(id);
-        Path path = Paths.get(BASE_DIR + file);
-        Files.delete(path);
+
         return id;
     }
 
