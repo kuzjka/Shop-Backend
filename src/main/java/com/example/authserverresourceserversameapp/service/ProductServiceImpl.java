@@ -110,10 +110,6 @@ public class ProductServiceImpl implements ProductService {
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
             List<Photo> photos = new ArrayList<>(product.getPhotos());
-            for (Photo photo : photos) {
-                String[] split = photo.getUrl().split("/");
-                String file = split[split.length - 1];
-            }
             type.removeBrand(brand);
             type.removeProduct(product);
             brand.removeProduct(product);
@@ -128,6 +124,16 @@ public class ProductServiceImpl implements ProductService {
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo p : photos) {
             product.removePhoto(p);
+            int index = p.getUrl().indexOf("photo_");
+            if (index > -1) {
+                String file = p.getUrl().substring(index);
+                Path path2 = Paths.get(BASE_DIR + file);
+                try {
+                    Files.delete(path2);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         List<byte[]> photoBytes = new ArrayList<>(dto.getPhotos());
@@ -183,10 +189,12 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId).get();
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
-            String[] split = photo.getUrl().split("/");
-            String file = split[split.length - 1];
-            Path path = Paths.get(BASE_DIR + file);
-            Files.delete(path);
+            int index = photo.getUrl().indexOf("photo_");
+            if (index > -1) {
+                String file = photo.getUrl().substring(index);
+                Path path = Paths.get(BASE_DIR + file);
+                Files.delete(path);
+            }
         }
 
         long id = product.getId();
