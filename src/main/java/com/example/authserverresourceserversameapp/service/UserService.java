@@ -7,6 +7,8 @@ import com.example.authserverresourceserversameapp.model.User;
 public interface UserService {
 
     User addUser(RegisterDto dto);
+
+    User getUser(String username);
 }
 
 

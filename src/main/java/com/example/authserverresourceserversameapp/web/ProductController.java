@@ -1,15 +1,15 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.BrandDto;
-import com.example.authserverresourceserversameapp.dto.ProductDto;
-import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
-import com.example.authserverresourceserversameapp.dto.TypeDto;
+import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Type;
+import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.ProductService;
+import com.example.authserverresourceserversameapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,9 +17,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final UserService userService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, UserService userService) {
         this.productService = productService;
+        this.userService = userService;
     }
 
     @GetMapping("/type")
@@ -57,6 +59,12 @@ public class ProductController {
     @PostMapping("/product")
     public long addProduct(@RequestBody ProductDto dto) throws IOException {
         return productService.addProduct(dto);
+    }
+
+    @GetMapping("/user")
+    public Username getUser(Principal principal) {
+        User user = userService.getUser(principal.getName());
+        return new Username(user.getUsername());
     }
 
     @PostMapping("/type")
