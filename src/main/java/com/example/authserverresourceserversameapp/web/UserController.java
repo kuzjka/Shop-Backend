@@ -23,6 +23,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/user")
+    public Username getUser(Principal principal) {
+
+
+        return new Username("User: " + principal.getName());
+    }
+
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(@RequestBody RegisterDto dto) {
         String username = userService.addUser(dto).getUsername();
