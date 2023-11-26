@@ -3,13 +3,11 @@ package com.example.authserverresourceserversameapp.web;
 import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Type;
-import com.example.authserverresourceserversameapp.model.User;
+import com.example.authserverresourceserversameapp.service.EmailService;
 import com.example.authserverresourceserversameapp.service.ProductService;
-import com.example.authserverresourceserversameapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,12 +15,16 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final UserService userService;
 
-    public ProductController(ProductService productService, UserService userService) {
+
+
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.userService = userService;
+
+
     }
+
+
 
     @GetMapping("/type")
     public List<Type> getAllTypes() {
@@ -61,11 +63,6 @@ public class ProductController {
         return productService.addProduct(dto);
     }
 
-    @GetMapping("/user")
-    public Username getUser(Principal principal) {
-        User user = userService.getUser(principal.getName());
-        return new Username(user.getUsername());
-    }
 
     @PostMapping("/type")
     public long addType(@RequestBody TypeDto dto) {

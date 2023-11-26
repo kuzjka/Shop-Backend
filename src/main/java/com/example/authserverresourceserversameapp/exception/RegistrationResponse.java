@@ -6,7 +6,7 @@ public class RegistrationResponse {
     private String message;
 
     public RegistrationResponse(String message) {
-        this.message = message;
+        this.message = "User with username \"" + message + "\" successfully created!";
     }
 
 
