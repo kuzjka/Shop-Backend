@@ -10,6 +10,8 @@ import com.example.authserverresourceserversameapp.repository.TokenRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,7 +19,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
 
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, TokenRepository tokenRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder,
+                           UserRepository userRepository,
+                           TokenRepository tokenRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
@@ -46,6 +50,15 @@ public class UserServiceImpl implements UserService {
     public void createVerificationTokenForUser(User user, String token) {
         final VerificationToken myToken = new VerificationToken(token, user);
         tokenRepository.save(myToken);
+    }
+
+    @Override
+    public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
+        VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
+        vToken.updateToken(UUID.randomUUID()
+                .toString());
+        vToken = tokenRepository.save(vToken);
+        return vToken;
     }
 
     @Override

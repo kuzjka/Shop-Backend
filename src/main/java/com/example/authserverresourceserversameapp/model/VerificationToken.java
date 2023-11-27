@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity(name = "tokens")
 public class VerificationToken {
-    private static final int EXPIRATION = 60 * 24;
+    private static final int EXPIRATION = 20;
     @Id
     @SequenceGenerator(name = "tokenGen", sequenceName = "tokenSeq", initialValue = 10)
     @GeneratedValue(generator = "tokenGen")
@@ -73,8 +73,11 @@ public class VerificationToken {
     private Date calculateExpiryDate(final int expiryTimeInMinutes) {
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(new Date().getTime());
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
+        cal.add(Calendar.SECOND, expiryTimeInMinutes);
         return new Date(cal.getTime().getTime());
     }
-
+    public void updateToken(final String token) {
+        this.token = token;
+        this.expiryDate = calculateExpiryDate(EXPIRATION);
+    }
 }

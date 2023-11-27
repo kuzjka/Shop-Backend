@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Calendar;
 
 @Controller
 public class UserController {
@@ -26,9 +27,16 @@ public class UserController {
     public String confirmRegistration(@RequestParam String token) {
         VerificationToken verificationToken = userService.getToken(token);
         User user = verificationToken.getUser();
+        Calendar calendar = Calendar.getInstance();
+        if (verificationToken.getExpiryDate().getTime() - calendar.getTime().getTime() <= 0) {
+            userService.generateNewVerificationToken(token);
+            user.setEnabled(true);
+            userService.saveRegisteredUser(user);
+            return "redirect:http://localhost:4200?message=token_updated";
+        }
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
-        return "redirect:http://localhost:4200";
+        return "redirect:http://localhost:4200?message=registration_confirmed";
     }
 
     @GetMapping("/user")
