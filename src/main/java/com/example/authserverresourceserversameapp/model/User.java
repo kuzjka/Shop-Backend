@@ -14,8 +14,10 @@ public class User {
     private Long id;
     private String username;
     private String password;
+    private boolean enabled;
 
     public User() {
+        this.enabled = false;
     }
 
     public Long getId() {
@@ -40,5 +42,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

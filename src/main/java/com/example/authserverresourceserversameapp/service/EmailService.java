@@ -1,8 +1,10 @@
 package com.example.authserverresourceserversameapp.service;
 
+import com.example.authserverresourceserversameapp.model.User;
+
 public interface EmailService {
 
-    void sendHtmlMessage(String to, String subject, String token);
+    void sendHtmlMessage(User user);
 
 
 }
