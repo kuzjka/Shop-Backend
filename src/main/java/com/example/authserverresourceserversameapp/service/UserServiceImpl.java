@@ -5,8 +5,8 @@ import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchE
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
-import com.example.authserverresourceserversameapp.repository.UserRepository;
 import com.example.authserverresourceserversameapp.repository.TokenRepository;
+import com.example.authserverresourceserversameapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
         final VerificationToken myToken = new VerificationToken(token, user);
         tokenRepository.save(myToken);
     }
+
     @Override
     public User getUser(final String verificationToken) {
         final VerificationToken token = tokenRepository.findByToken(verificationToken);
@@ -59,6 +60,7 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
     @Override
     public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
         VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
