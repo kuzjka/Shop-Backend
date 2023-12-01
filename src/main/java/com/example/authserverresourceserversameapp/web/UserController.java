@@ -23,16 +23,25 @@ public class UserController {
         this.emailService = emailService;
     }
 
+    @GetMapping("/resendRegistrationToken")
+    @ResponseBody
+    public EmailDto resendRegistrationToken(@RequestParam String token) {
+        VerificationToken newToken = userService.generateNewVerificationToken(token);
+
+
+        emailService.resendVerificationTokenHtmlMessage(newToken);
+        return new EmailDto("Message for confirmation registration sand to your email");
+
+    }
+
     @GetMapping("/registrationConfirm")
     public String confirmRegistration(@RequestParam String token) {
         VerificationToken verificationToken = userService.getToken(token);
         User user = verificationToken.getUser();
         Calendar calendar = Calendar.getInstance();
         if (verificationToken.getExpiryDate().getTime() - calendar.getTime().getTime() <= 0) {
-            userService.generateNewVerificationToken(token);
-            user.setEnabled(true);
-            userService.saveRegisteredUser(user);
-            return "redirect:http://localhost:4200?message=token_updated";
+
+            return "redirect:http://localhost:4200?token=" + token;
         }
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
@@ -50,7 +59,7 @@ public class UserController {
     public EmailDto register(@RequestBody RegisterDto dto) {
         String text = "Message for confirmation registration sand to your email";
         User registered = userService.registerNewUserAccount(dto);
-        emailService.sendHtmlMessage(registered);
+        emailService.sendVerificationTokenHtmlMessage(registered);
         return new EmailDto(text);
     }
 }

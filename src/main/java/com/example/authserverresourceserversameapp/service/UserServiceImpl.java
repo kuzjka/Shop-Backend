@@ -51,7 +51,14 @@ public class UserServiceImpl implements UserService {
         final VerificationToken myToken = new VerificationToken(token, user);
         tokenRepository.save(myToken);
     }
-
+    @Override
+    public User getUser(final String verificationToken) {
+        final VerificationToken token = tokenRepository.findByToken(verificationToken);
+        if (token != null) {
+            return token.getUser();
+        }
+        return null;
+    }
     @Override
     public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
         VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);

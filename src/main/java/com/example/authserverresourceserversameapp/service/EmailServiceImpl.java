@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
 
 
 
-    public void sendHtmlMessage(User user) {
+    public void sendVerificationTokenHtmlMessage(User user) {
         String token = UUID.randomUUID().toString();
         userService.createVerificationTokenForUser(user, token);
 
@@ -36,7 +36,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(NOREPLY_ADDRESS);
             helper.setTo("123@456");
-            helper.setSubject("confirm registration");
+            helper.setSubject("Send registration token");
             helper.setText(html, true);
 
             emailSender.send(message);
@@ -46,6 +46,25 @@ public class EmailServiceImpl implements EmailService {
             throw new RuntimeException(e);
         }
     }
+    public void resendVerificationTokenHtmlMessage(VerificationToken newToken) {
 
+
+
+        final String html = "<p><a href=\"http://localhost:8080/registrationConfirm?token=" + newToken.getToken() + "\">Confirm registration</a></p>";
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(NOREPLY_ADDRESS);
+            helper.setTo("123@456");
+            helper.setSubject("Resend Registration Token");
+            helper.setText(html, true);
+
+            emailSender.send(message);
+        } catch (MailException exception) {
+            exception.printStackTrace();
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

@@ -12,7 +12,7 @@ public interface UserService {
     VerificationToken getToken(String token);
 
     void createVerificationTokenForUser(User user, String token);
-
+    User getUser(String verificationToken);
     VerificationToken generateNewVerificationToken(String existingVerificationToken);
 
     void saveRegisteredUser(User user);

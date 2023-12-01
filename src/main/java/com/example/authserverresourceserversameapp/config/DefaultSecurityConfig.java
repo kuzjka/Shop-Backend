@@ -30,7 +30,7 @@ public class DefaultSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers("/register/**", "/email/**", "/registrationConfirm/**", "/images/**").permitAll()
+                        authorizeRequests.requestMatchers("/register/**", "/resendRegistrationToken/**", "/registrationConfirm/**", "/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/**", "/user/**").hasAnyAuthority("SCOPE_read", "SCOPE_write")
                                 .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("SCOPE_write")
                                 .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("SCOPE_write")
