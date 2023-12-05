@@ -4,7 +4,10 @@ import com.example.authserverresourceserversameapp.dto.BrandDto;
 import com.example.authserverresourceserversameapp.dto.ProductDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.dto.TypeDto;
-import com.example.authserverresourceserversameapp.exception.*;
+import com.example.authserverresourceserversameapp.exception.BrandExistsException;
+import com.example.authserverresourceserversameapp.exception.BrandOtherCantBeDeletedException;
+import com.example.authserverresourceserversameapp.exception.TypeExistsException;
+import com.example.authserverresourceserversameapp.exception.TypeOtherCantBeDeletedException;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -18,13 +21,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +101,6 @@ public class ProductServiceImpl implements ProductService {
 
 
     public long addProduct(ProductDto dto) {
-        Path path = Paths.get(BASE_DIR);
         Product product = null;
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
@@ -110,6 +109,19 @@ public class ProductServiceImpl implements ProductService {
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
             List<Photo> photos = new ArrayList<>(product.getPhotos());
+            for (Photo p : photos) {
+                product.removePhoto(p);
+                int index = p.getUrl().indexOf("photo_");
+                if (index > -1) {
+                    String file = p.getUrl().substring(index);
+                    Path path2 = Paths.get(BASE_DIR + file);
+                    try {
+                        Files.delete(path2);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
             type.removeBrand(brand);
             type.removeProduct(product);
             brand.removeProduct(product);
@@ -121,21 +133,6 @@ public class ProductServiceImpl implements ProductService {
         if (brandRepository.getAllByName(brand.getName()) == null) {
             type.addBrand(brand);
         }
-        List<Photo> photos = new ArrayList<>(product.getPhotos());
-        for (Photo p : photos) {
-            product.removePhoto(p);
-            int index = p.getUrl().indexOf("photo_");
-            if (index > -1) {
-                String file = p.getUrl().substring(index);
-                Path path2 = Paths.get(BASE_DIR + file);
-                try {
-                    Files.delete(path2);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
         List<byte[]> photoBytes = new ArrayList<>(dto.getPhotos());
         for (
                 byte[] a : photoBytes) {
@@ -143,15 +140,14 @@ public class ProductServiceImpl implements ProductService {
             long photoId = photoRepository.save(photo).getId();
             product.addPhoto(photo);
             photo.setUrl(BASE_URL + "photo_" + product.getId() + photoId + ".jpg");
-            InputStream in = new ByteArrayInputStream(a);
+            Path photoPath = Paths.get(BASE_DIR + "photo_" + product.getId() + photoId + ".jpg");
             try {
-                Files.copy(in, path.resolve("photo_" + product.getId() + photoId + ".jpg"), StandardCopyOption.REPLACE_EXISTING);
+                Files.write(photoPath, a);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
         return productRepository.save(product).getId();
-
     }
 
     @Override
