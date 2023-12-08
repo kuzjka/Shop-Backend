@@ -1,6 +1,6 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.RegisterDto;
+import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
@@ -34,7 +34,7 @@ public class UserControllerTest {
 
         User user = new User();
         user.setUsername("user");
-        given(userService.addUser(any(RegisterDto.class))).willReturn(user);
+        given(userService.registerNewUserAccount(any(UserDto.class))).willReturn(user);
         this.mockMvc.perform(post("/register").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password\", \"passwordConfirmed\": \"password\"}"))
@@ -48,7 +48,7 @@ public class UserControllerTest {
 
         User user = new User();
         user.setUsername("user");
-        given(userService.addUser(any(RegisterDto.class))).willThrow(new UserExistsException("User with username: user already exists!"));
+        given(userService.registerNewUserAccount(any(UserDto.class))).willThrow(new UserExistsException("User with username: user already exists!"));
         this.mockMvc.perform(post("/register").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password\", \"passwordConfirmed\": \"password\"}"))
@@ -62,7 +62,7 @@ public class UserControllerTest {
 
         User user = new User();
         user.setUsername("user");
-        given(userService.addUser(any(RegisterDto.class))).willThrow(new PasswordsDontMatchException("passwords do not match!"));
+        given(userService.registerNewUserAccount(any(UserDto.class))).willThrow(new PasswordsDontMatchException("passwords do not match!"));
         this.mockMvc.perform(post("/register").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password1\", \"passwordConfirmed\": \"password2\"}"))

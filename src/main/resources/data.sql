@@ -1,5 +1,5 @@
-insert into users (id, username, password, enabled) values (1, 'admin', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true);
-insert into tokens (id, token, expiry_date, user_id)values ( 1,  null, null, 1);
+insert into users (id, username, email, password, enabled) values (1, 'admin', 'abc@def', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true);
+insert into tokens (id, token, expiry_date, user_id) values ( 1,  null, null, 1);
 insert into type (id, name) values (1, 'Car');
 insert into type (id, name) values (2, 'Smartphone');
 insert into type (id, name) values (3, 'Plane');

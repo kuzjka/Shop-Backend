@@ -1,13 +1,13 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.RegisterDto;
+import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 
 
 public interface UserService {
 
-    User registerNewUserAccount(RegisterDto accountDto);
+    User registerNewUserAccount(UserDto accountDto);
 
     VerificationToken getToken(String token);
 

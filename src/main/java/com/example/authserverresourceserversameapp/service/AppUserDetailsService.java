@@ -18,8 +18,12 @@ public class AppUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        User user = userRepository.getByUsername(username);
+        User user;
+        if (username.contains("@")) {
+            user = userRepository.getByEmail(username);
+        } else {
+            user = userRepository.getByUsername(username);
+        }
         if (user == null) {
             throw new UsernameNotFoundException("User with username: " + username + " does not exists");
         }

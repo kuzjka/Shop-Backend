@@ -17,6 +17,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static final String NOREPLY_ADDRESS = "noreply@test.com";
     private JavaMailSender emailSender;
+
     private UserService userService;
 
     public EmailServiceImpl(JavaMailSender emailSender, UserService userService) {
@@ -29,16 +30,14 @@ public class EmailServiceImpl implements EmailService {
     public void sendVerificationTokenHtmlMessage(User user) {
         String token = UUID.randomUUID().toString();
         userService.createVerificationTokenForUser(user, token);
-
         final String html = "<p><a href=\"http://localhost:8080/registrationConfirm?token=" + token + "\">Confirm registration</a></p>";
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(NOREPLY_ADDRESS);
-            helper.setTo("123@456");
+            helper.setTo(user.getEmail());
             helper.setSubject("Send registration token");
             helper.setText(html, true);
-
             emailSender.send(message);
         } catch (MailException exception) {
             exception.printStackTrace();
@@ -47,15 +46,12 @@ public class EmailServiceImpl implements EmailService {
         }
     }
     public void resendVerificationTokenHtmlMessage(VerificationToken newToken) {
-
-
-
         final String html = "<p><a href=\"http://localhost:8080/registrationConfirm?token=" + newToken.getToken() + "\">Confirm registration</a></p>";
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(NOREPLY_ADDRESS);
-            helper.setTo("123@456");
+            helper.setTo(newToken.getUser().getEmail());
             helper.setSubject("Resend Registration Token");
             helper.setText(html, true);
 
