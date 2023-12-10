@@ -14,9 +14,11 @@ import java.security.Principal;
 import java.util.Calendar;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
     private final EmailService emailService;
+
     public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
         this.emailService = emailService;
@@ -40,14 +42,19 @@ public class UserController {
         }
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
-        return "redirect:http://localhost:4200?message=registration_confirmed";
+        return "redirect:http://localhost:4200";
     }
-    @GetMapping("/user")
+
+    @GetMapping
     @ResponseBody
     public Username getUser(Principal principal) {
-        return new Username("User: " + principal.getName());
+        if (principal == null) {
+            return new Username("Principal is null");
+        }
+        return new Username(principal.getName());
     }
-    @PostMapping("/register")
+
+    @PostMapping
     @ResponseBody
     public EmailDto register(@RequestBody UserDto dto) {
         String text = "Message for confirmation registration sand to your email";
@@ -55,4 +62,14 @@ public class UserController {
         emailService.sendVerificationTokenHtmlMessage(registered);
         return new EmailDto(text);
     }
+
+    @PutMapping
+    @ResponseBody
+    public EmailDto editUser(@RequestBody UserDto dto) {
+
+        String text = "Password changed";
+        userService.editExistingUserAccount(dto);
+        return new EmailDto(text);
+    }
+
 }

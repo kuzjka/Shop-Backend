@@ -4,6 +4,7 @@ import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
+import com.example.authserverresourceserversameapp.service.EmailService;
 import com.example.authserverresourceserversameapp.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class UserControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private UserService userService;
+    @MockBean
+    private EmailService emailService;
 
     @Test
     @WithMockUser
@@ -35,11 +38,11 @@ public class UserControllerTest {
         User user = new User();
         user.setUsername("user");
         given(userService.registerNewUserAccount(any(UserDto.class))).willReturn(user);
-        this.mockMvc.perform(post("/register").with(csrf())
+        this.mockMvc.perform(post("/user").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password\", \"passwordConfirmed\": \"password\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("user with username: \"user\" successfully registered!")));
+                .andExpect(jsonPath("$.message", is("Message for confirmation registration sand to your email")));
     }
 
     @Test
@@ -48,8 +51,9 @@ public class UserControllerTest {
 
         User user = new User();
         user.setUsername("user");
-        given(userService.registerNewUserAccount(any(UserDto.class))).willThrow(new UserExistsException("User with username: user already exists!"));
-        this.mockMvc.perform(post("/register").with(csrf())
+        given(userService.registerNewUserAccount(any(UserDto.class)))
+                .willThrow(new UserExistsException("User with username: user already exists!"));
+        this.mockMvc.perform(post("/user").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password\", \"passwordConfirmed\": \"password\"}"))
                 .andExpect(status().is(409))
@@ -62,11 +66,12 @@ public class UserControllerTest {
 
         User user = new User();
         user.setUsername("user");
-        given(userService.registerNewUserAccount(any(UserDto.class))).willThrow(new PasswordsDontMatchException("passwords do not match!"));
-        this.mockMvc.perform(post("/register").with(csrf())
+        given(userService.registerNewUserAccount(any(UserDto.class)))
+                .willThrow(new PasswordsDontMatchException());
+        this.mockMvc.perform(post("/user").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\", \"password\": \"password1\", \"passwordConfirmed\": \"password2\"}"))
                 .andExpect(status().is(409))
-                .andExpect(jsonPath("$.message", is("passwords do not match!")));
+                .andExpect(jsonPath("$.message", is("passwords don't match!")));
     }
 }

@@ -64,4 +64,12 @@ public class ProductControllerExceptionHandler {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(409).body(response);
     }
+
+    @ExceptionHandler(WrongPasswordException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ResponseEntity<ErrorResponse> handleWrongPasswordException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(403).body(response);
+    }
 }

@@ -1,9 +1,11 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.dto.BrandDto;
+import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Type;
-import com.example.authserverresourceserversameapp.service.EmailService;
 import com.example.authserverresourceserversameapp.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,18 +15,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ProductController {
-
     private final ProductService productService;
-
-
 
     public ProductController(ProductService productService) {
         this.productService = productService;
-
-
     }
-
-
 
     @GetMapping("/type")
     public List<Type> getAllTypes() {
@@ -62,7 +57,6 @@ public class ProductController {
     public long addProduct(@RequestBody ProductDto dto) throws IOException {
         return productService.addProduct(dto);
     }
-
 
     @PostMapping("/type")
     public long addType(@RequestBody TypeDto dto) {
@@ -104,4 +98,5 @@ public class ProductController {
     public long deleteBrand(@PathVariable long id) {
         return productService.deleteBrand(id);
     }
+
 }

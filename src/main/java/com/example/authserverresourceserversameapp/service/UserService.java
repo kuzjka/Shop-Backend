@@ -9,6 +9,8 @@ public interface UserService {
 
     User registerNewUserAccount(UserDto accountDto);
 
+    User editExistingUserAccount(UserDto dto);
+
     VerificationToken getToken(String token);
 
     void createVerificationTokenForUser(User user, String token);

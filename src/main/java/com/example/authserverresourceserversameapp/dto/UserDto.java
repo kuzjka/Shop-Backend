@@ -5,6 +5,8 @@ public class UserDto {
     private String username;
 
     private String email;
+
+    private String oldPassword;
     private String password;
     private String passwordConfirmed;
 
@@ -25,6 +27,14 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     public String getPassword() {

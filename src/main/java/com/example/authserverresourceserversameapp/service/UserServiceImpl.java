@@ -3,6 +3,7 @@ package com.example.authserverresourceserversameapp.service;
 import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
+import com.example.authserverresourceserversameapp.exception.WrongPasswordException;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.repository.TokenRepository;
@@ -30,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerNewUserAccount(UserDto dto) {
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
-            throw new PasswordsDontMatchException("passwords don't match!");
+            throw new PasswordsDontMatchException();
         }
         User user = new User();
         user.setUsername(dto.getUsername());
@@ -42,6 +43,20 @@ public class UserServiceImpl implements UserService {
         if (userRepository.getByEmail(dto.getEmail()) != null) {
             throw new UserExistsException("User with email: \"" + dto.getEmail() + "\" already exists!");
         }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User editExistingUserAccount(UserDto dto) {
+        if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
+            throw new PasswordsDontMatchException();
+        }
+        User user = userRepository.getByUsername(dto.getUsername());
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+            throw new WrongPasswordException();
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         return userRepository.save(user);
     }
 

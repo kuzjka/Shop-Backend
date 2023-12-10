@@ -5,10 +5,9 @@ package com.example.authserverresourceserversameapp.exception;
 
 public class PasswordsDontMatchException extends RuntimeException {
 
-    private  String message;
-
-    public PasswordsDontMatchException(String message) {
-        this.message = message;
+    private final String message;
+    public PasswordsDontMatchException() {
+        this.message = "passwords don't match!";
     }
 
     @Override
