@@ -49,7 +49,7 @@ public class UserController {
     @ResponseBody
     public Username getUser(Principal principal) {
         if (principal == null) {
-            return new Username("Principal is null");
+            return new Username("You are not logged in");
         }
         return new Username(principal.getName());
     }

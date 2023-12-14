@@ -1,9 +1,9 @@
 package com.example.authserverresourceserversameapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "users")
 public class User {
@@ -16,6 +16,8 @@ public class User {
     private String email;
     private String password;
     private boolean enabled;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    List<Cart> carts = new ArrayList<>();
 
     public User() {
         this.enabled = false;
@@ -59,5 +61,10 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void addCart(Cart cart) {
+        this.carts.add(cart);
+        cart.setUser(this);
     }
 }

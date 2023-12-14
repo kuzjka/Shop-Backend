@@ -72,12 +72,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(final String verificationToken) {
+    public User getUserByVerificationToken(final String verificationToken) {
         final VerificationToken token = tokenRepository.findByToken(verificationToken);
         if (token != null) {
             return token.getUser();
         }
         return null;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.getByUsername(username);
     }
 
     @Override

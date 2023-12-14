@@ -31,11 +31,11 @@ public class DefaultSecurityConfig {
         http.csrf().disable();
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers("/user/**", "/images/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/**")
+                                .requestMatchers(HttpMethod.GET, "/api/**", "/order/**")
                                 .hasAnyAuthority("SCOPE_read", "SCOPE_write")
-                                .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("SCOPE_write")
-                                .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("SCOPE_write")
-                                .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("SCOPE_write")
+                                .requestMatchers(HttpMethod.POST, "/api/**", "/order/**").hasAuthority("SCOPE_write")
+                                .requestMatchers(HttpMethod.PUT, "/api/**", "/order/**").hasAuthority("SCOPE_write")
+                                .requestMatchers(HttpMethod.DELETE, "/api/**", "/order/**").hasAuthority("SCOPE_write")
                 )
                 .formLogin(withDefaults());
         http.cors(withDefaults());
