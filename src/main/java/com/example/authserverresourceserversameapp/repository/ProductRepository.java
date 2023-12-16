@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Product getByName(String name);
-
+Product getByItemsId(long id);
     Page<Product> findAll(Pageable pageable);
 
     Page<Product> getAllByTypeId(Long typeId, Pageable pageable);

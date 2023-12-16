@@ -1,12 +1,10 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.CartItemDto;
-import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.CartItem;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.repository.CartItemRepository;
-import com.example.authserverresourceserversameapp.repository.CartRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,44 +14,40 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private CartItemRepository cartItemRepository;
-    private CartRepository cartRepository;
+
     private ProductRepository productRepository;
 
-    public OrderServiceImpl(CartItemRepository cartItemRepository, CartRepository cartRepository, ProductRepository productRepository) {
+    public OrderServiceImpl(CartItemRepository cartItemRepository, ProductRepository productRepository) {
         this.cartItemRepository = cartItemRepository;
-        this.cartRepository = cartRepository;
         this.productRepository = productRepository;
     }
 
     @Override
-    public Cart addToCart(CartItemDto dto, User user) {
+    public CartItemDto addToCart(CartItemDto dto, User user) {
         CartItem cartItem = null;
-        Cart cart = null;
-        if (dto.getCartId() == 0 && dto.getCartItemId() == 0) {
-            cart = new Cart();
-            user.addCart(cart);
-            cartItem = new CartItem();
-        } else if (dto.getCartId() > 0 && dto.getCartItemId() == 0) {
-            cart = cartRepository.findById(dto.getCartId()).get();
-            cartItem = new CartItem();
+        CartItemDto cartItemDto = new CartItemDto();
+        Product newProduct = productRepository.findById(dto.getProductId()).get();
+        Product cartItemProduct = productRepository.getByItemsId(dto.getCartItemId());
 
-        } else if (dto.getCartId() > 0 && dto.getCartItemId() > 0) {
-            cart = cartRepository.findById(dto.getCartId()).get();
+        if (dto.getCartItemId() == 0) {
+            cartItem = new CartItem();
+            cartItem.setQuantity(1);
+            user.addCartItem(cartItem);
+            newProduct.addCartItem(cartItem);
+        } else if (dto.getCartItemId() > 0) {
             cartItem = cartItemRepository.findById(dto.getCartItemId()).get();
+            cartItem.setQuantity(cartItem.getQuantity() + 1);
         }
 
-        cart.addCartItem(cartItem);
-        Product product = productRepository.findById(dto.getProductId()).get();
-        product.addCartItem(cartItem);
-        cartItem.setQuantity(cartItem.getQuantity() + dto.getQuantity());
-        Cart saved = cartRepository.save(cart);
-
-        return saved;
-
+        CartItem saved = cartItemRepository.save(cartItem);
+        cartItemDto.setCartItemId(saved.getId());
+        cartItemDto.setQuantity(saved.getQuantity());
+        cartItemDto.setProductId(saved.getProduct().getId());
+        return cartItemDto;
     }
 
     @Override
-    public Cart getCart(User user) {
-        return cartRepository.getByUser(user);
+    public List<CartItem> getCartItems(User user) {
+        return cartItemRepository.getAllByUser(user);
     }
 }

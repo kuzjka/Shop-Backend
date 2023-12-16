@@ -1,16 +1,15 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.CartItemDto;
-import com.example.authserverresourceserversameapp.dto.CartResponse;
-import com.example.authserverresourceserversameapp.model.Cart;
+import com.example.authserverresourceserversameapp.model.CartItem;
 import com.example.authserverresourceserversameapp.model.User;
 
 import java.util.List;
 
 public interface OrderService {
 
-    Cart addToCart(CartItemDto dto, User user);
+    CartItemDto addToCart(CartItemDto dto, User user);
 
-    Cart getCart(User user);
+    List<CartItem> getCartItems(User user);
 
 }

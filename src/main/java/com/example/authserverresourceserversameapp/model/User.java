@@ -17,7 +17,7 @@ public class User {
     private String password;
     private boolean enabled;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    List<Cart> carts = new ArrayList<>();
+    List<CartItem> cartItems = new ArrayList<>();
 
     public User() {
         this.enabled = false;
@@ -63,8 +63,8 @@ public class User {
         this.enabled = enabled;
     }
 
-    public void addCart(Cart cart) {
-        this.carts.add(cart);
-        cart.setUser(this);
+    public void addCartItem(CartItem cartItem) {
+        this.cartItems.add(cartItem);
+        cartItem.setUser(this);
     }
 }
