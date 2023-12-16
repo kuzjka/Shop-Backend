@@ -27,8 +27,13 @@ public class OrderServiceImpl implements OrderService {
         CartItem cartItem = null;
         CartItemDto cartItemDto = new CartItemDto();
         Product newProduct = productRepository.findById(dto.getProductId()).get();
-        Product cartItemProduct = productRepository.getByItemsId(dto.getCartItemId());
 
+        List<CartItem> items = getCartItems(user);
+        for (CartItem item : items) {
+            if (item.getProduct().getId() == dto.getProductId()) {
+                dto.setCartItemId(item.getId());
+            }
+        }
         if (dto.getCartItemId() == 0) {
             cartItem = new CartItem();
             cartItem.setQuantity(1);
@@ -39,10 +44,14 @@ public class OrderServiceImpl implements OrderService {
             cartItem.setQuantity(cartItem.getQuantity() + 1);
         }
 
+
         CartItem saved = cartItemRepository.save(cartItem);
+        saved.calculate();
         cartItemDto.setCartItemId(saved.getId());
         cartItemDto.setQuantity(saved.getQuantity());
         cartItemDto.setProductId(saved.getProduct().getId());
+        cartItemDto.setTotalPrice(saved.getTotalPrice());
+        System.out.println(saved.getTotalPrice());
         return cartItemDto;
     }
 
