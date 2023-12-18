@@ -1,5 +1,6 @@
 package com.example.authserverresourceserversameapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,10 +11,12 @@ public class CartItem {
     private long id;
     @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
-    @ManyToOne(cascade = CascadeType.ALL)
-    private User user;
+
     private int quantity;
     private long totalPrice;
+    @ManyToOne
+    @JsonIgnore
+    private Cart cart;
 
     public CartItem() {
     }
@@ -34,13 +37,6 @@ public class CartItem {
         this.product = product;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public int getQuantity() {
         return quantity;
@@ -51,15 +47,25 @@ public class CartItem {
     }
 
     public long getTotalPrice() {
+
+        this.totalPrice = this.product.getPrice() * this.quantity;
+
+
         return totalPrice;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public void setTotalPrice(long totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public void calculate() {
-        this.totalPrice =  this.product.getPrice() * this.quantity;
-    }
+
 }
 
