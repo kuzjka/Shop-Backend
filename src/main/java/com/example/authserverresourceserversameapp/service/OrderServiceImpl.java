@@ -30,31 +30,32 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Cart addToCart(CartItemDto dto, User user) {
         CartItem cartItem;
-        Product newProduct = productRepository.findById(dto.getProductId()).get();
+        boolean newItem = true;
         Cart cart = cartRepository.getByUser(user);
         if (cart == null) {
             cart = new Cart();
             cart.setUser(user);
         }
+        Product product = productRepository.findById(dto.getProductId()).get();
         List<CartItem> items = new ArrayList<>(cart.getItems());
         for (CartItem item : items) {
             if (item.getProduct().getId() == dto.getProductId()) {
-                dto.setCartItemId(item.getId());
+                cartItem = item;
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+                newItem = false;
             }
         }
-        if (dto.getCartItemId() == 0) {
+        if (newItem) {
             cartItem = new CartItem();
             cartItem.setQuantity(1);
-            newProduct.addCartItem(cartItem);
+            product.addCartItem(cartItem);
             cart.addCartItem(cartItem);
-
-        } else if (dto.getCartItemId() > 0) {
-            cartItem = cartItemRepository.findById(dto.getCartItemId()).get();
-            cartItem.setQuantity(cartItem.getQuantity() + 1);
         }
 
         return cartRepository.save(cart);
     }
+
+
     @Override
     public Cart getCart(User user) {
         return cartRepository.getByUser(user);
