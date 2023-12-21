@@ -5,7 +5,6 @@ import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.CartItem;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.User;
-import com.example.authserverresourceserversameapp.repository.CartItemRepository;
 import com.example.authserverresourceserversameapp.repository.CartRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -15,14 +14,10 @@ import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
-    private CartItemRepository cartItemRepository;
-
     private ProductRepository productRepository;
     private CartRepository cartRepository;
 
-    public OrderServiceImpl(CartItemRepository cartItemRepository, ProductRepository productRepository, CartRepository cartRepository) {
-        this.cartItemRepository = cartItemRepository;
+    public OrderServiceImpl(ProductRepository productRepository, CartRepository cartRepository) {
         this.productRepository = productRepository;
         this.cartRepository = cartRepository;
     }
@@ -41,7 +36,11 @@ public class OrderServiceImpl implements OrderService {
         for (CartItem item : items) {
             if (item.getProduct().getId() == dto.getProductId()) {
                 cartItem = item;
-                cartItem.setQuantity(cartItem.getQuantity() + 1);
+                if (cartItem.getQuantity() == 1 && dto.getQuantity() < 0) {
+                    cartItem.setQuantity(1);
+                } else {
+                    cartItem.setQuantity(cartItem.getQuantity() + dto.getQuantity());
+                }
                 newItem = false;
             }
         }
@@ -51,10 +50,8 @@ public class OrderServiceImpl implements OrderService {
             product.addCartItem(cartItem);
             cart.addCartItem(cartItem);
         }
-
         return cartRepository.save(cart);
     }
-
 
     @Override
     public Cart getCart(User user) {
