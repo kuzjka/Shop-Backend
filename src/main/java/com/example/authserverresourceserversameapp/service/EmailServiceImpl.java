@@ -29,9 +29,11 @@ public class EmailServiceImpl implements EmailService {
                 + token + "\">Confirm registration</a></p>";
         try {
             MimeMessage message = emailSender.createMimeMessage();
+
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
             helper.setFrom(NOREPLY_ADDRESS);
-            helper.setTo(user.getEmail());
+            helper.setTo("anton30momot@gmail.com");
             helper.setSubject("Send registration token");
             helper.setText(html, true);
             emailSender.send(message);
@@ -49,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(NOREPLY_ADDRESS);
-            helper.setTo(newToken.getUser().getEmail());
+            helper.setTo("anton30momot@gmail.com");
             helper.setSubject("Resend Registration Token");
             helper.setText(html, true);
             emailSender.send(message);
