@@ -33,7 +33,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setFrom(NOREPLY_ADDRESS);
-            helper.setTo("anton30momot@gmail.com");
+            helper.setTo(user.getEmail());
             helper.setSubject("Send registration token");
             helper.setText(html, true);
             emailSender.send(message);
@@ -51,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(NOREPLY_ADDRESS);
-            helper.setTo("anton30momot@gmail.com");
+            helper.setTo(newToken.getUser().getEmail());
             helper.setSubject("Resend Registration Token");
             helper.setText(html, true);
             emailSender.send(message);
