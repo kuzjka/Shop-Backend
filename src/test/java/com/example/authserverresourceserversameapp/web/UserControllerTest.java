@@ -4,7 +4,6 @@ import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
-import com.example.authserverresourceserversameapp.service.EmailService;
 import com.example.authserverresourceserversameapp.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

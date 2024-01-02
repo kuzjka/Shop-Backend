@@ -29,6 +29,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUser(final String verificationToken) {
+        final VerificationToken token = tokenRepository.findByToken(verificationToken);
+        if (token != null) {
+            return token.getUser();
+        }
+        return null;
+    }
+
+    @Override
     public User registerNewUserAccount(UserDto dto) {
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
             throw new PasswordsDontMatchException();

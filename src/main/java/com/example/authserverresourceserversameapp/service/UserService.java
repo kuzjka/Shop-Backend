@@ -6,7 +6,7 @@ import com.example.authserverresourceserversameapp.model.VerificationToken;
 
 
 public interface UserService {
-
+    User getUser(String verificationToken);
     User registerNewUserAccount(UserDto accountDto);
 
     User editExistingUserAccount(UserDto dto);
