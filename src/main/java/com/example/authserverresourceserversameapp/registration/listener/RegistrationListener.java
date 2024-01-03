@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Component
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
-    private static final String NOREPLY_ADDRESS = "noreply@test.com";
+    private static final String NOREPLY_ADDRESS = "anton30momot@gmail.com";
     private final UserService service;
     private final JavaMailSender mailSender;
 

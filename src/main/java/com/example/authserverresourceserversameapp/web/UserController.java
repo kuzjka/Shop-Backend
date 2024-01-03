@@ -23,7 +23,7 @@ import java.util.Calendar;
 @RequestMapping("/user")
 public class UserController {
 
-    private static final String NOREPLY_ADDRESS = "noreply@test.com";
+    private static final String NOREPLY_ADDRESS = "anton30momot@gmail.com";
     private final UserService userService;
     private final JavaMailSender mailSender;
 
