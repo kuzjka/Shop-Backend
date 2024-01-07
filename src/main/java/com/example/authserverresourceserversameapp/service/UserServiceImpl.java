@@ -4,13 +4,17 @@ import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.exception.WrongPasswordException;
+import com.example.authserverresourceserversameapp.model.Role;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
+import com.example.authserverresourceserversameapp.repository.RoleRepository;
 import com.example.authserverresourceserversameapp.repository.TokenRepository;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -20,12 +24,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
 
+    private final RoleRepository roleRepository;
+
     public UserServiceImpl(PasswordEncoder passwordEncoder,
                            UserRepository userRepository,
-                           TokenRepository tokenRepository) {
+                           TokenRepository tokenRepository,
+                           RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -43,6 +51,10 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsDontMatchException();
         }
         User user = new User();
+        Role role1 = roleRepository.findAllByName("admin");
+        Role role2 = roleRepository.findAllByName("user");
+        user.addRole(role1);
+        user.addRole(role2);
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));

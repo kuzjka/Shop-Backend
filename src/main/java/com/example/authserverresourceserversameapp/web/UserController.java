@@ -3,6 +3,7 @@ package com.example.authserverresourceserversameapp.web;
 import com.example.authserverresourceserversameapp.dto.EmailDto;
 import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.dto.Username;
+import com.example.authserverresourceserversameapp.model.Role;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.registration.OnRegistrationCompleteEvent;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -68,10 +71,18 @@ public class UserController {
     @GetMapping
     @ResponseBody
     public Username getUser(Principal principal) {
+        List<Role> roles = new ArrayList<>();
+        List<String> roleNames = new ArrayList<>();
         if (principal == null) {
-            return new Username("You are not logged in");
+            return new Username("please log in", roleNames);
         }
-        return new Username(principal.getName());
+        User user = userService.findByUsername(principal.getName());
+        roles = user.getRoles();
+        for (Role role : roles) {
+            roleNames.add(role.getName());
+        }
+
+        return new Username(user.getUsername(), roleNames);
     }
 
     @PostMapping

@@ -1,11 +1,12 @@
 package com.example.authserverresourceserversameapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.*;
 
-@Entity(name = "users")
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -16,6 +17,12 @@ public class User {
     private String email;
     private String password;
     private boolean enabled;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id",  referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+            )
+    private List<Role> roles = new ArrayList<>();
 
     public User() {
         this.enabled = false;
@@ -61,5 +68,16 @@ public class User {
         this.enabled = enabled;
     }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
 
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Role role){
+        this.roles.add(role);
+
+    }
 }
