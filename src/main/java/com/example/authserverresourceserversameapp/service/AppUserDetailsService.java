@@ -1,16 +1,24 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.model.AppUser;
+import com.example.authserverresourceserversameapp.model.Role;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AppUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
+
+
 
     public AppUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -19,6 +27,7 @@ public class AppUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user;
+
         if (username.contains("@")) {
             user = userRepository.getByEmail(username);
         } else {
@@ -27,6 +36,10 @@ public class AppUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User with username: " + username + " does not exists");
         }
+
+
         return new AppUser(user);
     }
+
+
 }

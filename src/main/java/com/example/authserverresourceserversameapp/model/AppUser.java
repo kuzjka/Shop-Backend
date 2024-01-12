@@ -13,15 +13,15 @@ public class AppUser implements UserDetails {
         this.user = user;
     }
 
+
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    public List<? extends GrantedAuthority> getAuthorities() {
         List<Role> roles = user.getRoles();
-        for (Role role : roles) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for(Role role: roles){
             authorities.add(new SimpleGrantedAuthority(role.getName()));
-        }
 
+        }
         return authorities;
     }
 
