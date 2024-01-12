@@ -3,9 +3,9 @@ values (1, 'Anton', 'abc@def', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21v
 insert into users (id, username, email, password, enabled)
 values (2, 'Igor', '123@456', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true);
 insert into role (id, name)
-values (1, 'read');
+values (1, 'user');
 insert into role (id, name)
-values (2, 'write');
+values (2, 'admin');
 insert into user_role (user_id, role_id)
 values (1, 1);
 insert into user_role (user_id, role_id)

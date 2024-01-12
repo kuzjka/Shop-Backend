@@ -41,10 +41,10 @@ private final Converter converter;
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers("/user/**", "/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/**", "/order/**")
-                                .hasAnyAuthority("SCOPE_read", "SCOPE_write")
-                                .requestMatchers(HttpMethod.POST, "/api/**", "/order/**").hasAuthority("SCOPE_write")
-                                .requestMatchers(HttpMethod.PUT, "/api/**", "/order/**").hasAuthority("SCOPE_write")
-                                .requestMatchers(HttpMethod.DELETE, "/api/**", "/order/**").hasAuthority("SCOPE_write")
+                                .hasAnyAuthority("ROLE_user", "ROLE_admin")
+                                .requestMatchers(HttpMethod.POST, "/api/**", "/order/**").hasAuthority("ROLE_admin")
+                                .requestMatchers(HttpMethod.PUT, "/api/**", "/order/**").hasAuthority("ROLE_admin")
+                                .requestMatchers(HttpMethod.DELETE, "/api/**", "/order/**").hasAuthority("ROLE_admin")
                 )
                 .formLogin(withDefaults());
         http.cors(withDefaults());

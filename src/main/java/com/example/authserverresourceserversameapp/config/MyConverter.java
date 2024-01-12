@@ -27,7 +27,7 @@ public class MyConverter implements Converter<Jwt, AbstractAuthenticationToken> 
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
         List<GrantedAuthority> newAuthorities = new ArrayList<>();
         for (GrantedAuthority authority : authorities) {
-            newAuthorities.add(new SimpleGrantedAuthority("SCOPE_" + authority.getAuthority()));
+            newAuthorities.add(new SimpleGrantedAuthority("ROLE_" + authority.getAuthority()));
         }
         return new JwtAuthenticationToken(jwt, newAuthorities);
     }
