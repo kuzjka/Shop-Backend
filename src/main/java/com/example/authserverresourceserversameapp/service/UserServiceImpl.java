@@ -13,8 +13,6 @@ import com.example.authserverresourceserversameapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -23,7 +21,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-
     private final RoleRepository roleRepository;
 
     public UserServiceImpl(PasswordEncoder passwordEncoder,
@@ -76,7 +73,6 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
-
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         return userRepository.save(user);
     }

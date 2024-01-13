@@ -30,7 +30,6 @@ public class AuthorizationServerConfig {
         http.cors(Customizer.withDefaults());
         return http.formLogin(Customizer.withDefaults()).build();
     }
-
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -45,7 +44,6 @@ public class AuthorizationServerConfig {
                 .build();
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
-
     @Bean
     public TokenSettings tokenSettings() {
         return TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build();
