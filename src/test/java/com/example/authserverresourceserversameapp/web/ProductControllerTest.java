@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.model.Product;
+import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
 import com.example.authserverresourceserversameapp.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +30,17 @@ public class ProductControllerTest {
 
     @MockBean
     private ProductService productService;
+    @MockBean
+    AppUserDetailsService userDetailsService;
 
     @Test
     @WithMockUser
     public void getProductsTest() throws Exception {
         ResponseProductDto dto = new ResponseProductDto();
-        Product product1 = new Product();
+        Product product1 = new Product("Mercedes S600");
         product1.setId(1L);
-        product1.setName("Mercedes S600");
-        Product product2 = new Product();
+        Product product2 = new Product("BMW 750i");
         product2.setId(2L);
-        product2.setName("BMW 750i");
         List<Product> products = new ArrayList<>();
         products.add(product1);
         products.add(product2);

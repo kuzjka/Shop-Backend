@@ -4,12 +4,14 @@ import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.User;
+import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
 import com.example.authserverresourceserversameapp.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,7 +30,9 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private EmailService emailService;
+    AppUserDetailsService userDetailsService;
+    @MockBean
+    JavaMailSender mailSender;
 
     @Test
     @WithMockUser
