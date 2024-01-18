@@ -3,6 +3,7 @@ package com.example.authserverresourceserversameapp.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,9 +14,9 @@ public class Role {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Role() {
     }
@@ -42,5 +43,10 @@ public class Role {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public void addUser(User user){
+        this.users.add(user);
+        user.setRole(this);
     }
 }

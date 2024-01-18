@@ -4,14 +4,14 @@ import java.util.List;
 
 public class Username {
     private String username;
-    private List<String> roles;
+    private String role;
 
     public Username() {
     }
 
-    public Username(String username, List<String> roles) {
+    public Username(String username, String role) {
         this.username = username;
-        this.roles = roles;
+        this.role = role;
     }
 
     public String getUsername() {
@@ -22,11 +22,11 @@ public class Username {
         this.username = username;
     }
 
-    public List<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 }

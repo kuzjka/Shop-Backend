@@ -34,14 +34,13 @@ public class DefaultSecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers("/user/**", "/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/**", "/order/**")
-                                .hasAnyAuthority("ROLE_user", "ROLE_admin")
+                                .hasAnyRole("user", "manager", "admin")
                                 .requestMatchers(HttpMethod.POST, "/api/**", "/order/**")
-                                .hasAuthority("ROLE_admin")
+                                .hasAnyRole("manager", "admin")
                                 .requestMatchers(HttpMethod.PUT, "/api/**", "/order/**")
-                                .hasAuthority("ROLE_admin")
+                                .hasRole("admin")
                                 .requestMatchers(HttpMethod.DELETE, "/api/**", "/order/**")
-                                .hasAuthority("ROLE_admin")
-                )
+                                .hasRole("admin"))
                 .formLogin(withDefaults());
         http.cors(withDefaults());
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();

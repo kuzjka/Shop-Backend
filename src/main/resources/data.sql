@@ -1,17 +1,11 @@
-insert into users (id, username, email, password, enabled)
-values (1, 'Anton', 'abc@def', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true);
-insert into users (id, username, email, password, enabled)
-values (2, 'Igor', '123@456', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true);
 insert into role (id, name)
 values (1, 'user');
 insert into role (id, name)
 values (2, 'admin');
-insert into user_role (user_id, role_id)
-values (1, 1);
-insert into user_role (user_id, role_id)
-values (2, 2);
-insert into tokens (id, token, expiry_date, user_id)
-values (1, null, null, 1);
+insert into users (id, username, email, password, enabled, role_id)
+values (1, 'Anton', 'abc@def', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 1);
+insert into users (id, username, email, password, enabled, role_id)
+values (2, 'Igor', '123@456', '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 2);
 insert into type (id, name)
 values (1, 'Car');
 insert into type (id, name)
@@ -20,7 +14,6 @@ insert into type (id, name)
 values (3, 'Plane');
 insert into type (id, name)
 values (4, 'Other');
-
 insert into brand (id, name)
 values (1, 'Mercedes');
 insert into brand (id, name)

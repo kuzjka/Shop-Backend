@@ -1,7 +1,7 @@
 package com.example.authserverresourceserversameapp.dto;
 
 public class UserDto {
-
+    private String role;
     private String username;
 
     private String email;
@@ -11,6 +11,14 @@ public class UserDto {
     private String passwordConfirmed;
 
     public UserDto() {
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getUsername() {

@@ -48,10 +48,14 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsDontMatchException();
         }
         User user = new User();
-        Role role1 = roleRepository.findAllByName("admin");
-        Role role2 = roleRepository.findAllByName("user");
-        user.addRole(role1);
-        user.addRole(role2);
+        Role role;
+         role = roleRepository.findAllByName(dto.getRole());
+        if (role == null) {
+            role = new Role();
+
+        }
+        role.setName(dto.getRole());
+        role.addUser(user);
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));

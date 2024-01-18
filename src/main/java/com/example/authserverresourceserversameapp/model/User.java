@@ -18,11 +18,9 @@ public class User {
     private String password;
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id",  referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-            )
-    private List<Role> roles = new ArrayList<>();
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
+    private Role role;
 
     public User() {
         this.enabled = false;
@@ -68,16 +66,13 @@ public class User {
         this.enabled = enabled;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public void addRole(Role role){
-        this.roles.add(role);
 
-    }
 }

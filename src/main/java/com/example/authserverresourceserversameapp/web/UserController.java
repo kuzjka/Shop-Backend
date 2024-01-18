@@ -71,18 +71,14 @@ public class UserController {
     @GetMapping
     @ResponseBody
     public Username getUser(Principal principal) {
-        List<Role> roles = new ArrayList<>();
-        List<String> roleNames = new ArrayList<>();
         if (principal == null) {
-            return new Username("please log in", roleNames);
+            return new Username("please log in", "");
         }
         User user = userService.findByUsername(principal.getName());
-        roles = user.getRoles();
-        for (Role role : roles) {
-            roleNames.add(role.getName());
-        }
+        String role = user.getRole().getName();
 
-        return new Username(user.getUsername(), roleNames);
+
+        return new Username(user.getUsername(), role);
     }
 
     @PostMapping
