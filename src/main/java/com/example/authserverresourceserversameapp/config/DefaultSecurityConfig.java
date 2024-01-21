@@ -32,14 +32,17 @@ public class DefaultSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers("/user/**", "/images/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/**", "/order/**")
+                        authorizeRequests.requestMatchers("/user/**", "/images/**")
+                                .permitAll()
+                                .requestMatchers("/order/**")
+                                .hasRole("user")
+                                .requestMatchers(HttpMethod.GET, "/api/**")
                                 .hasAnyRole("user", "manager", "admin")
-                                .requestMatchers(HttpMethod.POST, "/api/**", "/order/**")
+                                .requestMatchers(HttpMethod.POST, "/api/**")
                                 .hasAnyRole("manager", "admin")
-                                .requestMatchers(HttpMethod.PUT, "/api/**", "/order/**")
+                                .requestMatchers(HttpMethod.PUT, "/api/**")
                                 .hasRole("admin")
-                                .requestMatchers(HttpMethod.DELETE, "/api/**", "/order/**")
+                                .requestMatchers(HttpMethod.DELETE, "/api/**")
                                 .hasRole("admin"))
                 .formLogin(withDefaults());
         http.cors(withDefaults());

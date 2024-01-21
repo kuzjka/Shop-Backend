@@ -5,6 +5,7 @@ import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.CartItem;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.User;
+import com.example.authserverresourceserversameapp.repository.CartItemRepository;
 import com.example.authserverresourceserversameapp.repository.CartRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,14 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
     private CartRepository cartRepository;
+    private CartItemRepository cartItemRepository;
 
-    public OrderServiceImpl(ProductRepository productRepository, CartRepository cartRepository) {
+    public OrderServiceImpl(ProductRepository productRepository,
+                            CartRepository cartRepository,
+                            CartItemRepository cartItemRepository) {
         this.productRepository = productRepository;
         this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Override
@@ -51,6 +56,16 @@ public class OrderServiceImpl implements OrderService {
             cart.addCartItem(cartItem);
         }
         return cartRepository.save(cart);
+    }
+
+    @Override
+    public long removeFromCart(long productId) {
+        Product product = productRepository.findById(productId).get();
+        CartItem cartItem = cartItemRepository.getByProduct(product);
+        product.removeCartItem(cartItem);
+        long id = cartItem.getId();
+        cartItemRepository.delete(cartItem);
+        return id;
     }
 
     @Override

@@ -61,5 +61,9 @@ public class Cart {
         cartItem.setCart(this);
     }
 
+    public void removeCartItem(CartItem cartItem) {
+        this.items.remove(cartItem);
+        cartItem.setCart(null);
+    }
 
 }

@@ -101,4 +101,9 @@ public class Product {
         this.items.add(cartItem);
         cartItem.setProduct(this);
     }
+
+    public void removeCartItem(CartItem cartItem) {
+        this.items.remove(cartItem);
+        cartItem.setProduct(null);
+    }
 }

@@ -11,6 +11,8 @@ public interface OrderService {
 
     Cart addToCart(CartItemDto dto, User user);
 
+    long removeFromCart(long productId);
+
     Cart getCart(User user);
 
 }

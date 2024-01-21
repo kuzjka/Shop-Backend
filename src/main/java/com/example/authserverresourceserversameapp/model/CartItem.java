@@ -9,7 +9,8 @@ public class CartItem {
     @SequenceGenerator(name = "cartItemGen", sequenceName = "cartItemSeq", initialValue = 10)
     @GeneratedValue(generator = "cartItemGen")
     private long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
     private Product product;
 
     private int quantity;
