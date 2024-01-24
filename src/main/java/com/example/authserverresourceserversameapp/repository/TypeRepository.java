@@ -1,6 +1,5 @@
 package com.example.authserverresourceserversameapp.repository;
 
-import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Type;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,8 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface TypeRepository extends JpaRepository<Type, Long> {
-
-    boolean existsByBrands(Brand brand);
 
     Type getAllByName(String name);
 

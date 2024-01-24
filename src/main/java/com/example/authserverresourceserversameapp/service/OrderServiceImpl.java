@@ -62,12 +62,15 @@ public class OrderServiceImpl implements OrderService {
     public long removeFromCart(long productId) {
         Product product = productRepository.findById(productId).get();
         CartItem cartItem = cartItemRepository.getByProduct(product);
+        Cart cart = cartItem.getCart();
         product.removeCartItem(cartItem);
         long id = cartItem.getId();
         cartItemRepository.delete(cartItem);
+        if (cart.getItems().size() == 0) {
+            cartRepository.delete(cart);
+        }
         return id;
     }
-
     @Override
     public Cart getCart(User user) {
         return cartRepository.getByUser(user);

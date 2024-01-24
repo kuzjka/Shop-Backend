@@ -5,7 +5,9 @@ import com.example.authserverresourceserversameapp.dto.ProductDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,4 +35,7 @@ public interface ProductService {
     long deleteType(long id);
 
     long deleteBrand(long id);
+
+    void savePhotos(ProductDto dto, Product product);
+    void removePhotos(Product product);
 }

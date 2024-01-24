@@ -1,9 +1,8 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.EmailDto;
+import com.example.authserverresourceserversameapp.dto.SuccessResponse;
 import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.dto.Username;
-import com.example.authserverresourceserversameapp.model.Role;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.registration.OnRegistrationCompleteEvent;
@@ -18,9 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -42,8 +39,8 @@ public class UserController {
 
     @GetMapping("/resendRegistrationToken")
     @ResponseBody
-    public EmailDto resendRegistrationToken(final HttpServletRequest request,
-                                            @RequestParam("token") final String existingToken)
+    public SuccessResponse resendRegistrationToken(final HttpServletRequest request,
+                                                   @RequestParam("token") final String existingToken)
             throws MessagingException {
         VerificationToken newToken = userService.generateNewVerificationToken(existingToken);
         final User user = userService.getUser(newToken.getToken());
@@ -52,7 +49,7 @@ public class UserController {
                 + request.getContextPath();
         final MimeMessage email = constructResetVerificationTokenEmail(appUrl, newToken, user);
         mailSender.send(email);
-        return new EmailDto("Message for confirmation registration sand to your email");
+        return new SuccessResponse("Message for confirmation registration sand to your email");
     }
 
     @GetMapping("/registrationConfirm")
@@ -83,7 +80,7 @@ public class UserController {
 
     @PostMapping
     @ResponseBody
-    public EmailDto register(@RequestBody UserDto dto, final HttpServletRequest request) {
+    public SuccessResponse register(@RequestBody UserDto dto, final HttpServletRequest request) {
         String text = "Message for confirmation registration sand to your email";
         final String appUrl = "http://"
                 + request.getServerName() + ":"
@@ -91,15 +88,15 @@ public class UserController {
                 + request.getContextPath();
         User registered = userService.registerNewUserAccount(dto);
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, appUrl));
-        return new EmailDto(text);
+        return new SuccessResponse(text);
     }
 
     @PutMapping
     @ResponseBody
-    public EmailDto editUser(@RequestBody UserDto dto) {
+    public SuccessResponse editUser(@RequestBody UserDto dto) {
         String text = "Password changed";
         userService.editExistingUserAccount(dto);
-        return new EmailDto(text);
+        return new SuccessResponse(text);
     }
 
     private MimeMessage constructResetVerificationTokenEmail(final String contextPath,
