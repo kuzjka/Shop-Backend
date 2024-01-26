@@ -10,7 +10,6 @@ public class Photo {
     @SequenceGenerator(name = "imageGen", sequenceName = "imageSeq", initialValue = 10)
     @GeneratedValue(generator = "imageGen")
     private long id;
-
     private String url;
 
     @ManyToOne
@@ -29,7 +28,7 @@ public class Photo {
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public void setUrl(String url) {
@@ -43,6 +42,5 @@ public class Photo {
     public void setProduct(Product product) {
         this.product = product;
     }
-
 
 }

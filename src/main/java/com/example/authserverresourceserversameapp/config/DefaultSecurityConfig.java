@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.config;
 
 
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -19,20 +20,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class DefaultSecurityConfig {
     private final AppUserDetailsService userDetailsService;
     private final Converter converter;
-
-    public DefaultSecurityConfig(AppUserDetailsService userDetailsService, Converter converter) {
-        this.userDetailsService = userDetailsService;
-        this.converter = converter;
-    }
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers("/user/**", "/images/**")
+                        authorizeRequests
+                                .requestMatchers("/user/**", "/images/**")
                                 .permitAll()
                                 .requestMatchers("/order/**")
                                 .hasRole("user")
@@ -48,8 +46,7 @@ public class DefaultSecurityConfig {
         http.cors(withDefaults());
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(jwtConfigurer -> jwtConfigurer
-                        .jwtAuthenticationConverter(converter)))
-                .apply(authorizationServerConfigurer);
+                        .jwtAuthenticationConverter(converter))).apply(authorizationServerConfigurer);
         http.authenticationProvider(authenticationProvider());
         return http.build();
     }

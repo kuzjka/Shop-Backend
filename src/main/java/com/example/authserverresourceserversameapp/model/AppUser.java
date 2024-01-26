@@ -13,7 +13,6 @@ public class AppUser implements UserDetails {
         this.user = user;
     }
 
-
     @Override
     public List<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();

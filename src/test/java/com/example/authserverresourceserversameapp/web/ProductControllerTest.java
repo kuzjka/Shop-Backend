@@ -37,10 +37,8 @@ public class ProductControllerTest {
     @WithMockUser
     public void getProductsTest() throws Exception {
         ResponseProductDto dto = new ResponseProductDto();
-        Product product1 = new Product("Mercedes S600");
-        product1.setId(1L);
-        Product product2 = new Product("BMW 750i");
-        product2.setId(2L);
+        Product product1 = Product.builder().id(1L).name("Mercedes S600").build();
+        Product product2 = Product.builder().id(2L).name("BMW 750i").build();
         List<Product> products = new ArrayList<>();
         products.add(product1);
         products.add(product2);

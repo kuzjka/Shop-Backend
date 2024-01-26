@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.config;
 
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,12 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class MyConverter implements Converter<Jwt, AbstractAuthenticationToken> {
     private final AppUserDetailsService userDetailsService;
-
-    public MyConverter(AppUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {

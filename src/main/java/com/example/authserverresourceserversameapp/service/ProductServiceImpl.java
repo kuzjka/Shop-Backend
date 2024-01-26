@@ -16,10 +16,10 @@ import com.example.authserverresourceserversameapp.repository.BrandRepository;
 import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private static final String BASE_DIR = "src/main/webapp/WEB-INF/images/";
     private static final String BASE_URL = "http://localhost:8080/images/";
@@ -37,17 +38,6 @@ public class ProductServiceImpl implements ProductService {
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
-
-    public ProductServiceImpl(ProductRepository productRepository,
-                              TypeRepository typeRepository,
-                              BrandRepository brandRepository,
-                              PhotoRepository photoRepository) {
-        this.productRepository = productRepository;
-        this.typeRepository = typeRepository;
-        this.brandRepository = brandRepository;
-        this.photoRepository = photoRepository;
-    }
-
 
     @Override
     public ResponseProductDto getProducts(long typeId, Long brandId, String sort,
@@ -159,7 +149,6 @@ public class ProductServiceImpl implements ProductService {
     public long deleteProduct(long productId) throws IOException {
         Product product = productRepository.findById(productId).get();
         removePhotos(product);
-
         long id = product.getId();
         Brand brand = product.getBrand();
         Type type = product.getType();
@@ -167,7 +156,6 @@ public class ProductServiceImpl implements ProductService {
         type.removeProduct(product);
         type.removeBrand(brand);
         productRepository.deleteById(id);
-
         return id;
     }
 
@@ -213,7 +201,6 @@ public class ProductServiceImpl implements ProductService {
                 throw new RuntimeException(e);
             }
         }
-
     }
 
     public void removePhotos(Product product) {

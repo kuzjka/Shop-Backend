@@ -33,7 +33,6 @@ public class UserControllerTest {
     AppUserDetailsService userDetailsService;
     @MockBean
     JavaMailSender mailSender;
-
     @Test
     @WithMockUser
     public void addUserTest() throws Exception {
@@ -47,7 +46,6 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Message for confirmation registration sand to your email")));
     }
-
     @Test
     @WithMockUser
     public void handleUserAlreadyExistsException() throws Exception {
@@ -62,11 +60,9 @@ public class UserControllerTest {
                 .andExpect(status().is(409))
                 .andExpect(jsonPath("$.message", is("User with username: user already exists!")));
     }
-
     @Test
     @WithMockUser
     public void handlePasswordsDoNotMatchException() throws Exception {
-
         User user = new User();
         user.setUsername("user");
         given(userService.registerNewUserAccount(any(UserDto.class)))

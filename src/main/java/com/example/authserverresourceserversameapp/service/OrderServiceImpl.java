@@ -8,24 +8,18 @@ import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.repository.CartItemRepository;
 import com.example.authserverresourceserversameapp.repository.CartRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-    private ProductRepository productRepository;
-    private CartRepository cartRepository;
-    private CartItemRepository cartItemRepository;
-
-    public OrderServiceImpl(ProductRepository productRepository,
-                            CartRepository cartRepository,
-                            CartItemRepository cartItemRepository) {
-        this.productRepository = productRepository;
-        this.cartRepository = cartRepository;
-        this.cartItemRepository = cartItemRepository;
-    }
+    private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public Cart addToCart(CartItemDto dto, User user) {
@@ -71,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
         }
         return id;
     }
+
     @Override
     public Cart getCart(User user) {
         return cartRepository.getByUser(user);

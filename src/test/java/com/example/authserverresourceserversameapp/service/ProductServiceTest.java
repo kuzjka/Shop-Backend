@@ -40,22 +40,14 @@ public class ProductServiceTest {
 
     @BeforeEach
     public void setup() {
-        product = new Product();
-        product.setId(1L);
-        product.setName("Mercedes S600");
-
-        type = new Type("Car");
-        type.setId(1L);
-        brand = new Brand("Mercedes");
-        brand.setId(1L);
+        product = Product.builder().id(1L).name("Mercedes S600").build();
+        type = Type.builder().id(1L).name("Car").build();
+        brand = Brand.builder().id(1L).name("Mercedes").build();
     }
 
     @Test
     public void getProductsTest() {
-        Product product1 = new Product();
-        product1.setId(2L);
-        product1.setName("BMW 750i");
-
+        Product product1 = Product.builder().id(2L).name("BMW 750i").build();
         List<Product> products = new ArrayList<>();
         products.add(product);
         products.add(product1);
@@ -64,7 +56,6 @@ public class ProductServiceTest {
         Page<Product> page = new PageImpl<>(products);
         given(productRepository.findAll(PageRequest.of(0, 10, Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-
         dto = productService.getProducts(0L, 0L, "name", "ASC", 0, 10);
         assertThat(dto).isNotNull();
         assertThat(dto.getProducts().size()).isEqualTo(2);
@@ -72,19 +63,14 @@ public class ProductServiceTest {
         assertThat(dto.getProducts().get(0).getName()).isEqualTo("Mercedes S600");
         assertThat(dto.getProducts().get(1).getId()).isEqualTo(2L);
         assertThat(dto.getProducts().get(1).getName()).isEqualTo("BMW 750i");
-
     }
 
     @Test
     public void getTypesTest() {
-        Type type1 = new Type("Smartphone");
-        type1.setId(2L);
-
+        Type type1 = Type.builder().id(2L).name("Smartphone").build();
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-
-
         given(typeRepository.findAll()).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes();
         assertThat(serviceTypes).isNotNull();
@@ -93,19 +79,14 @@ public class ProductServiceTest {
         assertThat(serviceTypes.get(0).getName()).isEqualTo("Car");
         assertThat(serviceTypes.get(1).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(1).getName()).isEqualTo("Smartphone");
-
     }
 
     @Test
     public void getBrandsTest() {
-        Brand brand1 = new Brand("Apple");
-        brand1.setId(2L);
-
+        Brand brand1 = Brand.builder().id(2L).name("Apple").build();
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
-
-
         given(brandRepository.findAll()).willReturn(brands);
         List<Brand> serviceBrands = productService.getAllBrands();
         assertThat(serviceBrands).isNotNull();
@@ -114,6 +95,5 @@ public class ProductServiceTest {
         assertThat(serviceBrands.get(0).getName()).isEqualTo("Mercedes");
         assertThat(serviceBrands.get(1).getId()).isEqualTo(2L);
         assertThat(serviceBrands.get(1).getName()).isEqualTo("Apple");
-
     }
 }
