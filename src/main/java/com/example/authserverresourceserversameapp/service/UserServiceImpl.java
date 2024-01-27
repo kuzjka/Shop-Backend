@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService {
         role = roleRepository.findAllByName(dto.getRole());
         if (role == null) {
             role = new Role();
-
         }
         role.setName(dto.getRole());
         role.addUser(user);

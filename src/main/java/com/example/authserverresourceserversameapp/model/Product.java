@@ -8,14 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Product {
     @Id
-    @SequenceGenerator(name = "productGen", sequenceName = "productSeq", initialValue = 10)
+    @SequenceGenerator(name = "productGen", sequenceName = "productSeq", initialValue = 20)
     @GeneratedValue(generator = "productGen")
     private Long id;
     private String name;
@@ -29,18 +26,31 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     @JsonIgnore
     private List<CartItem> items = new ArrayList<>();
+
+    public Product() {
+    }
+
+    @Builder
+    public Product(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public void addPhoto(Photo photo) {
         this.photos.add(photo);
         photo.setProduct(this);
     }
+
     public void removePhoto(Photo photo) {
         this.photos.remove(photo);
         photo.setProduct(null);
     }
+
     public void addCartItem(CartItem cartItem) {
         this.items.add(cartItem);
         cartItem.setProduct(this);
     }
+
     public void removeCartItem(CartItem cartItem) {
         this.items.remove(cartItem);
         cartItem.setProduct(null);

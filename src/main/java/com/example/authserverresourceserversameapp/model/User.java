@@ -8,7 +8,6 @@ import lombok.*;
 @Getter
 @Setter
 public class User {
-
     @Id
     @SequenceGenerator(name = "userGen", sequenceName = "userSeq", initialValue = 10)
     @GeneratedValue(generator = "userGen")
@@ -17,14 +16,10 @@ public class User {
     private String email;
     private String password;
     private boolean enabled;
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-
     private Role role;
 
     public User() {
         this.enabled = false;
     }
-
-
 }

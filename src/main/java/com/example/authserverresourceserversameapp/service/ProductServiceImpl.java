@@ -90,7 +90,6 @@ public class ProductServiceImpl implements ProductService {
         return brandRepository.getAllByTypesId(typeId);
     }
 
-
     public long addProduct(ProductDto dto) {
         Product product = null;
         Type type = typeRepository.findById(dto.getTypeId()).get();

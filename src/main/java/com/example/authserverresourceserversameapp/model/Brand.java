@@ -8,14 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Brand {
     @Id
-    @SequenceGenerator(name = "brandGen", sequenceName = "brandSeq", initialValue = 10)
+    @SequenceGenerator(name = "brandGen", sequenceName = "brandSeq", initialValue = 20)
     @GeneratedValue(generator = "brandGen")
     private Long id;
     private String name;
@@ -25,6 +22,15 @@ public class Brand {
     @ManyToMany(mappedBy = "brands")
     @JsonIgnore
     private List<Type> types = new ArrayList<>();
+
+    public Brand() {
+    }
+
+    @Builder
+    public Brand(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public void addProduct(Product product) {
         this.products.add(product);

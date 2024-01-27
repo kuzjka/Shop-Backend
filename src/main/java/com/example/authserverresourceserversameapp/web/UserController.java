@@ -10,6 +10,7 @@ import com.example.authserverresourceserversameapp.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,21 +22,12 @@ import java.util.Calendar;
 
 @Controller
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
-
     private static final String NOREPLY_ADDRESS = "anton30momot@gmail.com";
     private final UserService userService;
     private final JavaMailSender mailSender;
-
     private final ApplicationEventPublisher eventPublisher;
-
-    public UserController(UserService userService,
-                          JavaMailSender mailSender,
-                          ApplicationEventPublisher eventPublisher) {
-        this.userService = userService;
-        this.mailSender = mailSender;
-        this.eventPublisher = eventPublisher;
-    }
 
     @GetMapping("/resendRegistrationToken")
     @ResponseBody
@@ -73,11 +65,8 @@ public class UserController {
         }
         User user = userService.findByUsername(principal.getName());
         String role = user.getRole().getName();
-
-
         return new Username(user.getUsername(), role);
     }
-
     @PostMapping
     @ResponseBody
     public SuccessResponse register(@RequestBody UserDto dto, final HttpServletRequest request) {
@@ -90,7 +79,6 @@ public class UserController {
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, appUrl));
         return new SuccessResponse(text);
     }
-
     @PutMapping
     @ResponseBody
     public SuccessResponse editUser(@RequestBody UserDto dto) {
@@ -98,7 +86,6 @@ public class UserController {
         userService.editExistingUserAccount(dto);
         return new SuccessResponse(text);
     }
-
     private MimeMessage constructResetVerificationTokenEmail(final String contextPath,
                                                              final VerificationToken newToken,
                                                              final User user) throws MessagingException {

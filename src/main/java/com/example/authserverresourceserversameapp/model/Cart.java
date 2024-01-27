@@ -1,17 +1,22 @@
 package com.example.authserverresourceserversameapp.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Cart {
     @Id
     @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
     @GeneratedValue(generator = "cartGen")
     private long id;
-
+    @Getter(AccessLevel.NONE)
     private long totalPrice;
     @OneToOne
     private User user;
@@ -21,39 +26,11 @@ public class Cart {
     public Cart() {
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public long getTotalPrice() {
         for (CartItem item : this.items) {
             this.totalPrice += item.getTotalPrice();
         }
         return this.totalPrice;
-    }
-
-    public void setTotalPrice(long totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<CartItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<CartItem> cartItems) {
-        this.items = cartItems;
     }
 
     public void addCartItem(CartItem cartItem) {
@@ -65,5 +42,4 @@ public class Cart {
         this.items.remove(cartItem);
         cartItem.setCart(null);
     }
-
 }

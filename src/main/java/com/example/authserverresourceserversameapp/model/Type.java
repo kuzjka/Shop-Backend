@@ -8,14 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Type {
     @Id
-    @SequenceGenerator(name = "typeGen", sequenceName = "typeSeq", initialValue = 10)
+    @SequenceGenerator(name = "typeGen", sequenceName = "typeSeq", initialValue = 20)
     @GeneratedValue(generator = "typeGen")
     private Long id;
     private String name;
@@ -28,6 +25,15 @@ public class Type {
             inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
     )
     List<Brand> brands = new ArrayList<>();
+
+    public Type() {
+    }
+@Builder
+    public Type(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public void addProduct(Product product) {
         this.products.add(product);
         product.setType(this);

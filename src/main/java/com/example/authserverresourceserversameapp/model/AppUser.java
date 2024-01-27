@@ -1,17 +1,15 @@
 package com.example.authserverresourceserversameapp.model;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
+@RequiredArgsConstructor
 public class AppUser implements UserDetails {
-    private User user;
-
-    public AppUser(User user) {
-        this.user = user;
-    }
+    private final User user;
 
     @Override
     public List<? extends GrantedAuthority> getAuthorities() {
