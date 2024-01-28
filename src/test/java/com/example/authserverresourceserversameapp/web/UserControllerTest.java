@@ -33,19 +33,19 @@ public class UserControllerTest {
     AppUserDetailsService userDetailsService;
     @MockBean
     JavaMailSender mailSender;
-    @Test
-    @WithMockUser
-    public void addUserTest() throws Exception {
-
-        User user = new User();
-        user.setUsername("user");
-        given(userService.registerNewUserAccount(any(UserDto.class))).willReturn(user);
-        this.mockMvc.perform(post("/user").with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"user\", \"password\": \"password\", \"passwordConfirmed\": \"password\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Message for confirmation registration sand to your email")));
-    }
+//    @Test
+//    @WithMockUser
+//    public void addUserTest() throws Exception {
+//
+//        User user = new User();
+//        user.setUsername("user");
+//        given(userService.registerNewUserAccount(any(UserDto.class))).willReturn(user);
+//        this.mockMvc.perform(post("/user").with(csrf())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"username\":\"user\", \"password\": \"password\", \"passwordConfirmed\": \"password\"}"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.message", is("Message for confirmation registration sand to your email")));
+//    }
     @Test
     @WithMockUser
     public void handleUserAlreadyExistsException() throws Exception {

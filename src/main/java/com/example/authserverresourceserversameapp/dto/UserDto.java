@@ -1,63 +1,13 @@
 package com.example.authserverresourceserversameapp.dto;
 
+import lombok.Data;
+
+@Data
 public class UserDto {
     private String role;
     private String username;
-
     private String email;
-
     private String oldPassword;
     private String password;
     private String passwordConfirmed;
-
-    public UserDto() {
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPasswordConfirmed() {
-        return passwordConfirmed;
-    }
-
-    public void setPasswordConfirmed(String passwordConfirmed) {
-        this.passwordConfirmed = passwordConfirmed;
-    }
 }
