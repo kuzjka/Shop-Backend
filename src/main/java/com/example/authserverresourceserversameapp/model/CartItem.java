@@ -18,6 +18,7 @@ public class CartItem {
     private Product product;
     private int quantity;
     @Getter(AccessLevel.NONE)
+    @Transient
     private long totalPrice;
     @ManyToOne
     @JsonIgnore

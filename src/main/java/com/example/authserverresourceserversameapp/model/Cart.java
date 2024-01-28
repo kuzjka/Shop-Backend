@@ -17,6 +17,7 @@ public class Cart {
     @GeneratedValue(generator = "cartGen")
     private long id;
     @Getter(AccessLevel.NONE)
+    @Transient
     private long totalPrice;
     @OneToOne
     private User user;
