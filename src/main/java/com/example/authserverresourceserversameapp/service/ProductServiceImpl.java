@@ -190,8 +190,9 @@ public class ProductServiceImpl implements ProductService {
         List<byte[]> photoBytes = new ArrayList<>(dto.getPhotos());
         for (byte[] a : photoBytes) {
             Photo photo = new Photo();
-            long photoId = photoRepository.save(photo).getId();
             product.addPhoto(photo);
+            long photoId = photoRepository.save(photo).getId();
+
             photo.setUrl(BASE_URL + "photo_" + product.getId() + photoId + ".jpg");
             Path photoPath = Paths.get(BASE_DIR + "photo_" + product.getId() + photoId + ".jpg");
             try {

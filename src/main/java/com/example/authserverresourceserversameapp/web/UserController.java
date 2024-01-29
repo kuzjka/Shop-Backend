@@ -7,33 +7,27 @@ import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.service.UserService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Calendar;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-    private static final String NOREPLY_ADDRESS = "anton30momot@gmail.com";
-    private static final String APP_URL = "http://localhost:8080";
+
     private final UserService userService;
-    private final JavaMailSender mailSender;
+
 
     @PostMapping
     @ResponseBody
     public SuccessResponse register(@RequestBody UserDto dto) throws MessagingException {
         String text = "Message for confirmation registration sand to your email";
-        User registered = userService.registerNewUserAccount(dto);
-        final MimeMessage email = constructEmailMessage(registered);
-        mailSender.send(email);
+        userService.registerNewUserAccount(dto);
+
         return new SuccessResponse(text);
     }
 
@@ -52,12 +46,8 @@ public class UserController {
 
     @GetMapping("/resendRegistrationToken")
     @ResponseBody
-    public SuccessResponse resendRegistrationToken(@RequestParam("token") final String existingToken)
-            throws MessagingException {
-        VerificationToken newToken = userService.generateNewVerificationToken(existingToken);
-        final User user = userService.getUser(newToken.getToken());
-        final MimeMessage email = constructResetVerificationTokenEmail(newToken, user);
-        mailSender.send(email);
+    public SuccessResponse resendRegistrationToken(@RequestParam("token") final String existingToken) throws MessagingException {
+        userService.generateNewVerificationToken(existingToken);
         return new SuccessResponse("Message for confirmation registration sand to your email");
     }
 
@@ -80,30 +70,4 @@ public class UserController {
         return new SuccessResponse(text);
     }
 
-    private MimeMessage constructEmailMessage(final User user) throws MessagingException {
-        final String token = UUID.randomUUID().toString();
-        userService.createVerificationTokenForUser(user, token);
-        final String html = "<p><a href=\"" + APP_URL + "/user/registrationConfirm?token="
-                + token + "\">Confirm registration</a></p>";
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setFrom(NOREPLY_ADDRESS);
-        helper.setTo(user.getEmail());
-        helper.setSubject("Registration Confirmation");
-        helper.setText(html, true);
-        return message;
-    }
-
-    private MimeMessage constructResetVerificationTokenEmail(final VerificationToken newToken,
-                                                             final User user) throws MessagingException {
-        final String html = "<p><a href=\"" + APP_URL + "/user/registrationConfirm?token="
-                + newToken.getToken() + "\">Confirm registration</a></p>";
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setFrom(NOREPLY_ADDRESS);
-        helper.setTo(user.getEmail());
-        helper.setSubject("Resend Registration Token");
-        helper.setText(html, true);
-        return message;
-    }
 }

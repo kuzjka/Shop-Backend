@@ -10,11 +10,11 @@ import lombok.Setter;
 @Setter
 public class Photo {
     @Id
-    @SequenceGenerator(name = "imageGen", sequenceName = "imageSeq", initialValue = 10)
+    @SequenceGenerator(name = "imageGen", sequenceName = "imageSeq", initialValue = 20)
     @GeneratedValue(generator = "imageGen")
-    private long id;
+    private Long id;
     private String url;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private Product product;
 

@@ -10,7 +10,12 @@ import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.repository.RoleRepository;
 import com.example.authserverresourceserversameapp.repository.TokenRepository;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +25,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final String NOREPLY_ADDRESS = "anton30momot@gmail.com";
+    private static final String APP_URL = "http://localhost:8080";
+
+    private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -35,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerNewUserAccount(UserDto dto) {
+    public User registerNewUserAccount(UserDto dto) throws MessagingException {
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
             throw new PasswordsDontMatchException();
         }
@@ -56,7 +65,10 @@ public class UserServiceImpl implements UserService {
         if (userRepository.getByEmail(dto.getEmail()) != null) {
             throw new UserExistsException("User with email: \"" + dto.getEmail() + "\" already exists!");
         }
-        return userRepository.save(user);
+        User registered = userRepository.save(user);
+        MimeMessage message = constructVerificationTokenEmail(registered);
+        mailSender.send(message);
+        return registered;
     }
 
     @Override
@@ -98,11 +110,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
+    public VerificationToken generateNewVerificationToken(String existingVerificationToken) throws MessagingException {
         VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
         vToken.updateToken(UUID.randomUUID()
                 .toString());
         vToken = tokenRepository.save(vToken);
+        MimeMessage message = constructResendVerificationTokenEmail(vToken);
+        mailSender.send(message);
         return vToken;
     }
 
@@ -110,4 +124,36 @@ public class UserServiceImpl implements UserService {
     public void saveRegisteredUser(User user) {
         userRepository.save(user);
     }
+
+    public MimeMessage constructVerificationTokenEmail(User user) throws MessagingException {
+        String token = UUID.randomUUID().toString();
+        createVerificationTokenForUser(user, token);
+
+
+        final String html = "<p><a href=\"" + APP_URL + "/user/registrationConfirm?token="
+                + token + "\">Confirm registration</a></p>";
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom(NOREPLY_ADDRESS);
+        helper.setTo(user.getEmail());
+        helper.setSubject("Registration Confirmation");
+        helper.setText(html, true);
+        return message;
+    }
+
+    public MimeMessage constructResendVerificationTokenEmail(VerificationToken newToken) throws MessagingException {
+
+
+
+        final String html = "<p><a href=\"" + APP_URL + "/user/registrationConfirm?token="
+                + newToken.getToken() + "\">Confirm registration</a></p>";
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom(NOREPLY_ADDRESS);
+        helper.setTo(newToken.getUser().getEmail());
+        helper.setSubject("Registration Confirmation");
+        helper.setText(html, true);
+        return message;
+    }
+
 }

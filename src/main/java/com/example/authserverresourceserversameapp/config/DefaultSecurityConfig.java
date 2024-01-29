@@ -33,7 +33,8 @@ public class DefaultSecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"),
-                                        AntPathRequestMatcher.antMatcher("/user/**"))
+                                        AntPathRequestMatcher.antMatcher("/user/**"),
+                                        AntPathRequestMatcher.antMatcher("/images/**"))
                                 .permitAll()
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/order/**"))
                                 .hasRole("user")

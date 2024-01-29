@@ -1,5 +1,6 @@
 package com.example.authserverresourceserversameapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class VerificationToken {
     @Column(name = "expiry_date")
     private Date expiryDate;
     @OneToOne(fetch = FetchType.EAGER, targetEntity = User.class)
+    @JsonIgnore
     private User user;
     public VerificationToken() {
     }

@@ -71,19 +71,3 @@ insert into product (id, name, price, type_id, brand_id)
 values (7, 'Afro_1', 800, 5, 6);
 insert into product (id, name, price, type_id, brand_id)
 values (8, 'Curly_1', 2500, 5, 9);
-insert into photo (id, url, product_id)
-values (1, '', 1);
-insert into photo (id, url, product_id)
-values (2, '', 2);
-insert into photo (id, url, product_id)
-values (3, '', 3);
-insert into photo (id, url, product_id)
-values (4, '', 4);
-insert into photo (id, url, product_id)
-values (5, '', 5);
-insert into photo (id, url, product_id)
-values (6, '', 6);
-insert into photo (id, url, product_id)
-values (7, '', 7);
-insert into photo (id, url, product_id)
-values (8, '', 8);
