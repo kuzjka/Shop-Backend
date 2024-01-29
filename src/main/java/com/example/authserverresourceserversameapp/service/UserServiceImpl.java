@@ -12,7 +12,6 @@ import com.example.authserverresourceserversameapp.repository.TokenRepository;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -124,12 +123,9 @@ public class UserServiceImpl implements UserService {
     public void saveRegisteredUser(User user) {
         userRepository.save(user);
     }
-
     public MimeMessage constructVerificationTokenEmail(User user) throws MessagingException {
         String token = UUID.randomUUID().toString();
         createVerificationTokenForUser(user, token);
-
-
         final String html = "<p><a href=\"" + APP_URL + "/user/registrationConfirm?token="
                 + token + "\">Confirm registration</a></p>";
         MimeMessage message = mailSender.createMimeMessage();
@@ -142,9 +138,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public MimeMessage constructResendVerificationTokenEmail(VerificationToken newToken) throws MessagingException {
-
-
-
         final String html = "<p><a href=\"" + APP_URL + "/user/registrationConfirm?token="
                 + newToken.getToken() + "\">Confirm registration</a></p>";
         MimeMessage message = mailSender.createMimeMessage();
@@ -155,5 +148,4 @@ public class UserServiceImpl implements UserService {
         helper.setText(html, true);
         return message;
     }
-
 }
