@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product {
     @Id
     @SequenceGenerator(name = "productGen", sequenceName = "productSeq", initialValue = 20)
@@ -26,15 +29,6 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     @JsonIgnore
     private List<CartItem> items = new ArrayList<>();
-
-    public Product() {
-    }
-
-    @Builder
-    public Product(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public void addPhoto(Photo photo) {
         this.photos.add(photo);

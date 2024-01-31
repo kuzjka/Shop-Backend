@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Brand {
     @Id
     @SequenceGenerator(name = "brandGen", sequenceName = "brandSeq", initialValue = 20)
@@ -23,15 +26,6 @@ public class Brand {
     @JsonIgnore
     private List<Type> types = new ArrayList<>();
 
-    public Brand() {
-    }
-
-    @Builder
-    public Brand(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public void addProduct(Product product) {
         this.products.add(product);
         product.setBrand(this);
@@ -41,7 +35,6 @@ public class Brand {
         this.products.remove(product);
         product.setBrand(null);
     }
-
     @PreRemove
     public void removeTypeAssociations() {
         this.types.forEach(x -> x.getBrands().remove(this));

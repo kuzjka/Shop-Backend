@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Type {
     @Id
     @SequenceGenerator(name = "typeGen", sequenceName = "typeSeq", initialValue = 20)
@@ -25,14 +28,6 @@ public class Type {
             inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
     )
     List<Brand> brands = new ArrayList<>();
-
-    public Type() {
-    }
-@Builder
-    public Type(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public void addProduct(Product product) {
         this.products.add(product);

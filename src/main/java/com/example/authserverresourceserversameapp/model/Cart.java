@@ -1,9 +1,7 @@
 package com.example.authserverresourceserversameapp.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +9,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Cart {
     @Id
     @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
@@ -23,9 +24,6 @@ public class Cart {
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
     private List<CartItem> items = new ArrayList<>();
-
-    public Cart() {
-    }
 
     public long getTotalPrice() {
         for (CartItem item : this.items) {

@@ -2,13 +2,14 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CartItem {
     @Id
     @SequenceGenerator(name = "cartItemGen", sequenceName = "cartItemSeq", initialValue = 10)
@@ -23,9 +24,6 @@ public class CartItem {
     @ManyToOne
     @JsonIgnore
     private Cart cart;
-
-    public CartItem() {
-    }
 
     public long getTotalPrice() {
         this.totalPrice = this.product.getPrice() * this.quantity;

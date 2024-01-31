@@ -10,7 +10,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AppUser implements UserDetails {
     private final User user;
-
     @Override
     public List<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();

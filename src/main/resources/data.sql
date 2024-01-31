@@ -56,13 +56,13 @@ insert into type_brand (type_id, brand_id)
 values (5, 9);
 
 insert into product (id, name, price, type_id, brand_id)
-values (1, 'S600', 200000, 1, 1);
+values (1, 'Mercedes S600', 200000, 1, 1);
 insert into product (id, name, price, type_id, brand_id)
-values (2, '750i', 150000, 1, 2);
+values (2, 'BMW 750i', 150000, 1, 2);
 insert into product (id, name, price, type_id, brand_id)
 values (3, 'iPhone 15', 1000, 2, 3);
 insert into product (id, name, price, type_id, brand_id)
-values (4, 'Galaxy A32', 500, 2, 4);
+values (4, 'Samsung Galaxy A32', 500, 2, 4);
 insert into product (id, name, price, type_id, brand_id)
 values (5, 'Boeing 737-800', 1000000, 3, 7);
 insert into product (id, name, price, type_id, brand_id)
