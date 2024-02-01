@@ -11,49 +11,40 @@ import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-
     @Override
-    public Cart addToCart(CartItemDto dto, User user) {
-        CartItem cartItem;
-        boolean newItem = true;
+    public Cart addCartItem(CartItemDto dto, User user) {
+        Product product = productRepository.findById(dto.getProductId()).get();
         Cart cart = cartRepository.getByUser(user);
         if (cart == null) {
             cart = new Cart();
             cart.setUser(user);
         }
-        Product product = productRepository.findById(dto.getProductId()).get();
-        List<CartItem> items = new ArrayList<>(cart.getItems());
-        for (CartItem item : items) {
-            if (item.getProduct().getId() == dto.getProductId()) {
-                cartItem = item;
-                if (cartItem.getQuantity() == 1 && dto.getQuantity() < 0) {
-                    cartItem.setQuantity(1);
-                } else {
-                    cartItem.setQuantity(cartItem.getQuantity() + dto.getQuantity());
-                }
-                newItem = false;
-            }
-        }
-        if (newItem) {
-            cartItem = new CartItem();
-            cartItem.setQuantity(1);
-            product.addCartItem(cartItem);
-            cart.addCartItem(cartItem);
+        CartItem item = new CartItem();
+        item.setQuantity(1);
+        cart.addCartItem(item);
+        product.addCartItem(item);
+        return cartRepository.save(cart);
+    }
+    @Override
+    public Cart editCartItem(CartItemDto dto, User user) {
+        Cart cart = cartRepository.getByUser(user);
+        CartItem item = cartItemRepository.findById(dto.getItemId()).get();
+
+        if (item.getQuantity() == 1 && dto.getQuantity() < 0) {
+            item.setQuantity(1);
+        } else {
+            item.setQuantity(item.getQuantity() + dto.getQuantity());
         }
         return cartRepository.save(cart);
     }
-
     @Override
-    public long removeFromCart(long productId) {
+    public long removeCartItem(long productId) {
         Product product = productRepository.findById(productId).get();
         CartItem cartItem = cartItemRepository.getByProduct(product);
         Cart cart = cartItem.getCart();
@@ -65,7 +56,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return id;
     }
-
     @Override
     public Cart getCart(User user) {
         return cartRepository.getByUser(user);

@@ -4,8 +4,7 @@ import lombok.Data;
 
 @Data
 public class CartItemDto {
-    private long cartItemId;
+    private long itemId;
     private long productId;
     private int quantity;
-    private long totalPrice;
 }

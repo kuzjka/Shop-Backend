@@ -25,13 +25,17 @@ public class OrderController {
     }
 
     @PostMapping
-    public Cart addToCart(@RequestBody CartItemDto dto, Principal principal) {
+    public Cart addCartItem(@RequestBody CartItemDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.addToCart(dto, user);
+        return orderService.addCartItem(dto, user);
     }
-
+    @PutMapping
+    public Cart editCartItem(@RequestBody CartItemDto dto, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        return orderService.editCartItem(dto, user);
+    }
     @DeleteMapping
-    public long removeFromCart(@RequestParam long itemId) {
-        return orderService.removeFromCart(itemId);
+    public long removeCartItem(@RequestParam long itemId) {
+        return orderService.removeCartItem(itemId);
     }
 }
