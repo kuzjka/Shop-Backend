@@ -51,35 +51,14 @@ public class ProductController {
         return productService.getProducts(typeId, brandId, sort, dir, page, size);
     }
 
-    @PostMapping("/product")
-    public long addProduct(@RequestBody ProductDto dto) throws IOException {
+    @PostMapping(value = "/product")
+    public long addProduct(ProductDto dto) throws IOException {
         return productService.addProduct(dto);
-    }
-
-    @PostMapping("/type")
-    public long addType(@RequestBody TypeDto dto) {
-        return productService.addType(dto);
-    }
-
-    @PostMapping("/brand")
-    public long addBrand(@RequestBody BrandDto dto) {
-        return productService.addBrand(dto);
     }
 
     @PutMapping("/product")
-    public long editProduct(@RequestBody ProductDto dto) throws IOException {
-
+    public long editProduct(ProductDto dto) throws IOException {
         return productService.addProduct(dto);
-    }
-
-    @PutMapping("/type")
-    public long editType(@RequestBody TypeDto dto) {
-        return productService.addType(dto);
-    }
-
-    @PutMapping("/brand")
-    public long editBrand(@RequestBody BrandDto dto) {
-        return productService.addBrand(dto);
     }
 
     @DeleteMapping("/product/{id}")
@@ -87,14 +66,35 @@ public class ProductController {
         return productService.deleteProduct(id);
     }
 
+    @PostMapping("/type")
+    public long addType(@RequestBody TypeDto dto) {
+        return productService.addType(dto);
+    }
+
+    @PutMapping("/type")
+    public long editType(@RequestBody TypeDto dto) {
+        return productService.addType(dto);
+    }
+
     @DeleteMapping("/type/{id}")
     public long deleteType(@PathVariable long id) {
         return productService.deleteType(id);
+    }
+
+    @PostMapping("/brand")
+    public long addBrand(@RequestBody BrandDto dto) {
+        return productService.addBrand(dto);
+    }
+
+    @PutMapping("/brand")
+    public long editBrand(@RequestBody BrandDto dto) {
+        return productService.addBrand(dto);
     }
 
     @DeleteMapping("/brand/{id}")
     public long deleteBrand(@PathVariable long id) {
         return productService.deleteBrand(id);
     }
+
 
 }
