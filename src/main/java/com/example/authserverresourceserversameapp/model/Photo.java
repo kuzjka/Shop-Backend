@@ -15,6 +15,7 @@ public class Photo {
     @SequenceGenerator(name = "imageGen", sequenceName = "imageSeq", initialValue = 20)
     @GeneratedValue(generator = "imageGen")
     private Long id;
+    private String name;
     private String url;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore

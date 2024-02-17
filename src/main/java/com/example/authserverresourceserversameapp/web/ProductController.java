@@ -65,6 +65,10 @@ public class ProductController {
     public long deleteProduct(@PathVariable long id) throws IOException {
         return productService.deleteProduct(id);
     }
+    @DeleteMapping("/photo/{id}")
+    public long deletePhoto(@PathVariable long id) {
+        return productService.deletePhoto(id);
+    }
 
     @PostMapping("/type")
     public long addType(@RequestBody TypeDto dto) {

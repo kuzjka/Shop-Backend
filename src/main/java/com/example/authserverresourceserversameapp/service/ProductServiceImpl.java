@@ -160,6 +160,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public long deletePhoto(long photoId) {
+        Photo photo = photoRepository.findById(photoId).get();
+        Product product = photo.getProduct();
+        product.removePhoto(photo);
+        long id = photo.getId();
+        photoRepository.delete(photo);
+        int index = photo.getUrl().indexOf("photo_");
+        if (index > -1) {
+            String file = photo.getUrl().substring(index);
+            Path path = Paths.get(BASE_DIR + file);
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return id;
+    }
+
+    @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
         if (type.getName().equals("Other")) {
@@ -194,8 +214,9 @@ public class ProductServiceImpl implements ProductService {
                 Photo photo = new Photo();
                 product.addPhoto(photo);
                 long photoId = photoRepository.save(photo).getId();
-                photo.setUrl(BASE_URL + "photo_" + file.getOriginalFilename() + "_" + photoId + ".jpg");
-                Path photoPath = Paths.get(BASE_DIR + "photo_" + file.getOriginalFilename() + "_" + photoId + ".jpg");
+                photo.setName(file.getOriginalFilename());
+                photo.setUrl(BASE_URL + "photo_" + photoId + "_" + file.getOriginalFilename());
+                Path photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
                 try {
                     Files.write(photoPath, file.getBytes());
                 } catch (IOException e) {
@@ -204,22 +225,10 @@ public class ProductServiceImpl implements ProductService {
             }
     }
 
-
     public void removePhotos(Product product) {
         List<Photo> photos = new ArrayList<>(product.getPhotos());
-        for (Photo p : photos) {
-            product.removePhoto(p);
-            photoRepository.delete(p);
-            int index = p.getUrl().indexOf("photo_");
-            if (index > -1) {
-                String file = p.getUrl().substring(index);
-                Path path2 = Paths.get(BASE_DIR + file);
-                try {
-                    Files.delete(path2);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        for (Photo photo : photos) {
+            deletePhoto(photo.getId());
         }
     }
 }

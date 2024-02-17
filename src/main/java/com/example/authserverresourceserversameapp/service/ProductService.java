@@ -32,6 +32,8 @@ public interface ProductService {
 
     long deleteProduct(long id) throws IOException;
 
+    long deletePhoto(long id);
+
     long deleteType(long id);
 
     long deleteBrand(long id);
