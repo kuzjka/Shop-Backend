@@ -18,16 +18,13 @@ import java.util.Calendar;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
-
 
     @PostMapping
     @ResponseBody
     public SuccessResponse register(@RequestBody UserDto dto) throws MessagingException {
         String text = "Message for confirmation registration sand to your email";
         userService.registerNewUserAccount(dto);
-
         return new SuccessResponse(text);
     }
 
@@ -69,5 +66,4 @@ public class UserController {
         userService.editExistingUserAccount(dto);
         return new SuccessResponse(text);
     }
-
 }

@@ -1,9 +1,6 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.BrandDto;
-import com.example.authserverresourceserversameapp.dto.ProductDto;
-import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
-import com.example.authserverresourceserversameapp.dto.TypeDto;
+import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.ProductService;
@@ -65,6 +62,12 @@ public class ProductController {
     public long deleteProduct(@PathVariable long id) throws IOException {
         return productService.deleteProduct(id);
     }
+
+    @PostMapping(value = "/photo")
+    public long addPhoto(PhotoDto dto) {
+        return productService.addPhoto(dto);
+    }
+
     @DeleteMapping("/photo/{id}")
     public long deletePhoto(@PathVariable long id) {
         return productService.deletePhoto(id);

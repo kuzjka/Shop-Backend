@@ -5,7 +5,6 @@ import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.User;
 
 public interface OrderService {
-
     Cart addCartItem(CartItemDto dto, User user);
 
     Cart editCartItem(CartItemDto dto, User user);
@@ -13,5 +12,4 @@ public interface OrderService {
     long removeCartItem(long productId);
 
     Cart getCart(User user);
-
 }

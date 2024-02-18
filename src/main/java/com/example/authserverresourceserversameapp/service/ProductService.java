@@ -1,13 +1,8 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.BrandDto;
-import com.example.authserverresourceserversameapp.dto.ProductDto;
-import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
-import com.example.authserverresourceserversameapp.dto.TypeDto;
+import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
-import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +26,8 @@ public interface ProductService {
     long addBrand(BrandDto dto);
 
     long deleteProduct(long id) throws IOException;
+
+    long addPhoto(PhotoDto dto);
 
     long deletePhoto(long id);
 

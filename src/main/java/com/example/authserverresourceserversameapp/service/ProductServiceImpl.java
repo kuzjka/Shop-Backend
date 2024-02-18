@@ -1,9 +1,6 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.BrandDto;
-import com.example.authserverresourceserversameapp.dto.ProductDto;
-import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
-import com.example.authserverresourceserversameapp.dto.TypeDto;
+import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.BrandOtherCantBeDeletedException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
@@ -99,7 +96,6 @@ public class ProductServiceImpl implements ProductService {
             product = new Product();
         } else if (dto.getProductId() > 0) {
             product = productRepository.findById(dto.getProductId()).get();
-            removePhotos(product);
             type.removeBrand(brand);
             type.removeProduct(product);
             brand.removeProduct(product);
@@ -111,7 +107,6 @@ public class ProductServiceImpl implements ProductService {
         if (brandRepository.getAllByName(brand.getName()) == null) {
             type.addBrand(brand);
         }
-        savePhotos(dto, product);
         return productRepository.save(product).getId();
     }
 
@@ -160,6 +155,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public long addPhoto(PhotoDto dto) {
+        Product product = productRepository.findById(dto.getProductId()).get();
+        for (MultipartFile file : dto.getPhotos()) {
+            Photo photo = new Photo();
+            product.addPhoto(photo);
+            photo.setName(file.getOriginalFilename());
+            photo.setUrl(BASE_URL + "photo_" + file.getOriginalFilename());
+            Path photoPath = Paths.get(BASE_DIR + "photo_" + file.getOriginalFilename());
+            long photoId = photoRepository.save(photo).getId();
+            try {
+                Files.write(photoPath, file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return product.getId();
+    }
+
+    @Override
     public long deletePhoto(long photoId) {
         Photo photo = photoRepository.findById(photoId).get();
         Product product = photo.getProduct();
@@ -205,24 +219,6 @@ public class ProductServiceImpl implements ProductService {
         products.forEach(x -> x.setBrand(other));
         brandRepository.deleteById(id);
         return id;
-    }
-
-    public void savePhotos(ProductDto dto, Product product) {
-        List<MultipartFile> files = dto.getPhoto();
-        if (files != null)
-            for (MultipartFile file : files) {
-                Photo photo = new Photo();
-                product.addPhoto(photo);
-                long photoId = photoRepository.save(photo).getId();
-                photo.setName(file.getOriginalFilename());
-                photo.setUrl(BASE_URL + "photo_" + photoId + "_" + file.getOriginalFilename());
-                Path photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
-                try {
-                    Files.write(photoPath, file.getBytes());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
     }
 
     public void removePhotos(Product product) {
