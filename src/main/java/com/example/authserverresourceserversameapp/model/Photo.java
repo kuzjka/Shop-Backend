@@ -17,7 +17,7 @@ public class Photo {
     private Long id;
     private String name;
     private String url;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
     @JsonIgnore
     private Product product;
 }

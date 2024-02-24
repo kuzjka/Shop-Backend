@@ -13,6 +13,6 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("/WEB-INF/images/")
-                .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
+                .setCacheControl(CacheControl.maxAge(2, TimeUnit.MINUTES));
     }
 }

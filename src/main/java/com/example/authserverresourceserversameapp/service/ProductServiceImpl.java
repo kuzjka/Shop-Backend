@@ -158,19 +158,23 @@ public class ProductServiceImpl implements ProductService {
     public long addPhoto(PhotoDto dto) {
         Product product = productRepository.findById(dto.getProductId()).get();
         for (MultipartFile file : dto.getPhotos()) {
-            Photo photo = new Photo();
-            product.addPhoto(photo);
-            photo.setName(file.getOriginalFilename());
-            photo.setUrl(BASE_URL + "photo_" + file.getOriginalFilename());
-            Path photoPath = Paths.get(BASE_DIR + "photo_" + file.getOriginalFilename());
-            long photoId = photoRepository.save(photo).getId();
+            Photo photo = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
+            if (photo != null) {
+                deletePhoto(photo.getId());
+            }
+            Photo newPhoto = new Photo();
+            long photoId = photoRepository.save(newPhoto).getId();
+            newPhoto.setName(file.getOriginalFilename());
+            newPhoto.setUrl(BASE_URL + "photo_" + photoId + "_" + file.getOriginalFilename());
+            product.addPhoto(newPhoto);
+            Path photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
             try {
                 Files.write(photoPath, file.getBytes());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        return product.getId();
+        return productRepository.save(product).getId();
     }
 
     @Override
