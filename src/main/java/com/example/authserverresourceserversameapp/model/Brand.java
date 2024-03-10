@@ -22,9 +22,6 @@ public class Brand {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-    @ManyToMany(mappedBy = "brands")
-    @JsonIgnore
-    private List<Type> types = new ArrayList<>();
 
     public void addProduct(Product product) {
         this.products.add(product);
@@ -34,9 +31,5 @@ public class Brand {
     public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
-    }
-    @PreRemove
-    public void removeTypeAssociations() {
-        this.types.forEach(x -> x.getBrands().remove(this));
     }
 }

@@ -33,10 +33,8 @@ public class ProductController {
 
     @GetMapping("/productBrand")
     public List<Brand> getProductBrands(@RequestParam(required = false, defaultValue = "0") long typeId) {
-
         return productService.getProductBrands(typeId);
     }
-
     @GetMapping(value = "/product")
     public ResponseProductDto getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
                                           @RequestParam(required = false, defaultValue = "0") long brandId,
