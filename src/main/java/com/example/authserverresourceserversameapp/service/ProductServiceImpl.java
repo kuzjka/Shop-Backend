@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -91,12 +92,12 @@ public class ProductServiceImpl implements ProductService {
 
     public long addProduct(ProductDto dto) {
         Product product = null;
-        Type type = typeRepository.findById(dto.getTypeId()).get();
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
-        if (dto.getProductId() == null) {
+        Type type = typeRepository.getById(dto.getTypeId());
+        Brand brand = brandRepository.getById(dto.getBrandId());
+        if (dto.getId() == 0) {
             product = new Product();
-        } else if (dto.getProductId() > 0) {
-            product = productRepository.findById(dto.getProductId()).get();
+        } else if (dto.getId() > 0) {
+            product = productRepository.findById(dto.getId()).get();
             type.removeProduct(product);
             brand.removeProduct(product);
         }

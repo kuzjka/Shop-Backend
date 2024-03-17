@@ -29,6 +29,6 @@ public class Type {
     }
     public void removeProduct(Product product) {
         this.products.remove(product);
-        product.setBrand(null);
+        product.setType(null);
     }
 }

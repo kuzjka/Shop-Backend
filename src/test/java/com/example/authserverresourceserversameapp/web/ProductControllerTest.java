@@ -114,8 +114,11 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void addProductTest() throws Exception {
+        String json = "{\"id\":0, \"name\":\"Audi A8\"}";
         given(productService.addProduct(any(ProductDto.class))).willReturn(3L);
-        this.mockMvc.perform(post("/api/product").with(csrf()).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post("/api/product").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
