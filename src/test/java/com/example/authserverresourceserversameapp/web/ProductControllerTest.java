@@ -4,8 +4,7 @@ import com.example.authserverresourceserversameapp.dto.BrandDto;
 import com.example.authserverresourceserversameapp.dto.ProductDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.dto.TypeDto;
-import com.example.authserverresourceserversameapp.exception.BrandExistsException;
-import com.example.authserverresourceserversameapp.exception.TypeExistsException;
+import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
@@ -23,12 +22,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -152,7 +154,7 @@ public class ProductControllerTest {
     public void typeExistsExceptionTest() throws Exception {
         String json = "{\"name\":\"Car\"}";
         given(productService.addType(any(TypeDto.class)))
-                .willThrow(new TypeExistsException("Type with name: \"Car\" already exists!"));
+                .willThrow(new TypeExistsException("Car"));
         this.mockMvc.perform(post("/api/type").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -167,12 +169,76 @@ public class ProductControllerTest {
     public void brandExistsExceptionTest() throws Exception {
         String json = "{\"name\":\"Mercedes\"}";
         given(productService.addBrand(any(BrandDto.class)))
-                .willThrow(new BrandExistsException("Brand with name: \"Mercedes\" already exists!"));
+                .willThrow(new BrandExistsException("Mercedes"));
         this.mockMvc.perform(post("/api/brand").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Brand with name: \"Mercedes\" already exists!"));
+
+    }
+
+    @Test
+    @WithMockUser
+    public void productExistsExceptionTest() throws Exception {
+        String json = "{\"name\":\"Mercedes S600\"}";
+        given(productService.addProduct(any(ProductDto.class)))
+                .willThrow(new ProductExistsException("Mercedes S600"));
+        this.mockMvc.perform(post("/api/product").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
+                        .value("Product with name: \"Mercedes S600\" already exists!"));
+
+    }
+
+    @Test
+    @WithMockUser
+    public void brandOtherCanNotBeUpdatedTest() throws Exception {
+        String json = "{\"name\":\"Other2\"}";
+        given(productService.addBrand(any(BrandDto.class)))
+                .willThrow(new BrandOtherCanNotBeDeletedOrUpdatedException());
+        this.mockMvc.perform(post("/api/brand").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
+                        .value("Brand \"Other\" can't be deleted or updated!"));
+
+    }
+
+    @Test
+    @WithMockUser
+    public void typeOtherCanNotBeUpdatedTest() throws Exception {
+        String json = "{\"name\":\"Other2\"}";
+        given(productService.addType(any(TypeDto.class)))
+                .willThrow(new TypeOtherCanNotBeDeletedOrUpdatedException());
+        this.mockMvc.perform(post("/api/type").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
+                        .value("Type \"Other\" can't be deleted or updated!"));
+
+    }
+
+    @Test
+    @WithMockUser
+    public void typeOtherCanNotBeDeletedTest() throws Exception {
+        given(productService.deleteType(anyLong()))
+                .willThrow(new TypeOtherCanNotBeDeletedOrUpdatedException());
+        this.mockMvc.perform(delete("/api/type/4").with(csrf()))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
+                        .value("Type \"Other\" can't be deleted or updated!"));
+
+    }
+
+    @Test
+    @WithMockUser
+    public void brandOtherCanNotBeDeletedTest() throws Exception {
+        given(productService.deleteBrand(anyLong()))
+                .willThrow(new BrandOtherCanNotBeDeletedOrUpdatedException());
+        this.mockMvc.perform(delete("/api/brand/9").with(csrf()))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
+                        .value("Brand \"Other\" can't be deleted or updated!"));
 
     }
 }

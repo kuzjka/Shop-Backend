@@ -3,10 +3,10 @@ package com.example.authserverresourceserversameapp.exception;
 
 public class ProductExistsException extends RuntimeException {
 
-    private  String message;
+    private String message;
 
-    public ProductExistsException(String message) {
-        this.message = message;
+    public ProductExistsException(String name) {
+        this.message = "Product with name: \"" + name + "\" already exists!";
     }
 
     @Override

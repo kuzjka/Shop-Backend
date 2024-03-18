@@ -49,7 +49,7 @@ public class ProductControllerExceptionHandler {
         return ResponseEntity.status(409).body(response);
     }
 
-    @ExceptionHandler(TypeOtherCantBeDeletedException.class)
+    @ExceptionHandler(TypeOtherCanNotBeDeletedOrUpdatedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<ErrorResponse> handleTypeOtherCantBeDeletedException(RuntimeException ex) {
@@ -57,7 +57,7 @@ public class ProductControllerExceptionHandler {
         return ResponseEntity.status(409).body(response);
     }
 
-    @ExceptionHandler(BrandOtherCantBeDeletedException.class)
+    @ExceptionHandler(BrandOtherCanNotBeDeletedOrUpdatedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<ErrorResponse> handleBrandOtherCantBeDeletedException(RuntimeException ex) {

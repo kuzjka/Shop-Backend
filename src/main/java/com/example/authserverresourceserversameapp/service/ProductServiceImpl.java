@@ -1,10 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.BrandExistsException;
-import com.example.authserverresourceserversameapp.exception.BrandOtherCantBeDeletedException;
-import com.example.authserverresourceserversameapp.exception.TypeExistsException;
-import com.example.authserverresourceserversameapp.exception.TypeOtherCantBeDeletedException;
+import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -26,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +88,9 @@ public class ProductServiceImpl implements ProductService {
 
     public long addProduct(ProductDto dto) {
         Product product = null;
+        if (productRepository.findByName(dto.getName()) != null && dto.getId() == 0) {
+            throw new ProductExistsException(dto.getName());
+        }
         Type type = typeRepository.getById(dto.getTypeId());
         Brand brand = brandRepository.getById(dto.getBrandId());
         if (dto.getId() == 0) {
@@ -111,13 +110,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addType(TypeDto dto) {
         if (typeRepository.getAllByName(dto.getName()) != null) {
-            throw new TypeExistsException("Type with name: \"" + dto.getName() + "\" already exists!");
+            throw new TypeExistsException(dto.getName());
         }
         Type type;
         if (dto.getId() == 0) {
             type = new Type();
         } else {
             type = typeRepository.findById(dto.getId()).get();
+            if (type.getName().equals("Other")) {
+                throw new TypeOtherCanNotBeDeletedOrUpdatedException();
+            }
         }
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
@@ -126,13 +128,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         if (brandRepository.getAllByName(dto.getName()) != null) {
-            throw new BrandExistsException("Brand with name: \"" + dto.getName() + "\" already exists!");
+            throw new BrandExistsException(dto.getName());
         }
+
         Brand brand;
         if (dto.getId() == 0) {
             brand = new Brand();
         } else {
             brand = brandRepository.findById(dto.getId()).get();
+            if (brand.getName().equals("Other")) {
+                throw new BrandOtherCanNotBeDeletedOrUpdatedException();
+            }
         }
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
@@ -198,12 +204,15 @@ public class ProductServiceImpl implements ProductService {
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
         if (type.getName().equals("Other")) {
-            throw new TypeOtherCantBeDeletedException("Type \"Other\" can not be deleted!");
+            throw new TypeOtherCanNotBeDeletedOrUpdatedException();
         }
         long id = type.getId();
         Type other = typeRepository.getAllByName("Other");
-        List<Product> products = type.getProducts();
-        products.forEach(x -> x.setType(other));
+        List<Product> products = new ArrayList<>(type.getProducts());
+        for (Product product : products) {
+            type.removeProduct(product);
+            other.addProduct(product);
+        }
         typeRepository.deleteById(id);
         return id;
     }
@@ -212,12 +221,15 @@ public class ProductServiceImpl implements ProductService {
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
         if (brand.getName().equals("Other")) {
-            throw new BrandOtherCantBeDeletedException("Brand \"Other\" can not be deleted!");
+            throw new BrandOtherCanNotBeDeletedOrUpdatedException();
         }
         long id = brand.getId();
         Brand other = brandRepository.getAllByName("Other");
-        List<Product> products = brand.getProducts();
-        products.forEach(x -> x.setBrand(other));
+        List<Product> products = new ArrayList<>(brand.getProducts());
+        for (Product product : products) {
+            brand.removeProduct(product);
+            other.addProduct(product);
+        }
         brandRepository.deleteById(id);
         return id;
     }

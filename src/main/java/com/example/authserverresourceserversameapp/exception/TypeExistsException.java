@@ -4,8 +4,8 @@ package com.example.authserverresourceserversameapp.exception;
 public class TypeExistsException extends RuntimeException {
     private String message;
 
-    public TypeExistsException(String message) {
-        this.message = message;
+    public TypeExistsException(String name) {
+        this.message = "Type with name: \"" + name + "\" already exists!";
     }
 
     @Override
