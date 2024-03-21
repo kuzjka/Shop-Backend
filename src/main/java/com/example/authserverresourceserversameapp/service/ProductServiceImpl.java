@@ -34,6 +34,17 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
 
+    /**
+     * gets products from database according to request parameters
+     *
+     * @param typeId id of type
+     * @param brandId id of brand
+     * @param sort field for sorting
+     * @param dir direction of sorting
+     * @param page index of page
+     * @param size size of page
+     * @return dto with list of products
+     */
     @Override
     public ResponseProductDto getProducts(long typeId, long brandId, String sort,
                                           String dir, int page, int size) {
@@ -64,21 +75,42 @@ public class ProductServiceImpl implements ProductService {
         return dto;
     }
 
+    /**
+     * gets all types from database
+     *
+     * @return list of types
+     */
     @Override
     public List<Type> getAllTypes() {
         return typeRepository.findAll();
     }
 
+    /**
+     * gets all brands from database
+     *
+     * * @return list of brands
+     */
     @Override
     public List<Brand> getAllBrands() {
         return brandRepository.findAll();
     }
 
+    /**
+     * gets all types binding to products from database
+     *
+     * @return list of types
+     */
     @Override
     public List<Type> getProductTypes() {
         return typeRepository.getProductTypes();
     }
 
+    /**
+     * gets all brands binding to products from database
+     *
+     * @param typeId id of type
+     * @return list of brands
+     */
     @Override
     public List<Brand> getProductBrands(long typeId) {
         List<Product> products = productRepository.findAllByTypeId(typeId);
@@ -86,6 +118,12 @@ public class ProductServiceImpl implements ProductService {
         return brands;
     }
 
+    /**
+     * adds new product to database or updates existing
+     *
+     * @param dto dto for adding new product or updating existing product
+     * @return id of created or updated product
+     */
     public long addProduct(ProductDto dto) {
         Product product = null;
         if (productRepository.findByName(dto.getName()) != null && dto.getId() == 0) {
@@ -107,6 +145,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product).getId();
     }
 
+    /**
+     * adds new type to database or updates existing
+     *
+     * @param dto dto for adding new type or updating existing type
+     * @return id of created or updated type
+     */
     @Override
     public long addType(TypeDto dto) {
         if (typeRepository.getAllByName(dto.getName()) != null) {
@@ -124,13 +168,17 @@ public class ProductServiceImpl implements ProductService {
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
     }
-
+    /**
+     * adds new brand to database or updates existing
+     *
+     * @param dto dto for adding new brand or updating existing brand
+     * @return id of created or updated brand
+     */
     @Override
     public long addBrand(BrandDto dto) {
         if (brandRepository.getAllByName(dto.getName()) != null) {
             throw new BrandExistsException(dto.getName());
         }
-
         Brand brand;
         if (dto.getId() == 0) {
             brand = new Brand();
@@ -144,6 +192,12 @@ public class ProductServiceImpl implements ProductService {
         return brandRepository.save(brand).getId();
     }
 
+    /**
+     * deletes product from database
+     *
+     * @param productId id of product
+     * @return id of deleted product
+     */
     @Override
     public long deleteProduct(long productId) {
         Product product = productRepository.findById(productId).get();
@@ -157,6 +211,12 @@ public class ProductServiceImpl implements ProductService {
         return id;
     }
 
+    /**
+     * adds new photos to existing product
+     *
+     * @param dto dto with list of new photos
+     * @return id of product to which new photos has been added
+     */
     @Override
     public long addPhoto(PhotoDto dto) {
         Product product = productRepository.findById(dto.getProductId()).get();
@@ -180,6 +240,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product).getId();
     }
 
+    /**
+     * deletes photo by id
+     *
+     * @param photoId id of photo to delete
+     * @return id of deleted photo
+     */
     @Override
     public long deletePhoto(long photoId) {
         Photo photo = photoRepository.findById(photoId).get();
@@ -200,6 +266,12 @@ public class ProductServiceImpl implements ProductService {
         return id;
     }
 
+    /**
+     * deletes type from database by id
+     *
+     * @param typeId id of type to delete
+     * @return id of deleted type
+     */
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
@@ -217,6 +289,12 @@ public class ProductServiceImpl implements ProductService {
         return id;
     }
 
+    /**
+     * deletes brand from database by id
+     *
+     * @param brandId id of brand to delete
+     * @return id of deleted brand
+     */
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
@@ -234,6 +312,11 @@ public class ProductServiceImpl implements ProductService {
         return id;
     }
 
+    /**
+     * removes all photos from particular product
+     *
+     * @param product product from which all photos should be removed
+     */
     public void removePhotos(Product product) {
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {

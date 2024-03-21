@@ -28,9 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -95,7 +93,22 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Smartphone"));
     }
-
+    @Test
+    @WithMockUser
+    public void getProductTypesTest() throws Exception {
+        Type type1 = Type.builder().id(2L).name("Smartphone").build();
+        List<Type> types = new ArrayList<>();
+        types.add(type);
+        types.add(type1);
+        given(productService.getProductTypes()).willReturn(types);
+        this.mockMvc.perform(get("/api/productType").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Car"))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].name").value("Smartphone"));
+    }
     @Test
     @WithMockUser
     public void getAllBrandsTest() throws Exception {
@@ -112,7 +125,19 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Apple"));
     }
+    @Test
+    @WithMockUser
+    public void getProductBrandsTest() throws Exception {
+        List<Brand> brands = new ArrayList<>();
+        brands.add(brand);
+        given(productService.getProductBrands(anyLong())).willReturn(brands);
+        this.mockMvc.perform(get("/api/productBrand").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Mercedes"));
 
+    }
     @Test
     @WithMockUser
     public void addProductTest() throws Exception {
@@ -136,7 +161,26 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
+    @Test
+    @WithMockUser
+    public void editTypeTest() throws Exception {
+        String json = "{\"name\":\"Plane\"}";
+        given(productService.addType(any(TypeDto.class))).willReturn(3L);
+        this.mockMvc.perform(put("/api/type").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(3));
+    }
 
+    @Test
+    @WithMockUser
+    public void deleteTypeTest() throws Exception {
+        given(productService.deleteType(anyLong())).willReturn(1L);
+        this.mockMvc.perform(delete("/api/type/1").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+    }
     @Test
     @WithMockUser
     public void addBrandTest() throws Exception {
@@ -148,7 +192,26 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
+    @Test
+    @WithMockUser
+    public void editBrandTest() throws Exception {
+        String json = "{\"name\":\"Boeing\"}";
+        given(productService.addBrand(any(BrandDto.class))).willReturn(3L);
+        this.mockMvc.perform(put("/api/brand").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(3));
+    }
 
+    @Test
+    @WithMockUser
+    public void deleteBrandTest() throws Exception {
+        given(productService.deleteBrand(anyLong())).willReturn(1L);
+        this.mockMvc.perform(delete("/api/brand/1").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+    }
     @Test
     @WithMockUser
     public void typeExistsExceptionTest() throws Exception {
