@@ -1,28 +1,44 @@
 package com.example.authserverresourceserversameapp.service;
 
+import com.example.authserverresourceserversameapp.dto.PhotoDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
 import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.repository.BrandRepository;
+import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -32,17 +48,61 @@ public class ProductServiceTest {
     private BrandRepository brandRepository;
     @Mock
     private TypeRepository typeRepository;
+
+    @Mock
+    private PhotoRepository photoRepository;
     @InjectMocks
     private ProductServiceImpl productService;
     private Product product;
     private Type type;
     private Brand brand;
 
+    private Photo photo;
+    private List<Photo> photos;
+    PhotoDto photoDto;
+    List<MultipartFile> files;
+    MultipartFile mockMultipartFile;
+    byte[] bytes;
+
     @BeforeEach
     public void setup() {
-        product = Product.builder().id(1L).name("Mercedes S600").build();
+
+        photo = Photo.builder().id(1L).name("photo1.jpg").url("").build();
+        photos = new ArrayList<>();
+        photos.add(photo);
+        product = Product.builder().id(1L).name("Mercedes S600").photos(photos).build();
+        product.addPhoto(photo);
         type = Type.builder().id(1L).name("Car").build();
         brand = Brand.builder().id(1L).name("Mercedes").build();
+        photoDto = new PhotoDto();
+        photoDto.setProductId(1L);
+    }
+
+    @Test
+    void addPhotoTest() throws IOException {
+        Optional<Product> product1 = Optional.of(product);
+        files = new ArrayList<>();
+        bytes = new byte[2];
+        mockMultipartFile = new MockMultipartFile(String.valueOf(photo.getName()), photo.getName(),
+                String.valueOf(MediaType.IMAGE_JPEG), bytes);
+        files.add(mockMultipartFile);
+        photoDto.setPhotos(files);
+
+        given(productRepository.findById(anyLong())).willReturn(product1);
+        given(photoRepository.findByNameAndProductId(anyString(), anyLong())).willReturn(photo);
+        given(photoRepository.save(any(Photo.class))).willReturn(photo);
+        given(productRepository.save(any(Product.class))).willReturn(product);
+        long id = productService.addPhoto(photoDto);
+        assertThat(id).isEqualTo(1L);
+    }
+
+    @Test
+    public void deletePhoto() {
+        Optional<Photo> photo1 = Optional.of(photo);
+        given(photoRepository.findById(anyLong())).willReturn(photo1);
+        doNothing().when(photoRepository).delete(photo);
+        long id = productService.deletePhoto(photo.getId());
+        assertThat(id).isEqualTo(1L);
     }
 
     @Test

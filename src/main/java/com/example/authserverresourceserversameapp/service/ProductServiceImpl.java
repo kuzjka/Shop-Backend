@@ -37,12 +37,12 @@ public class ProductServiceImpl implements ProductService {
     /**
      * gets products from database according to request parameters
      *
-     * @param typeId id of type
+     * @param typeId  id of type
      * @param brandId id of brand
-     * @param sort field for sorting
-     * @param dir direction of sorting
-     * @param page index of page
-     * @param size size of page
+     * @param sort    field for sorting
+     * @param dir     direction of sorting
+     * @param page    index of page
+     * @param size    size of page
      * @return dto with list of products
      */
     @Override
@@ -87,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * gets all brands from database
-     *
+     * <p>
      * * @return list of brands
      */
     @Override
@@ -168,6 +168,7 @@ public class ProductServiceImpl implements ProductService {
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
     }
+
     /**
      * adds new brand to database or updates existing
      *
@@ -220,17 +221,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addPhoto(PhotoDto dto) {
         Product product = productRepository.findById(dto.getProductId()).get();
+        Path photoPath;
         for (MultipartFile file : dto.getPhotos()) {
             Photo photo = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
             if (photo != null) {
-                deletePhoto(photo.getId());
+                photoRepository.delete(photo);
+                deleteFile(photo);
             }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
             newPhoto.setName(file.getOriginalFilename());
             newPhoto.setUrl(BASE_URL + "photo_" + photoId + "_" + file.getOriginalFilename());
             product.addPhoto(newPhoto);
-            Path photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
+            photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
             try {
                 Files.write(photoPath, file.getBytes());
             } catch (IOException e) {
@@ -251,8 +254,13 @@ public class ProductServiceImpl implements ProductService {
         Photo photo = photoRepository.findById(photoId).get();
         Product product = photo.getProduct();
         product.removePhoto(photo);
+        deleteFile(photo);
         long id = photo.getId();
         photoRepository.delete(photo);
+        return id;
+    }
+
+    public void deleteFile(Photo photo) {
         int index = photo.getUrl().indexOf("photo_");
         if (index > -1) {
             String file = photo.getUrl().substring(index);
@@ -263,7 +271,6 @@ public class ProductServiceImpl implements ProductService {
                 throw new RuntimeException(e);
             }
         }
-        return id;
     }
 
     /**
