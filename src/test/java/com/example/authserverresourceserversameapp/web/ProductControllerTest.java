@@ -1,9 +1,6 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.BrandDto;
-import com.example.authserverresourceserversameapp.dto.ProductDto;
-import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
-import com.example.authserverresourceserversameapp.dto.TypeDto;
+import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -24,8 +21,7 @@ import java.util.List;
 
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -67,7 +63,8 @@ public class ProductControllerTest {
         dto.setProducts(products);
         dto.setTotalProducts(2L);
         dto.setPageSize(10);
-        given(productService.getProducts(0L, 0L, "name", "ASC", 0, 10)).willReturn(dto);
+        given(productService.getProducts(anyLong(), anyLong(), anyString(), anyString(), anyInt(), anyInt()))
+                .willReturn(dto);
         this.mockMvc.perform(get("/api/product").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.products", hasSize(2)))
@@ -93,6 +90,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Smartphone"));
     }
+
     @Test
     @WithMockUser
     public void getProductTypesTest() throws Exception {
@@ -109,6 +107,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Smartphone"));
     }
+
     @Test
     @WithMockUser
     public void getAllBrandsTest() throws Exception {
@@ -125,6 +124,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Apple"));
     }
+
     @Test
     @WithMockUser
     public void getProductBrandsTest() throws Exception {
@@ -138,6 +138,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[0].name").value("Mercedes"));
 
     }
+
     @Test
     @WithMockUser
     public void addProductTest() throws Exception {
@@ -152,6 +153,36 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser
+    public void editProductTest() throws Exception {
+        String json = "{\"id\":1, \"name\":\"Audi A8\"}";
+        given(productService.addProduct(any(ProductDto.class))).willReturn(1L);
+        this.mockMvc.perform(put("/api/product").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+    }
+
+    @Test
+    @WithMockUser
+    public void addPhotoTest() throws Exception {
+        given(productService.addPhoto(any(PhotoDto.class))).willReturn(3L);
+        this.mockMvc.perform(post("/api/photo").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(3));
+    }
+
+    @Test
+    @WithMockUser
+    public void deletePhotoTest() throws Exception {
+        given(productService.deletePhoto(anyLong())).willReturn(1L);
+        this.mockMvc.perform(delete("/api/photo/1").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(1));
+    }
+
+    @Test
+    @WithMockUser
     public void addTypeTest() throws Exception {
         String json = "{\"name\":\"Plane\"}";
         given(productService.addType(any(TypeDto.class))).willReturn(3L);
@@ -161,6 +192,7 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
+
     @Test
     @WithMockUser
     public void editTypeTest() throws Exception {
@@ -181,6 +213,7 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(1));
     }
+
     @Test
     @WithMockUser
     public void addBrandTest() throws Exception {
@@ -192,6 +225,7 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
+
     @Test
     @WithMockUser
     public void editBrandTest() throws Exception {
@@ -212,6 +246,7 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(1));
     }
+
     @Test
     @WithMockUser
     public void typeExistsExceptionTest() throws Exception {
@@ -238,7 +273,6 @@ public class ProductControllerTest {
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Brand with name: \"Mercedes\" already exists!"));
-
     }
 
     @Test
@@ -252,7 +286,6 @@ public class ProductControllerTest {
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Product with name: \"Mercedes S600\" already exists!"));
-
     }
 
     @Test
@@ -266,7 +299,6 @@ public class ProductControllerTest {
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Brand \"Other\" can't be deleted or updated!"));
-
     }
 
     @Test
@@ -280,7 +312,6 @@ public class ProductControllerTest {
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Type \"Other\" can't be deleted or updated!"));
-
     }
 
     @Test
@@ -291,7 +322,6 @@ public class ProductControllerTest {
         this.mockMvc.perform(delete("/api/type/4").with(csrf()))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Type \"Other\" can't be deleted or updated!"));
-
     }
 
     @Test
@@ -302,6 +332,5 @@ public class ProductControllerTest {
         this.mockMvc.perform(delete("/api/brand/9").with(csrf()))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Brand \"Other\" can't be deleted or updated!"));
-
     }
 }

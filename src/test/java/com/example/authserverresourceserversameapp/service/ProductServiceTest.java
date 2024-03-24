@@ -60,7 +60,6 @@ public class ProductServiceTest {
 
     @BeforeEach
     public void setup() {
-
         photo = Photo.builder().id(1L).name("photo1.jpg").url("").build();
         photos = new ArrayList<>();
         photos.add(photo);
@@ -81,7 +80,6 @@ public class ProductServiceTest {
                 String.valueOf(MediaType.IMAGE_JPEG), bytes);
         files.add(mockMultipartFile);
         photoDto.setPhotos(files);
-
         given(productRepository.findById(anyLong())).willReturn(product1);
         given(photoRepository.findByNameAndProductId(anyString(), anyLong())).willReturn(photo);
         given(photoRepository.save(any(Photo.class))).willReturn(photo);

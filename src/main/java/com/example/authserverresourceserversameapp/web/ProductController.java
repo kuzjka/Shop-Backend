@@ -61,7 +61,7 @@ public class ProductController {
         return productService.deleteProduct(id);
     }
 
-    @PostMapping(value = "/photo")
+    @PostMapping("/photo")
     public long addPhoto(PhotoDto dto) {
         return productService.addPhoto(dto);
     }

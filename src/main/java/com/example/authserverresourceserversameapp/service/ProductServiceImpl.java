@@ -244,7 +244,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * deletes photo by id
+     * deletes photo from database
      *
      * @param photoId id of photo to delete
      * @return id of deleted photo
@@ -260,6 +260,10 @@ public class ProductServiceImpl implements ProductService {
         return id;
     }
 
+    /**
+     * deletes photo from file system
+     * @param photo entity of photo which should be deleted from file system
+     */
     public void deleteFile(Photo photo) {
         int index = photo.getUrl().indexOf("photo_");
         if (index > -1) {
