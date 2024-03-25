@@ -90,7 +90,6 @@ public class ProductServiceTest {
 
     @Test
     public void deletePhoto() {
-
         doNothing().when(photoRepository).delete(photo);
         long id = productService.deletePhoto(photo);
         assertThat(id).isEqualTo(1L);

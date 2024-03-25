@@ -233,7 +233,7 @@ public class ProductServiceImpl implements ProductService {
             newPhoto.setUrl(BASE_URL + "photo_" + photoId + "_" + file.getOriginalFilename());
             product.addPhoto(newPhoto);
             photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
-            if (!photoPath.toFile().exists())
+
                 try {
                     Files.write(photoPath, file.getBytes());
                 } catch (IOException e) {
@@ -243,8 +243,12 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product).getId();
     }
 
-
-
+    /**
+     * gets photo with particular id from database
+     *
+     * @param photoId id of photo
+     * @return photo with particular id
+     */
     @Override
     public Photo getPhotoById(long photoId) {
         return photoRepository.findById(photoId).get();
