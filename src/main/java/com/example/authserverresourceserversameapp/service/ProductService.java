@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Type;
 
 import java.io.IOException;
@@ -29,7 +30,11 @@ public interface ProductService {
 
     long addPhoto(PhotoDto dto);
 
-    long deletePhoto(long id);
+
+
+    Photo getPhotoById(long photoId);
+
+    long deletePhoto(Photo photo);
 
     long deleteType(long id);
 

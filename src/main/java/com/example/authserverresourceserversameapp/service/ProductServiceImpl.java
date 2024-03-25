@@ -225,8 +225,7 @@ public class ProductServiceImpl implements ProductService {
         for (MultipartFile file : dto.getPhotos()) {
             Photo photo = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
             if (photo != null) {
-                photoRepository.delete(photo);
-                deleteFile(photo);
+                deletePhoto(photo);
             }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
@@ -234,47 +233,47 @@ public class ProductServiceImpl implements ProductService {
             newPhoto.setUrl(BASE_URL + "photo_" + photoId + "_" + file.getOriginalFilename());
             product.addPhoto(newPhoto);
             photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
-            try {
-                Files.write(photoPath, file.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            if (!photoPath.toFile().exists())
+                try {
+                    Files.write(photoPath, file.getBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
         }
         return productRepository.save(product).getId();
+    }
+
+
+
+    @Override
+    public Photo getPhotoById(long photoId) {
+        return photoRepository.findById(photoId).get();
     }
 
     /**
      * deletes photo from database
      *
-     * @param photoId id of photo to delete
+     * @param photo photo to delete
      * @return id of deleted photo
      */
     @Override
-    public long deletePhoto(long photoId) {
-        Photo photo = photoRepository.findById(photoId).get();
+    public long deletePhoto(Photo photo) {
         Product product = photo.getProduct();
         product.removePhoto(photo);
-        deleteFile(photo);
-        long id = photo.getId();
-        photoRepository.delete(photo);
-        return id;
-    }
-
-    /**
-     * deletes photo from file system
-     * @param photo entity of photo which should be deleted from file system
-     */
-    public void deleteFile(Photo photo) {
         int index = photo.getUrl().indexOf("photo_");
         if (index > -1) {
             String file = photo.getUrl().substring(index);
             Path path = Paths.get(BASE_DIR + file);
-            try {
-                Files.delete(path);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            if (path.toFile().exists())
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
         }
+        long id = photo.getId();
+        photoRepository.delete(photo);
+        return id;
     }
 
     /**
@@ -331,7 +330,7 @@ public class ProductServiceImpl implements ProductService {
     public void removePhotos(Product product) {
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
-            deletePhoto(photo.getId());
+            deletePhoto(photo);
         }
     }
 }

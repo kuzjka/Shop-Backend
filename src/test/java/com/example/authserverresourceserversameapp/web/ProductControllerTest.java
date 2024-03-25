@@ -3,6 +3,7 @@ package com.example.authserverresourceserversameapp.web;
 import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
@@ -43,13 +44,14 @@ public class ProductControllerTest {
 
     private Brand brand;
     private Product product;
+    private Photo photo;
 
     @BeforeEach
     public void setup() {
         product = Product.builder().id(1L).name("Mercedes S600").build();
         type = Type.builder().id(1L).name("Car").build();
         brand = Brand.builder().id(1L).name("Mercedes").build();
-
+        photo = Photo.builder().id(1L).name("photo1.jpg").build();
     }
 
     @Test
@@ -175,7 +177,8 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void deletePhotoTest() throws Exception {
-        given(productService.deletePhoto(anyLong())).willReturn(1L);
+        given(productService.getPhotoById(anyLong())).willReturn(photo);
+        given(productService.deletePhoto(any(Photo.class))).willReturn(1L);
         this.mockMvc.perform(delete("/api/photo/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(1));

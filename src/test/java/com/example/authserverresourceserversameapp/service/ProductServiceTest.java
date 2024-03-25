@@ -60,7 +60,7 @@ public class ProductServiceTest {
 
     @BeforeEach
     public void setup() {
-        photo = Photo.builder().id(1L).name("photo1.jpg").url("").build();
+        photo = Photo.builder().id(1L).name("photo1.jpg").url("http://localhost:8080/images/photo_1_photo1.jpg").build();
         photos = new ArrayList<>();
         photos.add(photo);
         product = Product.builder().id(1L).name("Mercedes S600").photos(photos).build();
@@ -90,10 +90,9 @@ public class ProductServiceTest {
 
     @Test
     public void deletePhoto() {
-        Optional<Photo> photo1 = Optional.of(photo);
-        given(photoRepository.findById(anyLong())).willReturn(photo1);
+
         doNothing().when(photoRepository).delete(photo);
-        long id = productService.deletePhoto(photo.getId());
+        long id = productService.deletePhoto(photo);
         assertThat(id).isEqualTo(1L);
     }
 

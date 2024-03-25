@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,8 @@ public class ProductController {
 
     @DeleteMapping("/photo/{id}")
     public long deletePhoto(@PathVariable long id) {
-        return productService.deletePhoto(id);
+        Photo photo = productService.getPhotoById(id);
+        return productService.deletePhoto(photo);
     }
 
     @PostMapping("/type")
