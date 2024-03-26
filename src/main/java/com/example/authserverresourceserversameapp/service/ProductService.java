@@ -10,7 +10,12 @@ import java.util.List;
 
 public interface ProductService {
 
-    ResponseProductDto getProducts(long typeId, long brandId, String sort, String dir, int page, int size);
+    ResponseProductDto getProducts(long typeId,
+                                   long brandId,
+                                   String sort,
+                                   String dir,
+                                   int page,
+                                   int size);
 
     List<Type> getAllTypes();
 
@@ -30,15 +35,12 @@ public interface ProductService {
 
     long addPhoto(PhotoDto dto);
 
+    long deletePhotoById(long photoId);
 
-
-    Photo getPhotoById(long photoId);
-
-    long deletePhoto(Photo photo);
+    void deletePhotoFile(Photo photo);
 
     long deleteType(long id);
 
     long deleteBrand(long id);
-
 
 }

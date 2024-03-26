@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -58,9 +59,11 @@ public class ProductServiceTest {
     MultipartFile mockMultipartFile;
     byte[] bytes;
 
+
     @BeforeEach
     public void setup() {
-        photo = Photo.builder().id(1L).name("photo1.jpg").url("http://localhost:8080/images/photo_1_photo1.jpg").build();
+        photo = Photo.builder().id(1L).name("photo1.jpg")
+                .url("http://localhost:8080/images/photo_1_photo1.jpg").build();
         photos = new ArrayList<>();
         photos.add(photo);
         product = Product.builder().id(1L).name("Mercedes S600").photos(photos).build();
@@ -76,6 +79,8 @@ public class ProductServiceTest {
         Optional<Product> product1 = Optional.of(product);
         files = new ArrayList<>();
         bytes = new byte[2];
+
+
         mockMultipartFile = new MockMultipartFile(String.valueOf(photo.getName()), photo.getName(),
                 String.valueOf(MediaType.IMAGE_JPEG), bytes);
         files.add(mockMultipartFile);
@@ -87,14 +92,12 @@ public class ProductServiceTest {
         long id = productService.addPhoto(photoDto);
         assertThat(id).isEqualTo(1L);
     }
-
     @Test
-    public void deletePhoto() {
-        doNothing().when(photoRepository).delete(photo);
-        long id = productService.deletePhoto(photo);
+    public void deletePhotoTest() {
+        doNothing().when(photoRepository).deleteById(1L);
+        long id = productService.deletePhotoById(1L);
         assertThat(id).isEqualTo(1L);
     }
-
     @Test
     public void getProductsTest() {
         Product product1 = Product.builder().id(2L).name("BMW 750i").build();

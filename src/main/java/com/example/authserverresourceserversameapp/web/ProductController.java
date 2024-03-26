@@ -69,8 +69,8 @@ public class ProductController {
 
     @DeleteMapping("/photo/{id}")
     public long deletePhoto(@PathVariable long id) {
-        Photo photo = productService.getPhotoById(id);
-        return productService.deletePhoto(photo);
+
+        return productService.deletePhotoById(id);
     }
 
     @PostMapping("/type")

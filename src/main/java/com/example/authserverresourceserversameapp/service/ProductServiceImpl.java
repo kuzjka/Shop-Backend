@@ -10,7 +10,7 @@ import com.example.authserverresourceserversameapp.repository.BrandRepository;
 import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,14 +25,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private static final String BASE_DIR = "src/main/webapp/WEB-INF/images/";
-    private static final String BASE_URL = "http://localhost:8080/images/";
+    private final String imageDir;
+    private final String imageUrl;
     private final ProductRepository productRepository;
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
+
+    public ProductServiceImpl(@Value("${shop.imageDir}") String imageDir,
+                              @Value("${shop.imageUrl}") String imageUrl,
+                              ProductRepository productRepository,
+                              TypeRepository typeRepository,
+                              BrandRepository brandRepository,
+                              PhotoRepository photoRepository) {
+        this.imageDir = imageDir;
+        this.imageUrl = imageUrl;
+        this.productRepository = productRepository;
+        this.typeRepository = typeRepository;
+        this.brandRepository = brandRepository;
+        this.photoRepository = photoRepository;
+    }
 
     /**
      * gets products from database according to request parameters
@@ -225,33 +238,35 @@ public class ProductServiceImpl implements ProductService {
         for (MultipartFile file : dto.getPhotos()) {
             Photo photo = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
             if (photo != null) {
-                deletePhoto(photo);
+                product.removePhoto(photo);
+                photoRepository.delete(photo);
+                deletePhotoFile(photo);
             }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
             newPhoto.setName(file.getOriginalFilename());
-            newPhoto.setUrl(BASE_URL + "photo_" + photoId + "_" + file.getOriginalFilename());
+            newPhoto.setUrl(imageUrl + "photo_" + photoId + "_" + file.getOriginalFilename());
             product.addPhoto(newPhoto);
-            photoPath = Paths.get(BASE_DIR + "photo_" + photoId + "_" + file.getOriginalFilename());
-
-                try {
-                    Files.write(photoPath, file.getBytes());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            photoPath = Paths.get(imageDir + "photo_" + photoId + "_" + file.getOriginalFilename());
+            try {
+                Files.write(photoPath, file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return productRepository.save(product).getId();
     }
 
     /**
-     * gets photo with particular id from database
+     * deletes photo with particular id from database
      *
      * @param photoId id of photo
-     * @return photo with particular id
+     * @return  id of deleted photo
      */
     @Override
-    public Photo getPhotoById(long photoId) {
-        return photoRepository.findById(photoId).get();
+    public long deletePhotoById(long photoId) {
+        photoRepository.deleteById(photoId);
+        return photoId;
     }
 
     /**
@@ -261,13 +276,11 @@ public class ProductServiceImpl implements ProductService {
      * @return id of deleted photo
      */
     @Override
-    public long deletePhoto(Photo photo) {
-        Product product = photo.getProduct();
-        product.removePhoto(photo);
+    public void deletePhotoFile(Photo photo) {
         int index = photo.getUrl().indexOf("photo_");
         if (index > -1) {
             String file = photo.getUrl().substring(index);
-            Path path = Paths.get(BASE_DIR + file);
+            Path path = Paths.get(imageDir + file);
             if (path.toFile().exists())
                 try {
                     Files.delete(path);
@@ -275,9 +288,6 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
         }
-        long id = photo.getId();
-        photoRepository.delete(photo);
-        return id;
     }
 
     /**
@@ -334,7 +344,7 @@ public class ProductServiceImpl implements ProductService {
     public void removePhotos(Product product) {
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
-            deletePhoto(photo);
+            deletePhotoFile(photo);
         }
     }
 }
