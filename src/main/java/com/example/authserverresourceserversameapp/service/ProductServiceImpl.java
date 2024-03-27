@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
                               BrandRepository brandRepository,
                               PhotoRepository photoRepository) {
         this.imageDir = "src/main/webapp/WEB-INF/images/";
-        this.imageUrl = "http://localhost:8080/images";
+        this.imageUrl = "http://localhost:8080/images/";
         this.productRepository = productRepository;
         this.typeRepository = typeRepository;
         this.brandRepository = brandRepository;
