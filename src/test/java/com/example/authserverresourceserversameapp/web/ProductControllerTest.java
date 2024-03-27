@@ -177,10 +177,11 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void deletePhotoTest() throws Exception {
-        given(productService.deletePhotoById(anyLong())).willReturn(1L);
+        given(productService.getPhoto(anyLong())).willReturn(photo);
+        given(productService.deletePhoto(any(Photo.class))).willReturn(1L);
         this.mockMvc.perform(delete("/api/photo/1").with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(1));
+                .andExpect(jsonPath("$").value(1L));
     }
 
     @Test

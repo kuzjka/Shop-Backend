@@ -240,7 +240,7 @@ public class ProductServiceImpl implements ProductService {
             if (photo != null) {
                 product.removePhoto(photo);
                 photoRepository.delete(photo);
-                deletePhotoFile(photo);
+                deletePhoto(photo);
             }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
@@ -258,25 +258,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * deletes photo with particular id from database
-     *
-     * @param photoId id of photo
-     * @return  id of deleted photo
-     */
-    @Override
-    public long deletePhotoById(long photoId) {
-        photoRepository.deleteById(photoId);
-        return photoId;
-    }
-
-    /**
-     * deletes photo from database
+     * deletes photo from database and file system
      *
      * @param photo photo to delete
      * @return id of deleted photo
      */
     @Override
-    public void deletePhotoFile(Photo photo) {
+    public long deletePhoto(Photo photo) {
+        long photoId = photo.getId();
+        photoRepository.delete(photo);
         int index = photo.getUrl().indexOf("photo_");
         if (index > -1) {
             String file = photo.getUrl().substring(index);
@@ -288,7 +278,20 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
         }
+        return photoId;
     }
+
+    /**
+     * gets photo with particular id from database
+     *
+     * @param photoId id of photo
+     * @return photo with particular id
+     */
+    @Override
+    public Photo getPhoto(long photoId) {
+        return photoRepository.findById(photoId).get();
+    }
+
 
     /**
      * deletes type from database by id
@@ -344,7 +347,7 @@ public class ProductServiceImpl implements ProductService {
     public void removePhotos(Product product) {
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
-            deletePhotoFile(photo);
+            deletePhoto(photo);
         }
     }
 }

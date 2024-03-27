@@ -35,9 +35,9 @@ public interface ProductService {
 
     long addPhoto(PhotoDto dto);
 
-    long deletePhotoById(long photoId);
+    long deletePhoto(Photo photo);
 
-    void deletePhotoFile(Photo photo);
+    Photo getPhoto(long photoId);
 
     long deleteType(long id);
 

@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -79,8 +78,6 @@ public class ProductServiceTest {
         Optional<Product> product1 = Optional.of(product);
         files = new ArrayList<>();
         bytes = new byte[2];
-
-
         mockMultipartFile = new MockMultipartFile(String.valueOf(photo.getName()), photo.getName(),
                 String.valueOf(MediaType.IMAGE_JPEG), bytes);
         files.add(mockMultipartFile);
@@ -94,8 +91,8 @@ public class ProductServiceTest {
     }
     @Test
     public void deletePhotoTest() {
-        doNothing().when(photoRepository).deleteById(1L);
-        long id = productService.deletePhotoById(1L);
+        doNothing().when(photoRepository).delete(photo);
+        long id = productService.deletePhoto(photo);
         assertThat(id).isEqualTo(1L);
     }
     @Test
