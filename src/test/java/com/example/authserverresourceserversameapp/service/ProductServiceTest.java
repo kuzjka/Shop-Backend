@@ -24,7 +24,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +44,6 @@ public class ProductServiceTest {
     private BrandRepository brandRepository;
     @Mock
     private TypeRepository typeRepository;
-
     @Mock
     private PhotoRepository photoRepository;
     @InjectMocks
@@ -50,7 +51,6 @@ public class ProductServiceTest {
     private Product product;
     private Type type;
     private Brand brand;
-
     private Photo photo;
     private List<Photo> photos;
     PhotoDto photoDto;
@@ -58,10 +58,9 @@ public class ProductServiceTest {
     MultipartFile mockMultipartFile;
     byte[] bytes;
 
-
     @BeforeEach
     public void setup() {
-        photo = Photo.builder().id(1L).name("photo1.jpg")
+        photo = Photo.builder().id(1L).name("1_photo1.jpg")
                 .url("http://localhost:8080/images/photo_1_photo1.jpg").build();
         photos = new ArrayList<>();
         photos.add(photo);
@@ -77,9 +76,10 @@ public class ProductServiceTest {
     void addPhotoTest() throws IOException {
         Optional<Product> product1 = Optional.of(product);
         files = new ArrayList<>();
-        bytes = new byte[2];
-        mockMultipartFile = new MockMultipartFile(String.valueOf(photo.getName()), photo.getName(),
-                String.valueOf(MediaType.IMAGE_JPEG), bytes);
+        File file = new File("src/main/webapp/WEB-INF/images/test_image.jpg");
+        bytes = Files.readAllBytes(file.toPath());
+        mockMultipartFile = new MockMultipartFile("photo1.jpg", "photo1.jpg",
+                String.valueOf(MediaType.MULTIPART_FORM_DATA), bytes);
         files.add(mockMultipartFile);
         photoDto.setPhotos(files);
         given(productRepository.findById(anyLong())).willReturn(product1);
@@ -89,12 +89,14 @@ public class ProductServiceTest {
         long id = productService.addPhoto(photoDto);
         assertThat(id).isEqualTo(1L);
     }
+
     @Test
     public void deletePhotoTest() {
         doNothing().when(photoRepository).delete(photo);
         long id = productService.deletePhoto(photo);
         assertThat(id).isEqualTo(1L);
     }
+
     @Test
     public void getProductsTest() {
         Product product1 = Product.builder().id(2L).name("BMW 750i").build();

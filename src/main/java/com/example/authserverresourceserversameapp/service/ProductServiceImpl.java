@@ -10,7 +10,6 @@ import com.example.authserverresourceserversameapp.repository.BrandRepository;
 import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -33,14 +32,12 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
 
-    public ProductServiceImpl(@Value("${shop.imageDir}") String imageDir,
-                              @Value("${shop.imageUrl}") String imageUrl,
-                              ProductRepository productRepository,
+    public ProductServiceImpl(ProductRepository productRepository,
                               TypeRepository typeRepository,
                               BrandRepository brandRepository,
                               PhotoRepository photoRepository) {
-        this.imageDir = imageDir;
-        this.imageUrl = imageUrl;
+        this.imageDir = "src/main/webapp/WEB-INF/images/";
+        this.imageUrl = "http://localhost:8080/images";
         this.productRepository = productRepository;
         this.typeRepository = typeRepository;
         this.brandRepository = brandRepository;
@@ -238,8 +235,6 @@ public class ProductServiceImpl implements ProductService {
         for (MultipartFile file : dto.getPhotos()) {
             Photo photo = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
             if (photo != null) {
-                product.removePhoto(photo);
-                photoRepository.delete(photo);
                 deletePhoto(photo);
             }
             Photo newPhoto = new Photo();
@@ -266,8 +261,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deletePhoto(Photo photo) {
         long photoId = photo.getId();
-        photoRepository.delete(photo);
+
         int index = photo.getUrl().indexOf("photo_");
+        photoRepository.delete(photo);
         if (index > -1) {
             String file = photo.getUrl().substring(index);
             Path path = Paths.get(imageDir + file);
