@@ -19,6 +19,8 @@ public interface ProductService {
 
     List<Type> getAllTypes();
 
+    List<Brand> getAllBrandsByTypeId(long typeId);
+
     List<Brand> getAllBrands();
 
     List<Type> getProductTypes();

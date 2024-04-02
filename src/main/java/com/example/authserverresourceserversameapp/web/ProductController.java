@@ -22,19 +22,16 @@ public class ProductController {
         return productService.getAllTypes();
     }
 
-    @GetMapping("/brand")
-    public List<Brand> getAllBrands() {
-        return productService.getAllBrands();
-    }
+
 
     @GetMapping("/productType")
     public List<Type> getProductTypes() {
         return productService.getProductTypes();
     }
 
-    @GetMapping("/productBrand")
-    public List<Brand> getProductBrands(@RequestParam(required = false, defaultValue = "0") long typeId) {
-        return productService.getProductBrands(typeId);
+    @GetMapping("/brand")
+    public List<Brand> getBrands(@RequestParam(required = false, defaultValue = "0") long typeId) {
+        return productService.getAllBrandsByTypeId(typeId);
     }
 
     @GetMapping(value = "/product")

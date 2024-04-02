@@ -95,6 +95,14 @@ public class ProductServiceImpl implements ProductService {
         return typeRepository.findAll();
     }
 
+    @Override
+    public List<Brand> getAllBrandsByTypeId(long typeId) {
+        if (typeId == 0) {
+            return brandRepository.findAll();
+        }
+        return brandRepository.getAllByTypesId(typeId);
+    }
+
     /**
      * gets all brands from database
      * <p>
@@ -191,15 +199,20 @@ public class ProductServiceImpl implements ProductService {
             throw new BrandExistsException(dto.getName());
         }
         Brand brand;
+        Type type = typeRepository.findById(dto.getTypeId()).get();
         if (dto.getId() == 0) {
             brand = new Brand();
+            brand.setName(dto.getName());
+
+            type.addBrand(brand);
         } else {
             brand = brandRepository.findById(dto.getId()).get();
+            brand.setName(dto.getName());
             if (brand.getName().equals("Other")) {
                 throw new BrandOtherCanNotBeDeletedOrUpdatedException();
             }
         }
-        brand.setName(dto.getName());
+
         return brandRepository.save(brand).getId();
     }
 

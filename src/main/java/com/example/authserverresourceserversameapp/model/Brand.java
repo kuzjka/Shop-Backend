@@ -23,6 +23,10 @@ public class Brand {
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brands")
+
+    private List<Type> types = new ArrayList<>();
+
     public void addProduct(Product product) {
         this.products.add(product);
         product.setBrand(this);
@@ -31,5 +35,12 @@ public class Brand {
     public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
+    }
+
+    @PreRemove
+    public void removeTypeAssociations(){
+        for(Type type: this.types){
+            type.getBrands().remove(this);
+        }
     }
 }

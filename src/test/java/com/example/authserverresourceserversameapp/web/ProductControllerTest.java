@@ -112,34 +112,22 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser
-    public void getAllBrandsTest() throws Exception {
-        Brand brand1 = Brand.builder().id(2L).name("Apple").build();
+    public void getBrandsTest() throws Exception {
+        Brand brand1 = Brand.builder().id(2L).name("BMW").build();
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
-        given(productService.getAllBrands()).willReturn(brands);
-        this.mockMvc.perform(get("/api/brand").accept(MediaType.APPLICATION_JSON))
+        given(productService.getAllBrandsByTypeId(anyLong())).willReturn(brands);
+        this.mockMvc.perform(get("/api/brand?typeId=1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("Mercedes"))
                 .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].name").value("Apple"));
+                .andExpect(jsonPath("$[1].name").value("BMW"));
     }
 
-    @Test
-    @WithMockUser
-    public void getProductBrandsTest() throws Exception {
-        List<Brand> brands = new ArrayList<>();
-        brands.add(brand);
-        given(productService.getProductBrands(anyLong())).willReturn(brands);
-        this.mockMvc.perform(get("/api/productBrand").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("Mercedes"));
 
-    }
 
     @Test
     @WithMockUser
