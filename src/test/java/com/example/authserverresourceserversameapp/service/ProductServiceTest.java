@@ -134,13 +134,25 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void getBrandsTest() {
+    public void getBrandsByTypeIdTest() {
+        List<Brand> brands = new ArrayList<>();
+        brands.add(brand);
+        given(brandRepository.getAllByTypesId(anyLong())).willReturn(brands);
+        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(1L);
+        assertThat(serviceBrands).isNotNull();
+        assertThat(serviceBrands.size()).isEqualTo(1);
+        assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);
+        assertThat(serviceBrands.get(0).getName()).isEqualTo("Mercedes");
+    }
+
+    @Test
+    public void getBrandsByTypeIdEquals0Test() {
         Brand brand1 = Brand.builder().id(2L).name("Apple").build();
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
         given(brandRepository.findAll()).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrands();
+        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(0L);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(2);
         assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);

@@ -22,8 +22,6 @@ public class ProductController {
         return productService.getAllTypes();
     }
 
-
-
     @GetMapping("/productType")
     public List<Type> getProductTypes() {
         return productService.getProductTypes();

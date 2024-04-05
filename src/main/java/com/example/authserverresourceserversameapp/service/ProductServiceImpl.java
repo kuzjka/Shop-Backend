@@ -95,6 +95,12 @@ public class ProductServiceImpl implements ProductService {
         return typeRepository.findAll();
     }
 
+    /**
+     * gets all brands from database with particular type id
+     *
+     * @param typeId id of type
+     * @return list of brands
+     */
     @Override
     public List<Brand> getAllBrandsByTypeId(long typeId) {
         if (typeId == 0) {
@@ -105,8 +111,8 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * gets all brands from database
-     * <p>
-     * * @return list of brands
+     *
+     * @return list of brands
      */
     @Override
     public List<Brand> getAllBrands() {
@@ -121,19 +127,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Type> getProductTypes() {
         return typeRepository.getProductTypes();
-    }
-
-    /**
-     * gets all brands binding to products from database
-     *
-     * @param typeId id of type
-     * @return list of brands
-     */
-    @Override
-    public List<Brand> getProductBrands(long typeId) {
-        List<Product> products = productRepository.findAllByTypeId(typeId);
-        List<Brand> brands = brandRepository.findAllByProductsInOrderByName(products);
-        return brands;
     }
 
     /**
@@ -155,6 +148,9 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findById(dto.getId()).get();
             type.removeProduct(product);
             brand.removeProduct(product);
+        }
+        if (!type.getBrands().contains(brand)) {
+            type.addBrand(brand);
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
@@ -199,12 +195,9 @@ public class ProductServiceImpl implements ProductService {
             throw new BrandExistsException(dto.getName());
         }
         Brand brand;
-        Type type = typeRepository.findById(dto.getTypeId()).get();
-        if (dto.getId() == 0) {
+        if (dto.getId() <= 0) {
             brand = new Brand();
             brand.setName(dto.getName());
-
-            type.addBrand(brand);
         } else {
             brand = brandRepository.findById(dto.getId()).get();
             brand.setName(dto.getName());
@@ -212,7 +205,6 @@ public class ProductServiceImpl implements ProductService {
                 throw new BrandOtherCanNotBeDeletedOrUpdatedException();
             }
         }
-
         return brandRepository.save(brand).getId();
     }
 

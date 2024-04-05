@@ -10,12 +10,8 @@ import java.util.List;
 
 public interface ProductService {
 
-    ResponseProductDto getProducts(long typeId,
-                                   long brandId,
-                                   String sort,
-                                   String dir,
-                                   int page,
-                                   int size);
+    ResponseProductDto getProducts(long typeId, long brandId, String sort,
+                                   String dir, int page, int size);
 
     List<Type> getAllTypes();
 
@@ -24,8 +20,6 @@ public interface ProductService {
     List<Brand> getAllBrands();
 
     List<Type> getProductTypes();
-
-    List<Brand> getProductBrands(long typeId);
 
     long addProduct(ProductDto dto) throws IOException;
 
