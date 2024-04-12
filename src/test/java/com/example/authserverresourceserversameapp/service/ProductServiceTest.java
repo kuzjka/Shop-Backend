@@ -1,7 +1,11 @@
 package com.example.authserverresourceserversameapp.service;
 
+import com.example.authserverresourceserversameapp.dto.BrandDto;
 import com.example.authserverresourceserversameapp.dto.PhotoDto;
 import com.example.authserverresourceserversameapp.dto.ResponseProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
+import com.example.authserverresourceserversameapp.exception.BrandExistsException;
+import com.example.authserverresourceserversameapp.exception.TypeExistsException;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -32,6 +36,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -132,6 +138,34 @@ public class ProductServiceTest {
         assertThat(serviceTypes.get(1).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(1).getName()).isEqualTo("Smartphone");
     }
+    @Test
+    public void addTypeTest() {
+        Type type1 = Type.builder().id(3L).name("Monitor").build();
+        TypeDto dto = new TypeDto();
+        dto.setId(0L);
+        given(typeRepository.save(any(Type.class))).willReturn(type1);
+        long typeId = productService.addType(dto);
+        assertThat(typeId).isEqualTo(3L);
+    }
+    @Test
+    public void editTypeTest() {
+        Type type1 = Type.builder().id(1L).name("Monitor").build();
+        TypeDto dto = new TypeDto();
+        dto.setId(1L);
+        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type1));
+        given(typeRepository.save(any(Type.class))).willReturn(type1);
+        long typeId = productService.addType(dto);
+        assertThat(typeId).isEqualTo(1L);
+    }
+    @Test
+    public void TypeExistsExceptionTest() {
+        TypeDto dto = new TypeDto();
+        dto.setId(0L);
+        dto.setName("Car");
+        given(typeRepository.getAllByName(anyString())).willThrow(new TypeExistsException("Car"));
+        TypeExistsException exception = assertThrows(TypeExistsException.class, () -> productService.addType(dto));
+        assertEquals("Type with name: \"Car\" already exists!", exception.getMessage());
+    }
 
     @Test
     public void getBrandsByTypeIdTest() {
@@ -159,5 +193,34 @@ public class ProductServiceTest {
         assertThat(serviceBrands.get(0).getName()).isEqualTo("Mercedes");
         assertThat(serviceBrands.get(1).getId()).isEqualTo(2L);
         assertThat(serviceBrands.get(1).getName()).isEqualTo("Apple");
+    }
+    @Test
+    public void addBrandTest() {
+        Brand brand1 = Brand.builder().id(3L).name("Monitor").build();
+        BrandDto dto = new BrandDto();
+        dto.setId(0L);
+        given(brandRepository.save(any(Brand.class))).willReturn(brand1);
+        long brandId = productService.addBrand(dto);
+        assertEquals(brandId, 3L);
+    }
+    @Test
+    public void BrandExistsExceptionTest() {
+        BrandDto dto = new BrandDto();
+        dto.setId(0L);
+        dto.setName("Monitor");
+        given(brandRepository.getAllByName(anyString())).willThrow(new BrandExistsException("Monitor"));
+        BrandExistsException exception = assertThrows(BrandExistsException.class, () -> productService.addBrand(dto));
+        assertEquals("Brand with name: \"Monitor\" already exists!", exception.getMessage());
+    }
+    @Test
+    public void editBrandTest() {
+        Brand brand1 = Brand.builder().id(1L).name("Audi").build();
+        BrandDto dto = new BrandDto();
+        dto.setId(1L);
+        dto.setName("Audi");
+        given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand1));
+        given(brandRepository.save(any(Brand.class))).willReturn(brand1);
+        long typeId = productService.addBrand(dto);
+        assertThat(typeId).isEqualTo(1L);
     }
 }

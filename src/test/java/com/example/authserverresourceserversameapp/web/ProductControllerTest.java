@@ -127,8 +127,6 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].name").value("BMW"));
     }
 
-
-
     @Test
     @WithMockUser
     public void addProductTest() throws Exception {
