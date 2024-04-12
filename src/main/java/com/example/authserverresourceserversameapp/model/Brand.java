@@ -24,7 +24,6 @@ public class Brand {
     private List<Product> products = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brands")
-
     private List<Type> types = new ArrayList<>();
 
     public void addProduct(Product product) {

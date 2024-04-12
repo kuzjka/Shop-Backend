@@ -41,8 +41,9 @@ public class Type {
     }
 
     public void addBrand(Brand brand) {
-        brand.getTypes().add(this);
         this.brands.add(brand);
+        brand.getTypes().add(this);
+
     }
 
 }

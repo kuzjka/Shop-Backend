@@ -140,8 +140,8 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.findByName(dto.getName()) != null && dto.getId() == 0) {
             throw new ProductExistsException(dto.getName());
         }
-        Type type = typeRepository.getById(dto.getTypeId());
-        Brand brand = brandRepository.getById(dto.getBrandId());
+        Type type = typeRepository.findById(dto.getTypeId()).get();
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
         if (dto.getId() == 0) {
             product = new Product();
         } else if (dto.getId() > 0) {
