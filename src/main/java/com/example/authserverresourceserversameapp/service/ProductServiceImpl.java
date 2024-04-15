@@ -219,10 +219,13 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId).get();
         removePhotos(product);
         long id = product.getId();
-        Brand brand = product.getBrand();
         Type type = product.getType();
-        brand.removeProduct(product);
+        Brand brand = product.getBrand();
         type.removeProduct(product);
+        brand.removeProduct(product);
+        if (brand.getProducts().size() == 0)
+            type.removeBrand(brand);
+
         productRepository.deleteById(id);
         return id;
     }

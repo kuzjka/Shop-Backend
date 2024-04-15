@@ -30,12 +30,10 @@ public class Brand {
         this.products.add(product);
         product.setBrand(this);
     }
-
     public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
     }
-
     @PreRemove
     public void removeTypeAssociations(){
         for(Type type: this.types){

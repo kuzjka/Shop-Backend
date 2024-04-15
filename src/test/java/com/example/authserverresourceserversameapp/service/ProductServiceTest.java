@@ -77,6 +77,8 @@ public class ProductServiceTest {
         product.addPhoto(photo);
         brand = Brand.builder().id(1L).name("Mercedes").products(products).types(types).build();
         type = Type.builder().id(1L).name("Car").products(products).brands(brands).build();
+        type.addProduct(product);
+        brand.addProduct(product);
         photoDto = new PhotoDto();
         photoDto.setProductId(1L);
 
@@ -151,6 +153,7 @@ public class ProductServiceTest {
         long productId = productService.addProduct(dto);
         assertEquals(productId, 1L);
     }
+
     @Test
     public void ProductExistsExceptionTest() {
         ProductDto dto = new ProductDto();
@@ -267,5 +270,13 @@ public class ProductServiceTest {
         given(brandRepository.save(any(Brand.class))).willReturn(brand1);
         long typeId = productService.addBrand(dto);
         assertThat(typeId).isEqualTo(1L);
+    }
+
+    @Test
+    public void deleteProductTest() {
+        given(productRepository.findById(anyLong())).willReturn(Optional.ofNullable(product));
+        doNothing().when(productRepository).deleteById(anyLong());
+        long id = productService.deleteProduct(anyLong());
+        assertThat(id).isEqualTo(1L);
     }
 }

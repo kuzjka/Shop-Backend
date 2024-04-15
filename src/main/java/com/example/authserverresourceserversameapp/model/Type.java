@@ -43,7 +43,10 @@ public class Type {
     public void addBrand(Brand brand) {
         this.brands.add(brand);
         brand.getTypes().add(this);
-
     }
 
+    public void removeBrand(Brand brand) {
+        this.brands.remove(brand);
+        brand.getTypes().remove(this);
+    }
 }
