@@ -2,14 +2,12 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Photo {
     @Id
     @SequenceGenerator(name = "imageGen", sequenceName = "imageSeq", initialValue = 20)
@@ -20,5 +18,4 @@ public class Photo {
     @ManyToOne
     @JsonIgnore
     private Product product;
-
-    }
+}

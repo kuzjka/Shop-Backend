@@ -48,17 +48,26 @@ public class ProductControllerTest {
 
     @BeforeEach
     public void setup() {
-        product = Product.builder().id(1L).name("Mercedes S600").build();
-        type = Type.builder().id(1L).name("Car").build();
-        brand = Brand.builder().id(1L).name("Mercedes").build();
-        photo = Photo.builder().id(1L).name("photo1.jpg").build();
+        product = new Product();
+        product.setId(1L);
+        product.setName("Mercedes S600");
+        type = new Type();
+        type.setId(1L);
+        type.setName("Car");
+        brand = new Brand();
+        brand.setId(1L);
+        brand.setName("Mercedes");
+        photo = new Photo();
+        photo.setId(1l);
+        photo.setName("photo1.jpg");
     }
-
     @Test
     @WithMockUser
     public void getProductsTest() throws Exception {
         ResponseProductDto dto = new ResponseProductDto();
-        Product product1 = Product.builder().id(2L).name("BMW 750i").build();
+        Product product1 = new Product();
+        product1.setId(2L);
+        product1.setName("BMW 750i");
         List<Product> products = new ArrayList<>();
         products.add(product);
         products.add(product1);
@@ -79,7 +88,9 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void getAllTypesTest() throws Exception {
-        Type type1 = Type.builder().id(2L).name("Smartphone").build();
+        Type type1 = new Type();
+        type1.setId(2L);
+        type1.setName("Smartphone");
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
@@ -96,7 +107,9 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void getProductTypesTest() throws Exception {
-        Type type1 = Type.builder().id(2L).name("Smartphone").build();
+        Type type1 = new Type();
+        type1.setId(2L);
+        type1.setName("Smartphone");
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
@@ -113,7 +126,9 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void getBrandsTest() throws Exception {
-        Brand brand1 = Brand.builder().id(2L).name("BMW").build();
+        Brand brand1 = new Brand();
+        brand1.setId(2L);
+        brand1.setName("BMW");
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
@@ -126,7 +141,6 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("BMW"));
     }
-
     @Test
     @WithMockUser
     public void addProductTest() throws Exception {
@@ -138,7 +152,6 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
-
     @Test
     @WithMockUser
     public void editProductTest() throws Exception {
@@ -159,7 +172,6 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
-
     @Test
     @WithMockUser
     public void deletePhotoTest() throws Exception {
@@ -312,7 +324,6 @@ public class ProductControllerTest {
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Type \"Other\" can't be deleted or updated!"));
     }
-
     @Test
     @WithMockUser
     public void brandOtherCanNotBeDeletedTest() throws Exception {

@@ -56,32 +56,30 @@ public class ProductServiceTest {
     private Type type;
     private Brand brand;
     private Photo photo;
-    private List<Photo> photos;
-    private List<Brand> brands;
-    private List<Product> products;
-    private List<Type> types;
     PhotoDto photoDto;
     List<MultipartFile> files;
     MultipartFile mockMultipartFile;
     byte[] bytes;
-
     @BeforeEach
     public void setup() {
-        brands = new ArrayList<>();
-        types = new ArrayList<>();
-        products = new ArrayList<>();
-        photo = Photo.builder().id(1L).name("1_photo1.jpg")
-                .url("http://localhost:8080/images/photo_1_photo1.jpg").build();
-        photos = new ArrayList<>();
-        product = Product.builder().id(1L).name("Mercedes S600").photos(photos).build();
+        photo = new Photo();
+        photo.setId(1L);
+        photo.setName("1_photo1.jpg");
+        photo.setUrl("http://localhost:8080/images/photo_1_photo1.jpg");
+        product = new Product();
+        product.setId(1L);
+        product.setName("Mercedes S600");
         product.addPhoto(photo);
-        brand = Brand.builder().id(1L).name("Mercedes").products(products).types(types).build();
-        type = Type.builder().id(1L).name("Car").products(products).brands(brands).build();
+        brand = new Brand();
+        brand.setId(1L);
+        brand.setName("Mercedes");
+        type = new Type();
+        type.setId(1L);
+        type.setName("Car");
         type.addProduct(product);
         brand.addProduct(product);
         photoDto = new PhotoDto();
         photoDto.setProductId(1L);
-
     }
 
     @Test
@@ -111,7 +109,9 @@ public class ProductServiceTest {
 
     @Test
     public void getProductsTest() {
-        Product product1 = Product.builder().id(2L).name("BMW 750i").build();
+        Product product1 = new Product();
+        product1.setId(2L);
+        product1.setName("BMW 750i");
         List<Product> products = new ArrayList<>();
         products.add(product);
         products.add(product1);
@@ -131,7 +131,9 @@ public class ProductServiceTest {
 
     @Test
     public void addProductTest() {
-        Product product1 = Product.builder().id(3L).name("Mercedes S500").build();
+        Product product1 = new Product();
+        product1.setId(3L);
+        product1.setName("Mercedes S500");
         ProductDto dto = new ProductDto();
         dto.setId(0L);
         given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
@@ -140,10 +142,11 @@ public class ProductServiceTest {
         long productId = productService.addProduct(dto);
         assertEquals(productId, 3L);
     }
-
     @Test
     public void editProductTest() {
-        Product product1 = Product.builder().id(1L).name("Mercedes S500").build();
+        Product product1 = new Product();
+        product1.setId(1L);
+        product1.setName("Mercedes S500");
         ProductDto dto = new ProductDto();
         dto.setId(1L);
         given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
@@ -153,7 +156,6 @@ public class ProductServiceTest {
         long productId = productService.addProduct(dto);
         assertEquals(productId, 1L);
     }
-
     @Test
     public void ProductExistsExceptionTest() {
         ProductDto dto = new ProductDto();
@@ -164,10 +166,11 @@ public class ProductServiceTest {
                 () -> productService.addProduct(dto));
         assertEquals("Product with name: \"Mercedes S600\" already exists!", exception.getMessage());
     }
-
     @Test
     public void getTypesTest() {
-        Type type1 = Type.builder().id(2L).name("Smartphone").build();
+        Type type1 = new Type();
+        type1.setId(2L);
+        type1.setName("Smartphone");
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
@@ -180,10 +183,11 @@ public class ProductServiceTest {
         assertThat(serviceTypes.get(1).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(1).getName()).isEqualTo("Smartphone");
     }
-
     @Test
     public void addTypeTest() {
-        Type type1 = Type.builder().id(3L).name("Monitor").build();
+        Type type1 = new Type();
+        type1.setId(3L);
+        type1.setName("Monitor");
         TypeDto dto = new TypeDto();
         dto.setId(0L);
         given(typeRepository.save(any(Type.class))).willReturn(type1);
@@ -193,7 +197,9 @@ public class ProductServiceTest {
 
     @Test
     public void editTypeTest() {
-        Type type1 = Type.builder().id(1L).name("Monitor").build();
+        Type type1 = new Type();
+        type1.setId(1L);
+        type1.setName("Monitor");
         TypeDto dto = new TypeDto();
         dto.setId(1L);
         given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type1));
@@ -226,7 +232,9 @@ public class ProductServiceTest {
 
     @Test
     public void getBrandsByTypeIdEquals0Test() {
-        Brand brand1 = Brand.builder().id(2L).name("Apple").build();
+        Brand brand1 = new Brand();
+        brand1.setId(2L);
+        brand1.setName("Apple");
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
@@ -242,7 +250,9 @@ public class ProductServiceTest {
 
     @Test
     public void addBrandTest() {
-        Brand brand1 = Brand.builder().id(3L).name("Monitor").build();
+        Brand brand1 = new Brand();
+        brand1.setId(3L);
+        brand1.setName("Samsung");
         BrandDto dto = new BrandDto();
         dto.setId(0L);
         given(brandRepository.save(any(Brand.class))).willReturn(brand1);
@@ -254,15 +264,17 @@ public class ProductServiceTest {
     public void BrandExistsExceptionTest() {
         BrandDto dto = new BrandDto();
         dto.setId(0L);
-        dto.setName("Monitor");
-        given(brandRepository.getAllByName(anyString())).willThrow(new BrandExistsException("Monitor"));
+        dto.setName("Samsung");
+        given(brandRepository.getAllByName(anyString())).willThrow(new BrandExistsException("Samsung"));
         BrandExistsException exception = assertThrows(BrandExistsException.class, () -> productService.addBrand(dto));
-        assertEquals("Brand with name: \"Monitor\" already exists!", exception.getMessage());
+        assertEquals("Brand with name: \"Samsung\" already exists!", exception.getMessage());
     }
 
     @Test
     public void editBrandTest() {
-        Brand brand1 = Brand.builder().id(1L).name("Audi").build();
+        Brand brand1 = new Brand();
+        brand1.setId(1L);
+        brand1.setName("Audi");
         BrandDto dto = new BrandDto();
         dto.setId(1L);
         dto.setName("Audi");
