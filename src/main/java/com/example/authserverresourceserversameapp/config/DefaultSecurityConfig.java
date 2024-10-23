@@ -21,10 +21,15 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+
 public class DefaultSecurityConfig {
     private final AppUserDetailsService userDetailsService;
     private final Converter converter;
+
+    public DefaultSecurityConfig(AppUserDetailsService userDetailsService, Converter converter) {
+        this.userDetailsService = userDetailsService;
+        this.converter = converter;
+    }
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {

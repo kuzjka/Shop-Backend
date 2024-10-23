@@ -1,13 +1,28 @@
 package com.example.authserverresourceserversameapp.dto;
 
-import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Data
+
 public class PhotoDto {
     private long productId;
 
     private List<MultipartFile> photos;
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
+    }
+
+    public List<MultipartFile> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<MultipartFile> photos) {
+        this.photos = photos;
+    }
 }

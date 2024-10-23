@@ -12,7 +12,6 @@ import com.example.authserverresourceserversameapp.repository.TokenRepository;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +21,6 @@ import java.util.UUID;
 
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private static final String NOREPLY_ADDRESS = "anton30momot@gmail.com";
     private static final String APP_URL = "http://localhost:8080";
@@ -32,6 +30,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final RoleRepository roleRepository;
+
+    public UserServiceImpl(JavaMailSender mailSender,
+                           PasswordEncoder passwordEncoder,
+                           UserRepository userRepository,
+                           TokenRepository tokenRepository,
+                           RoleRepository roleRepository) {
+        this.mailSender = mailSender;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public User getUser(final String verificationToken) {
@@ -123,6 +133,7 @@ public class UserServiceImpl implements UserService {
     public void saveRegisteredUser(User user) {
         userRepository.save(user);
     }
+
     public MimeMessage constructVerificationTokenEmail(User user) throws MessagingException {
         String token = UUID.randomUUID().toString();
         createVerificationTokenForUser(user, token);
