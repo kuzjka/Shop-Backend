@@ -2,7 +2,7 @@ package com.example.authserverresourceserversameapp.config;
 
 
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;

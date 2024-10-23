@@ -2,14 +2,8 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class CartItem {
     @Id
     @SequenceGenerator(name = "cartItemGen", sequenceName = "cartItemSeq", initialValue = 10)
@@ -18,12 +12,40 @@ public class CartItem {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Product product;
     private int quantity;
-    @Getter(AccessLevel.NONE)
+
     @Transient
     private long totalPrice;
     @ManyToOne
     @JsonIgnore
     private Cart cart;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     public long getTotalPrice() {
         this.totalPrice = this.product.getPrice() * this.quantity;

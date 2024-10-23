@@ -2,17 +2,11 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Calendar;
 import java.util.Date;
 
 @Entity(name = "tokens")
-@Getter
-@Setter
-@NoArgsConstructor
 public class VerificationToken {
     private static final int EXPIRATION = 20;
     @Id
@@ -26,6 +20,9 @@ public class VerificationToken {
     @JsonIgnore
     private User user;
 
+    public VerificationToken() {
+    }
+
     public VerificationToken(final String token) {
         this.token = token;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
@@ -35,6 +32,38 @@ public class VerificationToken {
         this.token = token;
         this.user = user;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     private Date calculateExpiryDate(final int expiryTimeInMinutes) {

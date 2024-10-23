@@ -2,17 +2,11 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Role {
     @Id
     @SequenceGenerator(name = "roleGen", sequenceName = "roleSeq", initialValue = 10)
@@ -22,6 +16,30 @@ public class Role {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
     private List<User> users = new ArrayList<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 
     public void addUser(User user) {
         this.users.add(user);
