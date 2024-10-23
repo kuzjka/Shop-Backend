@@ -21,7 +21,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-
 public class DefaultSecurityConfig {
     private final AppUserDetailsService userDetailsService;
     private final Converter converter;
@@ -42,7 +41,7 @@ public class DefaultSecurityConfig {
                                         AntPathRequestMatcher.antMatcher("/images/**"))
                                 .permitAll()
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/order/**"))
-                                .hasRole("user")
+                                .hasAnyRole("user", "manager", "admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/**"))
                                 .hasAnyRole("user", "manager", "admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/api/**"))
@@ -55,7 +54,7 @@ public class DefaultSecurityConfig {
         http.cors(withDefaults());
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(jwtConfigurer -> jwtConfigurer
-                        .jwtAuthenticationConverter(converter))).apply(authorizationServerConfigurer);
+                .jwtAuthenticationConverter(converter))).apply(authorizationServerConfigurer);
         http.authenticationProvider(authenticationProvider());
         return http.build();
     }
