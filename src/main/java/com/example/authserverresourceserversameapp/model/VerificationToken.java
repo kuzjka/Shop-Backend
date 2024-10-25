@@ -23,11 +23,6 @@ public class VerificationToken {
     public VerificationToken() {
     }
 
-    public VerificationToken(final String token) {
-        this.token = token;
-        this.expiryDate = calculateExpiryDate(EXPIRATION);
-    }
-
     public VerificationToken(String token, User user) {
         this.token = token;
         this.user = user;

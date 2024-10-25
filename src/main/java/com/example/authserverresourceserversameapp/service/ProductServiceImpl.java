@@ -110,16 +110,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * gets all brands from database
-     *
-     * @return list of brands
-     */
-    @Override
-    public List<Brand> getAllBrands() {
-        return brandRepository.findAll();
-    }
-
-    /**
      * gets all types binding to products from database
      *
      * @return list of types
