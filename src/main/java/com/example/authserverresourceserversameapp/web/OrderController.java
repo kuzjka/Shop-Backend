@@ -1,13 +1,16 @@
 package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.CartItemDto;
+import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.Cart;
+import com.example.authserverresourceserversameapp.model.Order;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.OrderService;
 import com.example.authserverresourceserversameapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -26,7 +29,19 @@ public class OrderController {
         User user = userService.findByUsername(principal.getName());
         return orderService.getCart(user);
     }
+    @GetMapping("/order")
+    public List<Order> getOrder(Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        return orderService.getUserOrders(user);
+    }
+    @PostMapping ("/order")
+    public long addOrder(@RequestBody OrderDto dto, Principal principal){
+        long orderId =  orderService.addOrder(dto);
 
+
+
+        return orderId;
+    }
     @PostMapping
     public Cart addCartItem(@RequestBody CartItemDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());

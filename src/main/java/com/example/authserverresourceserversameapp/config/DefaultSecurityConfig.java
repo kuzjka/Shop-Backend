@@ -43,7 +43,7 @@ public class DefaultSecurityConfig {
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/order/**"))
                                 .hasAnyRole("user", "admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/**"))
-                                .hasRole("admin")
+                                .hasAnyRole("user", "admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/api/**"))
                                 .hasRole("admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT, "/api/**"))
