@@ -1,5 +1,6 @@
 package com.example.authserverresourceserversameapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 
@@ -13,12 +14,24 @@ public class Cart {
     @GeneratedValue(generator = "cartGen")
     private long id;
 
-    @Transient
-    private long totalPrice;
-    @OneToOne
+
+    @ManyToOne
     private User user;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
-    private List<CartItem> items = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "carts", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
+    private List<Product> products = new ArrayList<>();
+    @ManyToOne
+    private Order order;
+    private int quantity;
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
     public long getId() {
         return id;
@@ -28,9 +41,7 @@ public class Cart {
         this.id = id;
     }
 
-    public void setTotalPrice(long totalPrice) {
-        this.totalPrice = totalPrice;
-    }
+
 
     public User getUser() {
         return user;
@@ -40,28 +51,24 @@ public class Cart {
         this.user = user;
     }
 
-    public List<CartItem> getItems() {
-        return items;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setItems(List<CartItem> items) {
-        this.items = items;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public long getTotalPrice() {
-        for (CartItem item : this.items) {
-            this.totalPrice += item.getTotalPrice();
-        }
-        return this.totalPrice;
+    public Order getOrder() {
+        return order;
     }
 
-    public void addCartItem(CartItem cartItem) {
-        this.items.add(cartItem);
-        cartItem.setCart(this);
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
-    public void removeCartItem(CartItem cartItem) {
-        this.items.remove(cartItem);
-        cartItem.setCart(null);
+    public void addProduct(Product product){
+        this.products.add(product);
+        product.getCarts().add(this);
     }
 }

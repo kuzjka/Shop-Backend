@@ -21,9 +21,13 @@ public class Product {
     private Type type;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Brand brand;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    @ManyToMany
+    @JoinTable(name = "product_cart", joinColumns =
+    @JoinColumn(name = "product_id", referencedColumnName = "id"),
+    inverseJoinColumns =
+    @JoinColumn(name = "cart_id", referencedColumnName = "id"))
     @JsonIgnore
-    private List<CartItem> items = new ArrayList<>();
+    private List<Cart> carts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -73,12 +77,12 @@ public class Product {
         this.brand = brand;
     }
 
-    public List<CartItem> getItems() {
-        return items;
+    public List<Cart> getCarts() {
+        return carts;
     }
 
-    public void setItems(List<CartItem> items) {
-        this.items = items;
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
     }
 
     public void addPhoto(Photo photo) {
@@ -91,13 +95,5 @@ public class Product {
         photo.setProduct(null);
     }
 
-    public void addCartItem(CartItem cartItem) {
-        this.items.add(cartItem);
-        cartItem.setProduct(this);
-    }
 
-    public void removeCartItem(CartItem cartItem) {
-        this.items.remove(cartItem);
-        cartItem.setProduct(null);
-    }
 }

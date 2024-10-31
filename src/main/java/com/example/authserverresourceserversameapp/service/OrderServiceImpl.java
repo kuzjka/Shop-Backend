@@ -1,99 +1,72 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.CartItemDto;
+import com.example.authserverresourceserversameapp.dto.CartDto;
+
 import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.*;
-import com.example.authserverresourceserversameapp.repository.CartItemRepository;
 import com.example.authserverresourceserversameapp.repository.CartRepository;
 import com.example.authserverresourceserversameapp.repository.OrderRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
+
 private final OrderRepository orderRepository;
 
     public OrderServiceImpl(ProductRepository productRepository,
                             CartRepository cartRepository,
-                            CartItemRepository cartItemRepository,
                             OrderRepository orderRepository) {
         this.productRepository = productRepository;
         this.cartRepository = cartRepository;
-        this.cartItemRepository = cartItemRepository;
         this.orderRepository = orderRepository;
     }
 
     @Override
-    public Cart addCartItem(CartItemDto dto, User user) {
+    public Cart addCart(CartDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
-        Cart cart = cartRepository.getByUser(user);
-        if (cart == null) {
+        Cart cart;
+        if (dto.getCartId()==0) {
             cart = new Cart();
             cart.setUser(user);
+            cart.addProduct(product);
+            cart.setQuantity(1);
+        }else { cart = cartRepository.findById(dto.getCartId()).get();
+
+        cart.setQuantity(cart.getQuantity()+1);
         }
-        CartItem item = new CartItem();
-        item.setQuantity(1);
-        cart.addCartItem(item);
-        product.addCartItem(item);
+
         return cartRepository.save(cart);
     }
 
-    @Override
-    public Cart editCartItem(CartItemDto dto, User user) {
-        Cart cart = cartRepository.getByUser(user);
-        CartItem item = cartItemRepository.findById(dto.getItemId()).get();
-
-        if (item.getQuantity() == 1 && dto.getQuantity() < 0) {
-            item.setQuantity(1);
-        } else {
-            item.setQuantity(item.getQuantity() + dto.getQuantity());
-        }
-        return cartRepository.save(cart);
-    }
 
     @Override
-    public long removeCartItem(long productId) {
-        Product product = productRepository.findById(productId).get();
-        CartItem cartItem = cartItemRepository.getByProduct(product);
-        Cart cart = cartItem.getCart();
-        product.removeCartItem(cartItem);
-        long id = cartItem.getId();
-        cartItemRepository.delete(cartItem);
-        if (cart.getItems().size() == 0) {
-            cartRepository.delete(cart);
-        }
-        return id;
-    }
-
-    @Override
-    public Cart getCart(User user) {
+    public List<Cart> getCart(User user) {
         return cartRepository.getByUser(user);
     }
 
     @Override
     public List<Order> getUserOrders(User user) {
-        return orderRepository.getOrderByCartUser(user);
+        return orderRepository.findAll();
     }
+
 
     @Override
     public long addOrder(OrderDto dto) {
         Order order = new Order();
+
         String uuid = UUID.randomUUID().toString();
         order.setUuid(uuid);
+        order.setName("order");
         Cart cart = cartRepository.findById(dto.getCart().getId()).get();
-        order.setCart(cart);
+        order.addCart(cart);
         return orderRepository.save(order).getId();
     }
 
-    @Override
-    public void clearCart(User user) {
-        Cart cart = cartRepository.findById(user.getId()).get();
-        cartRepository.delete(cart);
-    }
 }

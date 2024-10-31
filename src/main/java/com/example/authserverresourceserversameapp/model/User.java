@@ -2,6 +2,9 @@ package com.example.authserverresourceserversameapp.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -15,7 +18,8 @@ public class User {
     private boolean enabled;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Role role;
-
+    @OneToMany
+    private List<Cart> carts = new ArrayList<>();
     public User() {
         this.enabled = false;
     }

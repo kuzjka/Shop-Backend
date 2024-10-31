@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.CartItemDto;
+import com.example.authserverresourceserversameapp.dto.CartDto;
+
 import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.Order;
@@ -25,7 +26,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public Cart getCart(Principal principal) {
+    public List<Cart> getCart(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         return orderService.getCart(user);
     }
@@ -43,19 +44,9 @@ public class OrderController {
         return orderId;
     }
     @PostMapping
-    public Cart addCartItem(@RequestBody CartItemDto dto, Principal principal) {
+    public Cart addCartItem(@RequestBody CartDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.addCartItem(dto, user);
+        return orderService.addCart(dto, user);
     }
 
-    @PutMapping
-    public Cart editCartItem(@RequestBody CartItemDto dto, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        return orderService.editCartItem(dto, user);
-    }
-
-    @DeleteMapping
-    public long removeCartItem(@RequestParam long itemId) {
-        return orderService.removeCartItem(itemId);
-    }
 }

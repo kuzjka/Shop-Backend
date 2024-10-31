@@ -1,8 +1,11 @@
 package com.example.authserverresourceserversameapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "orders")
@@ -12,8 +15,10 @@ public class Order {
     private Long id;
     private String name;
     private String uuid;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Cart cart;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Cart> carts = new ArrayList<>();
 
     public Order() {
 
@@ -43,15 +48,16 @@ public class Order {
         this.uuid = uuid;
     }
 
-    public Cart getCart() {
-        return cart;
+    public List<Cart> getCarts() {
+        return carts;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
     }
-public void addCart(Cart cart){
-        this.cart = cart;
-}
 
+    public void addCart(Cart cart){
+        this.carts.add(cart);
+        cart.setOrder(this);
+    }
 }
