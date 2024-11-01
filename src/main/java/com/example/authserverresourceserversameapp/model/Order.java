@@ -16,7 +16,7 @@ public class Order {
     private String name;
     private String uuid;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     @JsonIgnore
     private List<Cart> carts = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class Order {
         this.carts = carts;
     }
 
-    public void addCart(Cart cart){
+    public void addCart(Cart cart) {
         this.carts.add(cart);
         cart.setOrder(this);
     }

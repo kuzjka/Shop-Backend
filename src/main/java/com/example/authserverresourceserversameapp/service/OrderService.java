@@ -1,7 +1,6 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.CartDto;
-
 import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.Order;
@@ -18,4 +17,5 @@ public interface OrderService {
 
     long addOrder(OrderDto dto);
 
-    }
+    long deleteCart(long itemId);
+}

@@ -1,5 +1,6 @@
 package com.example.authserverresourceserversameapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ public class User {
     private boolean enabled;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Role role;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore
     private List<Cart> carts = new ArrayList<>();
     public User() {
         this.enabled = false;
@@ -70,6 +72,25 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+
+    public void addCart(Cart cart){
+        this.carts.add(cart);
+        cart.setUser(this);
+
+    }
+    public void removeCart(Cart cart){
+        this.carts.remove(cart);
+        cart.setUser(null);
+
     }
 
     @Override
