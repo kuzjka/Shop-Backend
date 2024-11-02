@@ -1,31 +1,21 @@
 package com.example.authserverresourceserversameapp.dto;
 
+import com.example.authserverresourceserversameapp.model.Item;
+
+import java.util.List;
+
 public class CartDto {
-    private long cartId;
-    private long productId;
-    private int quantity;
 
-    public long getCartId() {
-        return cartId;
+    private List<Item> items;
+
+    public CartDto() {
     }
 
-    public void setCartId(long cartId) {
-        this.cartId = cartId;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(long productId) {
-        this.productId = productId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

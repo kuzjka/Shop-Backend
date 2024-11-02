@@ -21,7 +21,7 @@ public class User {
     private Role role;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonIgnore
-    private List<Cart> carts = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
     public User() {
         this.enabled = false;
     }
@@ -74,22 +74,22 @@ public class User {
         this.role = role;
     }
 
-    public List<Cart> getCarts() {
-        return carts;
+    public List<Item> getCarts() {
+        return items;
     }
 
-    public void setCarts(List<Cart> carts) {
-        this.carts = carts;
+    public void setCarts(List<Item> items) {
+        this.items = items;
     }
 
-    public void addCart(Cart cart){
-        this.carts.add(cart);
-        cart.setUser(this);
+    public void addItem(Item item){
+        this.items.add(item);
+        item.setUser(this);
 
     }
-    public void removeCart(Cart cart){
-        this.carts.remove(cart);
-        cart.setUser(null);
+    public void removeCart(Item item){
+        this.items.remove(item);
+        item.setUser(null);
 
     }
 

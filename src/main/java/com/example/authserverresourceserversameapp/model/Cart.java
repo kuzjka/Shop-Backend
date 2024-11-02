@@ -1,72 +1,57 @@
 package com.example.authserverresourceserversameapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
+
 public class Cart {
     @Id
     @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
     @GeneratedValue(generator = "cartGen")
-    private long id;
-    @ManyToOne
-    private User user;
-    @ManyToMany(mappedBy = "carts", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Product> products = new ArrayList<>();
-    @ManyToOne
-    private Order order;
-    private int quantity;
+    private Long id;
+    private String name;
 
-    public List<Product> getProducts() {
-        return products;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
+
+    private List<Item> items = new ArrayList<>();
+
+    public Cart() {
+
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getName() {
+        return name;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getQuantity() {
-        return quantity;
+
+    public List<Item> getCarts() {
+        return items;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setCarts(List<Item> items) {
+        this.items = items;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-    public void addProduct(Product product) {
-        this.products.add(product);
-        product.getCarts().add(this);
-    }
-
-    @PreRemove
-    public void removeProductAssociations() {
-        for (Product product : this.products) {
-            product.getCarts().remove(this);
-        }
+    public void addItem(Item item) {
+        this.items.add(item);
+        item.setCart(this);
     }
 }

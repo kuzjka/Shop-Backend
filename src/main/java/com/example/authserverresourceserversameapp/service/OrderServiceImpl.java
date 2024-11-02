@@ -1,77 +1,76 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.CartDto;
-import com.example.authserverresourceserversameapp.dto.OrderDto;
+import com.example.authserverresourceserversameapp.dto.ItemDto;
 import com.example.authserverresourceserversameapp.model.Cart;
-import com.example.authserverresourceserversameapp.model.Order;
+import com.example.authserverresourceserversameapp.model.Item;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.repository.CartRepository;
-import com.example.authserverresourceserversameapp.repository.OrderRepository;
+import com.example.authserverresourceserversameapp.repository.ItemRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
+    private final ItemRepository itemRepository;
+
     private final CartRepository cartRepository;
 
-    private final OrderRepository orderRepository;
-
     public OrderServiceImpl(ProductRepository productRepository,
-                            CartRepository cartRepository,
-                            OrderRepository orderRepository) {
+                            ItemRepository itemRepository,
+                            CartRepository cartRepository) {
         this.productRepository = productRepository;
+        this.itemRepository = itemRepository;
         this.cartRepository = cartRepository;
-        this.orderRepository = orderRepository;
     }
 
     @Override
-    public Cart addCart(CartDto dto, User user) {
+    public Item addItem(ItemDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
+        Item item;
         Cart cart;
-        if (dto.getCartId() <= 0) {
+        if (dto.getItemId() <= 0) {
+            item = new Item();
             cart = new Cart();
-            user.addCart(cart);
-            cart.addProduct(product);
-            cart.setQuantity(1);
+            cart.addItem(item);
+            user.addItem(item);
+            product.addItem(item);
+            item.setQuantity(1);
         } else {
-            cart = cartRepository.findById(dto.getCartId()).get();
-            cart.setQuantity(cart.getQuantity() + dto.getQuantity());
+            item = itemRepository.findById(dto.getItemId()).get();
+            item.setQuantity(item.getQuantity() + dto.getQuantity());
         }
-        return cartRepository.save(cart);
+        return itemRepository.save(item);
     }
 
 
     @Override
-    public List<Cart> getCart(User user) {
-        return cartRepository.getByUser(user);
+    public List<Item> getItem(User user) {
+        return itemRepository.getByUser(user);
     }
 
     @Override
-    public List<Order> getUserOrders(User user) {
-        return orderRepository.findAll();
+    public List<Cart> getUserCarts(User user) {
+        return cartRepository.findAll();
     }
 
 
-    @Override
-    public long addOrder(OrderDto dto) {
-        Order order = new Order();
-        String uuid = UUID.randomUUID().toString();
-        order.setUuid(uuid);
-        order.setName("order");
-        Cart cart = cartRepository.findById(dto.getCart().getId()).get();
-        order.addCart(cart);
-        return orderRepository.save(order).getId();
-    }
+//    @Override
+//    public long addOrder(CartDto dto) {
+//        Cart cart = new Cart();
+//        cart.setName("cart");
+//        Item item = itemRepository.findById(dto.getCart().getId()).get();
+//        cart.addCart(item);
+//        return cartRepository.save(cart).getId();
+//    }
 
     @Override
-    public long deleteCart(long itemId) {
+    public long deleteItem(long itemId) {
 
-        cartRepository.deleteById(itemId);
+        itemRepository.deleteById(itemId);
         return itemId;
     }
 }

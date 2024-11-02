@@ -1,9 +1,8 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.CartDto;
-import com.example.authserverresourceserversameapp.dto.OrderDto;
+import com.example.authserverresourceserversameapp.dto.ItemDto;
+import com.example.authserverresourceserversameapp.model.Item;
 import com.example.authserverresourceserversameapp.model.Cart;
-import com.example.authserverresourceserversameapp.model.Order;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.OrderService;
 import com.example.authserverresourceserversameapp.service.UserService;
@@ -25,31 +24,31 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<Cart> getCart(Principal principal) {
+    public List<Item> getCart(Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.getCart(user);
+        return orderService.getItem(user);
     }
 
-    @GetMapping("/order")
-    public List<Order> getOrder(Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        return orderService.getUserOrders(user);
-    }
+//    @GetMapping("/order")
+//    public List<Cart> getOrder(Principal principal) {
+//        User user = userService.findByUsername(principal.getName());
+//        return orderService.getItem(user);
+//    }
 
-    @PostMapping("/order")
-    public long addOrder(@RequestBody OrderDto dto, Principal principal) {
-        long orderId = orderService.addOrder(dto);
-        return orderId;
-    }
+//    @PostMapping("/order")
+//    public long addOrder(@RequestBody CartDto dto, Principal principal) {
+//        long orderId = orderService.addOrder(dto);
+//        return orderId;
+//    }
 
     @PostMapping
-    public Cart addCartItem(@RequestBody CartDto dto, Principal principal) {
+    public long addItem(@RequestBody ItemDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.addCart(dto, user);
+        return orderService.addItem(dto, user).getId();
     }
 
     @DeleteMapping
-    public long deleteCart(@RequestParam long itemId) {
-        return orderService.deleteCart(itemId);
+    public long deleteItem(@RequestParam long itemId) {
+        return orderService.deleteItem(itemId);
     }
 }

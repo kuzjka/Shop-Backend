@@ -16,7 +16,7 @@ public class Brand {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-
+    @JsonIgnore
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brands")
     private List<Type> types = new ArrayList<>();
 
