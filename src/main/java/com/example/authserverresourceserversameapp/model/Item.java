@@ -6,21 +6,22 @@ import jakarta.persistence.*;
 @Entity
 public class Item {
     @Id
-    @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
-    @GeneratedValue(generator = "cartGen")
+    @SequenceGenerator(name = "itemGen", sequenceName = "itemSeq", initialValue = 10)
+    @GeneratedValue(generator = "itemGen")
     private long id;
     private long quantity;
+    @Transient
+    private long totalPrice;
 
-    @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private User user;
     @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Product product;
     @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Cart cart;
-
+    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private User user;
 
     public Item() {
     }
@@ -41,13 +42,6 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public Product getProduct() {
         return product;
@@ -65,9 +59,15 @@ public class Item {
         this.cart = cart;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public long getTotal(){
+    public long getTotalPrice() {
         return this.quantity * this.product.getPrice();
     }
 }

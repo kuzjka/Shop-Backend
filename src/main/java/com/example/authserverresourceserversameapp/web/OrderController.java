@@ -2,7 +2,6 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.ItemDto;
 import com.example.authserverresourceserversameapp.model.Item;
-import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.OrderService;
 import com.example.authserverresourceserversameapp.service.UserService;
@@ -26,25 +25,14 @@ public class OrderController {
     @GetMapping
     public List<Item> getCart(Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.getItem(user);
+        return orderService.getUserItems(user);
     }
 
-//    @GetMapping("/order")
-//    public List<Cart> getOrder(Principal principal) {
-//        User user = userService.findByUsername(principal.getName());
-//        return orderService.getItem(user);
-//    }
-
-//    @PostMapping("/order")
-//    public long addOrder(@RequestBody CartDto dto, Principal principal) {
-//        long orderId = orderService.addOrder(dto);
-//        return orderId;
-//    }
 
     @PostMapping
-    public long addItem(@RequestBody ItemDto dto, Principal principal) {
+    public Item addItem(@RequestBody ItemDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.addItem(dto, user).getId();
+        return orderService.addItem(dto, user);
     }
 
     @DeleteMapping

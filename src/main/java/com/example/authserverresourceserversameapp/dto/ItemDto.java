@@ -1,9 +1,18 @@
 package com.example.authserverresourceserversameapp.dto;
 
 public class ItemDto {
+    private long cartId;
     private long itemId;
     private long productId;
     private int quantity;
+
+    public long getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(long cartId) {
+        this.cartId = cartId;
+    }
 
     public long getItemId() {
         return itemId;

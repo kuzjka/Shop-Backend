@@ -8,17 +8,14 @@ import java.util.List;
 
 
 @Entity
-
 public class Cart {
     @Id
     @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
     @GeneratedValue(generator = "cartGen")
     private Long id;
-    private String name;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
-
     private List<Item> items = new ArrayList<>();
 
     public Cart() {
@@ -33,13 +30,6 @@ public class Cart {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
 
     public List<Item> getCarts() {
@@ -53,5 +43,10 @@ public class Cart {
     public void addItem(Item item) {
         this.items.add(item);
         item.setCart(this);
+    }
+
+    public void removeItem(Item item) {
+        this.items.remove(item);
+        item.setCart(null);
     }
 }

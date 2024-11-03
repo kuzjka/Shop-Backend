@@ -30,47 +30,37 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Item addItem(ItemDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
-        Item item;
+        Item item = null;
         Cart cart;
         if (dto.getItemId() <= 0) {
-            item = new Item();
             cart = new Cart();
+            item = new Item();
             cart.addItem(item);
             user.addItem(item);
             product.addItem(item);
             item.setQuantity(1);
-        } else {
+        } else if (dto.getItemId() > 0) {
             item = itemRepository.findById(dto.getItemId()).get();
             item.setQuantity(item.getQuantity() + dto.getQuantity());
         }
         return itemRepository.save(item);
     }
 
-
     @Override
-    public List<Item> getItem(User user) {
-        return itemRepository.getByUser(user);
+    public List<Item> getUserItems(User user) {
+        return itemRepository.getAllByUser(user);
     }
 
-    @Override
-    public List<Cart> getUserCarts(User user) {
-        return cartRepository.findAll();
-    }
-
-
-//    @Override
-//    public long addOrder(CartDto dto) {
-//        Cart cart = new Cart();
-//        cart.setName("cart");
-//        Item item = itemRepository.findById(dto.getCart().getId()).get();
-//        cart.addCart(item);
-//        return cartRepository.save(cart).getId();
-//    }
 
     @Override
     public long deleteItem(long itemId) {
-
-        itemRepository.deleteById(itemId);
+        Item item = itemRepository.findById(itemId).get();
+        User user = item.getUser();
+        Cart cart = item.getCart();
+        user.removeItem(item);
+        cart.removeItem(item);
+        itemRepository.delete(item);
         return itemId;
+
     }
 }

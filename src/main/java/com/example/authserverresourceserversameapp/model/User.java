@@ -1,6 +1,5 @@
 package com.example.authserverresourceserversameapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ public class User {
     @Id
     @SequenceGenerator(name = "userGen", sequenceName = "userSeq", initialValue = 10)
     @GeneratedValue(generator = "userGen")
-    private Long id;
+    private long id;
     private String username;
     private String email;
     private String password;
@@ -20,17 +19,16 @@ public class User {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Role role;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonIgnore
-    private List<Item> items = new ArrayList<>();
+    List<Item> items = new ArrayList<>();
     public User() {
         this.enabled = false;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -74,37 +72,21 @@ public class User {
         this.role = role;
     }
 
-    public List<Item> getCarts() {
+
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setCarts(List<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
-    public void addItem(Item item){
+    public void addItem(Item item) {
         this.items.add(item);
         item.setUser(this);
-
     }
-    public void removeCart(Item item){
+    public void removeItem(Item item) {
         this.items.remove(item);
         item.setUser(null);
-
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-
-        return getUsername().equals(user.getUsername()) && getEmail().equals(user.getEmail());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getUsername().hashCode();
-        result = 31 * result + getEmail().hashCode();
-        return result;
     }
 }

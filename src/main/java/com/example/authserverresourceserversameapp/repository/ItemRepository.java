@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> getByUser(User user);
-
+        List<Item> getAllByUser(User user);
 }
