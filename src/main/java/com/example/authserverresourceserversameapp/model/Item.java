@@ -17,7 +17,7 @@ public class Item {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Product product;
     @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
     private Cart cart;
     @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

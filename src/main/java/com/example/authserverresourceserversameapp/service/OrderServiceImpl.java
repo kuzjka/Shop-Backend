@@ -28,22 +28,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Item addItem(ItemDto dto, User user) {
+    public Cart addItem(ItemDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
         Item item = null;
-        Cart cart;
-        if (dto.getItemId() <= 0) {
+        Cart cart = null;
+        if (dto.getCartId() == 0 && dto.getItemId() == 0) {
             cart = new Cart();
             item = new Item();
             cart.addItem(item);
             user.addItem(item);
             product.addItem(item);
             item.setQuantity(1);
-        } else if (dto.getItemId() > 0) {
+        } else if (dto.getCartId() > 0 && dto.getItemId() == 0) {
+            cart = cartRepository.findById(dto.getCartId()).get();
+            item = new Item();
+            cart.addItem(item);
+            user.addItem(item);
+            product.addItem(item);
+            item.setQuantity(1);
+        } else if (dto.getItemId() > 0 && dto.getItemId() > 0) {
             item = itemRepository.findById(dto.getItemId()).get();
+            cart = item.getCart();
             item.setQuantity(item.getQuantity() + dto.getQuantity());
         }
-        return itemRepository.save(item);
+        return cartRepository.save(cart);
     }
 
     @Override
