@@ -16,7 +16,6 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final ItemRepository itemRepository;
-
     private final CartRepository cartRepository;
 
     public OrderServiceImpl(ProductRepository productRepository,
@@ -30,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Cart addItem(ItemDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
-        Item item = null;
+        Item item;
         Cart cart = null;
         if (dto.getCartId() == 0 && dto.getItemId() == 0) {
             cart = new Cart();
@@ -69,6 +68,5 @@ public class OrderServiceImpl implements OrderService {
         cart.removeItem(item);
         itemRepository.delete(item);
         return itemId;
-
     }
 }

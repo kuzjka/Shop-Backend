@@ -12,31 +12,28 @@ public class Cart {
     @Id
     @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
     @GeneratedValue(generator = "cartGen")
-    private Long id;
+    private long id;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
     private List<Item> items = new ArrayList<>();
 
     public Cart() {
-
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-
-
-    public List<Item> getCarts() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setCarts(List<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 

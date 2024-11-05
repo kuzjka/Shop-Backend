@@ -23,8 +23,6 @@ public class Product {
     private Brand brand;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-
-
     private List<Item> items = new ArrayList<>();
 
     public Long getId() {
@@ -75,12 +73,14 @@ public class Product {
         this.brand = brand;
     }
 
-    public List<Item> getCarts() {
+    public List<Item> getItems() {
         return items;
     }
-    public void setCarts(List<Item> items) {
+
+    public void setItems(List<Item> items) {
         this.items = items;
     }
+
     public void addPhoto(Photo photo) {
         this.photos.add(photo);
         photo.setProduct(this);
