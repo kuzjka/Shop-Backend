@@ -13,15 +13,12 @@ public class Item {
     @Transient
     private long totalPrice;
 
-    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Product product;
     @JsonIgnore
     @ManyToOne
     private Cart cart;
-    @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private User user;
+
 
     public Item() {
     }
@@ -57,14 +54,6 @@ public class Item {
 
     public void setCart(Cart cart) {
         this.cart = cart;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public long getTotalPrice() {

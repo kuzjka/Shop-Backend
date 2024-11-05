@@ -18,8 +18,7 @@ public class User {
     private boolean enabled;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Role role;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    List<Item> items = new ArrayList<>();
+
     public User() {
         this.enabled = false;
     }
@@ -73,20 +72,7 @@ public class User {
     }
 
 
-    public List<Item> getItems() {
-        return items;
-    }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
 
-    public void addItem(Item item) {
-        this.items.add(item);
-        item.setUser(this);
-    }
-    public void removeItem(Item item) {
-        this.items.remove(item);
-        item.setUser(null);
-    }
+
 }

@@ -2,14 +2,12 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.ItemDto;
 import com.example.authserverresourceserversameapp.model.Cart;
-import com.example.authserverresourceserversameapp.model.Item;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.OrderService;
 import com.example.authserverresourceserversameapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -24,9 +22,9 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<Item> getCart(Principal principal) {
+    public Cart getCart(Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.getUserItems(user);
+        return orderService.getUserCart(user);
     }
 
 

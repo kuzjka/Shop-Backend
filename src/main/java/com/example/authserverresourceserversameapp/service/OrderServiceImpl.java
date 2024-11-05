@@ -10,8 +10,6 @@ import com.example.authserverresourceserversameapp.repository.ItemRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
@@ -35,14 +33,14 @@ public class OrderServiceImpl implements OrderService {
             cart = new Cart();
             item = new Item();
             cart.addItem(item);
-            user.addItem(item);
+            cart.setUser(user);
             product.addItem(item);
             item.setQuantity(1);
         } else if (dto.getCartId() > 0 && dto.getItemId() == 0) {
             cart = cartRepository.findById(dto.getCartId()).get();
             item = new Item();
             cart.addItem(item);
-            user.addItem(item);
+            cart.setUser(user);
             product.addItem(item);
             item.setQuantity(1);
         } else if (dto.getItemId() > 0 && dto.getItemId() > 0) {
@@ -52,19 +50,16 @@ public class OrderServiceImpl implements OrderService {
         }
         return cartRepository.save(cart);
     }
-
     @Override
-    public List<Item> getUserItems(User user) {
-        return itemRepository.getAllByUser(user);
+    public Cart getUserCart(User user) {
+        return cartRepository.getByUser(user);
     }
-
-
     @Override
     public long deleteItem(long itemId) {
         Item item = itemRepository.findById(itemId).get();
-        User user = item.getUser();
+        User user = item.getCart().getUser();
         Cart cart = item.getCart();
-        user.removeItem(item);
+
         cart.removeItem(item);
         itemRepository.delete(item);
         return itemId;
