@@ -7,10 +7,10 @@ import jakarta.mail.MessagingException;
 
 
 public interface UserService {
-    User getUser(String verificationToken);
+
     User registerNewUserAccount(UserDto accountDto) throws MessagingException;
 
-    User editExistingUserAccount(UserDto dto);
+    void editExistingUserAccount(UserDto dto);
 
     VerificationToken getToken(String token);
 
@@ -20,7 +20,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    VerificationToken generateNewVerificationToken(String existingVerificationToken) throws MessagingException;
+    void generateNewVerificationToken(String existingVerificationToken) throws MessagingException;
 
     void saveRegisteredUser(User user);
 }

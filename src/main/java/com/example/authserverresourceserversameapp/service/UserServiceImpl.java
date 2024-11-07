@@ -44,15 +44,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(final String verificationToken) {
-        final VerificationToken token = tokenRepository.findByToken(verificationToken);
-        if (token != null) {
-            return token.getUser();
-        }
-        return null;
-    }
-
-    @Override
     public User registerNewUserAccount(UserDto dto) throws MessagingException {
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
             throw new PasswordsDontMatchException();
@@ -81,7 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User editExistingUserAccount(UserDto dto) {
+    public void editExistingUserAccount(UserDto dto) {
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
             throw new PasswordsDontMatchException();
         }
@@ -90,7 +81,7 @@ public class UserServiceImpl implements UserService {
             throw new WrongPasswordException();
         }
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -119,14 +110,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public VerificationToken generateNewVerificationToken(String existingVerificationToken) throws MessagingException {
+    public void generateNewVerificationToken(String existingVerificationToken) throws MessagingException {
         VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
         vToken.updateToken(UUID.randomUUID()
                 .toString());
         vToken = tokenRepository.save(vToken);
         MimeMessage message = constructResendVerificationTokenEmail(vToken);
         mailSender.send(message);
-        return vToken;
     }
 
     @Override

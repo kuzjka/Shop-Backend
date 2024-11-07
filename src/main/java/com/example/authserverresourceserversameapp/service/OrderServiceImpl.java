@@ -65,8 +65,9 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = item.getCart();
         if (item.getQuantity() == 1 && dto.getQuantity() == -1) {
             item.setQuantity(1);
+        } else {
+            item.setQuantity(item.getQuantity() + dto.getQuantity());
         }
-        item.setQuantity(item.getQuantity() + dto.getQuantity());
         return cartRepository.save(cart);
     }
 
