@@ -4,9 +4,11 @@ import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.exception.WrongPasswordException;
+import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.Role;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
+import com.example.authserverresourceserversameapp.repository.CartRepository;
 import com.example.authserverresourceserversameapp.repository.RoleRepository;
 import com.example.authserverresourceserversameapp.repository.TokenRepository;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
@@ -30,17 +32,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final RoleRepository roleRepository;
+    private final CartRepository cartRepository;
 
     public UserServiceImpl(JavaMailSender mailSender,
                            PasswordEncoder passwordEncoder,
                            UserRepository userRepository,
                            TokenRepository tokenRepository,
-                           RoleRepository roleRepository) {
+                           RoleRepository roleRepository, CartRepository cartRepository) {
         this.mailSender = mailSender;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.roleRepository = roleRepository;
+        this.cartRepository = cartRepository;
     }
 
     @Override
@@ -65,7 +69,11 @@ public class UserServiceImpl implements UserService {
         if (userRepository.getByEmail(dto.getEmail()) != null) {
             throw new UserExistsException("User with email: \"" + dto.getEmail() + "\" already exists!");
         }
+
         User registered = userRepository.save(user);
+        Cart cart = new Cart();
+        cart.setUser(registered);
+        cartRepository.save(cart);
         MimeMessage message = constructVerificationTokenEmail(registered);
         mailSender.send(message);
         return registered;
@@ -93,15 +101,6 @@ public class UserServiceImpl implements UserService {
     public void createVerificationTokenForUser(User user, String token) {
         final VerificationToken myToken = new VerificationToken(token, user);
         tokenRepository.save(myToken);
-    }
-
-    @Override
-    public User getUserByVerificationToken(final String verificationToken) {
-        final VerificationToken token = tokenRepository.findByToken(verificationToken);
-        if (token != null) {
-            return token.getUser();
-        }
-        return null;
     }
 
     @Override

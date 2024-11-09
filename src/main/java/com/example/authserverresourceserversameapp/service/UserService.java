@@ -16,8 +16,6 @@ public interface UserService {
 
     void createVerificationTokenForUser(User user, String token);
 
-    User getUserByVerificationToken(String verificationToken);
-
     User findByUsername(String username);
 
     void generateNewVerificationToken(String existingVerificationToken) throws MessagingException;

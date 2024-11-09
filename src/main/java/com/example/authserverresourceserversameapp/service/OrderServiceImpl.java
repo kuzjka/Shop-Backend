@@ -25,7 +25,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * adds new item to cart
+     * adds new item to cart or update existing item
      *
      * @param dto  dto for adding new item or editing existing item
      * @param user current user
@@ -35,38 +35,19 @@ public class OrderServiceImpl implements OrderService {
     public Cart addItem(ItemDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
         Item item;
-        Cart cart = null;
-        if (dto.getCartId() == 0 && dto.getItemId() == 0) {
-            cart = new Cart();
-            item = new Item();
-            cart.addItem(item);
-            cart.setUser(user);
-            product.addItem(item);
-            item.setQuantity(1);
-        } else if (dto.getCartId() > 0 && dto.getItemId() == 0) {
-            cart = cartRepository.findById(dto.getCartId()).get();
+        Cart cart = cartRepository.getByUser(user);
+        if (dto.getItemId() == 0) {
             item = new Item();
             cart.addItem(item);
             product.addItem(item);
             item.setQuantity(1);
-        }
-        return cartRepository.save(cart);
-    }
-
-    /**
-     * edits existing item in cart
-     *
-     * @param dto dto for adding new item or editing existing item
-     * @return cart with edited existing item
-     */
-    @Override
-    public Cart editItem(ItemDto dto) {
-        Item item = itemRepository.findById(dto.getItemId()).get();
-        Cart cart = item.getCart();
-        if (item.getQuantity() == 1 && dto.getQuantity() == -1) {
-            item.setQuantity(1);
-        } else {
-            item.setQuantity(item.getQuantity() + dto.getQuantity());
+        } else if (dto.getItemId() > 0) {
+            item = itemRepository.findById(dto.getItemId()).get();
+            if (item.getQuantity() == 1 && dto.getQuantity() == -1) {
+                item.setQuantity(1);
+            } else {
+                item.setQuantity(item.getQuantity() + dto.getQuantity());
+            }
         }
         return cartRepository.save(cart);
     }
@@ -94,9 +75,6 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = item.getCart();
         cart.removeItem(item);
         itemRepository.delete(item);
-        if (cart.getItems().isEmpty()) {
-            cartRepository.delete(cart);
-        }
         return itemId;
     }
 }

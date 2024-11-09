@@ -34,8 +34,9 @@ public class OrderController {
     }
 
     @PutMapping
-    public Cart editItem(@RequestBody ItemDto dto) {
-        return orderService.editItem(dto);
+    public Cart editItem(@RequestBody ItemDto dto, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        return orderService.addItem(dto, user);
     }
 
     @DeleteMapping
