@@ -10,15 +10,15 @@ public class Item {
     @GeneratedValue(generator = "itemGen")
     private long id;
     private long quantity;
-    @Transient
-    private long totalPrice;
-
+    private transient long totalPrice;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Product product;
     @JsonIgnore
     @ManyToOne
     private Cart cart;
-
+    @ManyToOne
+    @JsonIgnore
+    private Order order;
 
     public Item() {
     }
@@ -39,7 +39,6 @@ public class Item {
         this.quantity = quantity;
     }
 
-
     public Product getProduct() {
         return product;
     }
@@ -54,6 +53,14 @@ public class Item {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public long getTotalPrice() {

@@ -1,27 +1,29 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.ItemDto;
-import com.example.authserverresourceserversameapp.model.Cart;
-import com.example.authserverresourceserversameapp.model.Item;
-import com.example.authserverresourceserversameapp.model.Product;
-import com.example.authserverresourceserversameapp.model.User;
-import com.example.authserverresourceserversameapp.repository.CartRepository;
-import com.example.authserverresourceserversameapp.repository.ItemRepository;
-import com.example.authserverresourceserversameapp.repository.ProductRepository;
+import com.example.authserverresourceserversameapp.model.*;
+import com.example.authserverresourceserversameapp.repository.*;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     public OrderServiceImpl(ProductRepository productRepository,
                             ItemRepository itemRepository,
-                            CartRepository cartRepository) {
+                            CartRepository cartRepository, OrderRepository orderRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
         this.itemRepository = itemRepository;
         this.cartRepository = cartRepository;
+        this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -61,6 +63,28 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Cart getUserCart(User user) {
         return cartRepository.getByUser(user);
+    }
+
+    @Override
+    public List<Order> getOrders(User user) {
+        return orderRepository.getByUser(user);
+    }
+
+    @Override
+    public long addOrder(User user) {
+
+        Cart cart = cartRepository.getByUser(user);
+        System.out.println(cart.getId());
+        Order order = new Order();
+        List<Item> items = new ArrayList<>(cart.getItems());
+        for (Item item : items) {
+            cart.removeItem(item);
+            order.addItem(item);
+        }
+        order.setDescription("order");
+        user.addOrder(order);
+
+        return userRepository.save(user).getId();
     }
 
     /**

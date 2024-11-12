@@ -8,6 +8,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    List<Order> orders = new ArrayList<>();
     @Id
     @SequenceGenerator(name = "userGen", sequenceName = "userSeq", initialValue = 10)
     @GeneratedValue(generator = "userGen")
@@ -71,8 +74,9 @@ public class User {
         this.role = role;
     }
 
-
-
-
+    public void addOrder(Order order) {
+        this.orders.add(order);
+        order.setUser(this);
+    }
 
 }
