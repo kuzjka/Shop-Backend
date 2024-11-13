@@ -10,6 +10,8 @@ import java.util.List;
 public interface OrderService {
     Cart addItem(ItemDto dto, User user);
 
+    Cart editItem(ItemDto dto);
+
     Cart getUserCart(User user);
 
     List<Order> getOrders(User user);
