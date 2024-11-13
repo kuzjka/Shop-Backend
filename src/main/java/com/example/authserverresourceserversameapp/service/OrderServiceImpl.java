@@ -80,7 +80,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public long addOrder(User user) {
-
         Cart cart = cartRepository.getByUser(user);
         System.out.println(cart.getId());
         Order order = new Order();
@@ -91,7 +90,6 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setDescription("order");
         user.addOrder(order);
-
         return userRepository.save(user).getId();
     }
 
