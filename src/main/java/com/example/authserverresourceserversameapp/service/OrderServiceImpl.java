@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.ItemDto;
+import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.*;
 import com.example.authserverresourceserversameapp.repository.*;
 import org.springframework.stereotype.Service;
@@ -79,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public long addOrder(User user) {
+    public long addOrder(OrderDto dto, User user) {
         Cart cart = cartRepository.getByUser(user);
         System.out.println(cart.getId());
         Order order = new Order();
@@ -88,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
             cart.removeItem(item);
             order.addItem(item);
         }
-        order.setDescription("order");
+        order.setDescription(dto.getDescription());
         user.addOrder(order);
         return userRepository.save(user).getId();
     }

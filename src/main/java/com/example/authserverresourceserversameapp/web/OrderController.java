@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.ItemDto;
+import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.Order;
 import com.example.authserverresourceserversameapp.model.User;
@@ -42,9 +43,9 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public long addOrder(Principal principal) {
+    public long addOrder(@RequestBody OrderDto dto,  Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.addOrder(user);
+        return orderService.addOrder(dto, user);
     }
 
     @PutMapping

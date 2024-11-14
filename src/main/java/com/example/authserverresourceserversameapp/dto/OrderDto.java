@@ -4,10 +4,6 @@ public class OrderDto {
 
     private String description;
 
-
-    public OrderDto() {
-    }
-
     public String getDescription() {
         return description;
     }
@@ -15,6 +11,4 @@ public class OrderDto {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
 }
