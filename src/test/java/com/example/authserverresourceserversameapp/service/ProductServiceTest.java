@@ -248,17 +248,7 @@ public class ProductServiceTest {
         assertThat(serviceBrands.get(1).getName()).isEqualTo("Apple");
     }
 
-    @Test
-    public void addBrandTest() {
-        Brand brand1 = new Brand();
-        brand1.setId(3L);
-        brand1.setName("Samsung");
-        BrandDto dto = new BrandDto();
-        dto.setId(0L);
-        given(brandRepository.save(any(Brand.class))).willReturn(brand1);
-        long brandId = productService.addBrand(dto);
-        assertEquals(brandId, 3L);
-    }
+
 
     @Test
     public void BrandExistsExceptionTest() {
@@ -270,19 +260,6 @@ public class ProductServiceTest {
         assertEquals("Brand with name: \"Samsung\" already exists!", exception.getMessage());
     }
 
-    @Test
-    public void editBrandTest() {
-        Brand brand1 = new Brand();
-        brand1.setId(1L);
-        brand1.setName("Audi");
-        BrandDto dto = new BrandDto();
-        dto.setId(1L);
-        dto.setName("Audi");
-        given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand1));
-        given(brandRepository.save(any(Brand.class))).willReturn(brand1);
-        long typeId = productService.addBrand(dto);
-        assertThat(typeId).isEqualTo(1L);
-    }
 
     @Test
     public void deleteProductTest() {

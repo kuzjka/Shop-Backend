@@ -21,7 +21,7 @@ public class Type {
             joinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
     )
-    @JsonIgnore
+
     private List<Brand> brands = new ArrayList<>();
 
     public Long getId() {

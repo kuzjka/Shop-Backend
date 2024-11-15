@@ -58,7 +58,7 @@ public class ProductControllerTest {
         brand.setId(1L);
         brand.setName("Mercedes");
         photo = new Photo();
-        photo.setId(1l);
+        photo.setId(1L);
         photo.setName("photo1.jpg");
     }
     @Test
@@ -104,24 +104,6 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Smartphone"));
     }
 
-    @Test
-    @WithMockUser
-    public void getProductTypesTest() throws Exception {
-        Type type1 = new Type();
-        type1.setId(2L);
-        type1.setName("Smartphone");
-        List<Type> types = new ArrayList<>();
-        types.add(type);
-        types.add(type1);
-        given(productService.getProductTypes()).willReturn(types);
-        this.mockMvc.perform(get("/api/productType").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("Car"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].name").value("Smartphone"));
-    }
 
     @Test
     @WithMockUser

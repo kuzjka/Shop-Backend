@@ -110,16 +110,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * gets all types binding to products from database
-     *
-     * @return list of types
-     */
-    @Override
-    public List<Type> getProductTypes() {
-        return typeRepository.getProductTypes();
-    }
-
-    /**
      * adds new product to database or updates existing
      *
      * @param dto dto for adding new product or updating existing product
@@ -181,13 +171,16 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addBrand(BrandDto dto) {
+
         if (brandRepository.getAllByName(dto.getName()) != null) {
             throw new BrandExistsException(dto.getName());
         }
         Brand brand;
+        Type type = typeRepository.findById(dto.getTypeId()).get();
         if (dto.getId() <= 0) {
             brand = new Brand();
             brand.setName(dto.getName());
+            type.addBrand(brand);
         } else {
             brand = brandRepository.findById(dto.getId()).get();
             brand.setName(dto.getName());
@@ -213,9 +206,8 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = product.getBrand();
         type.removeProduct(product);
         brand.removeProduct(product);
-        if (brand.getProducts().size() == 0)
+        if (brand.getProducts().isEmpty())
             type.removeBrand(brand);
-
         productRepository.deleteById(id);
         return id;
     }
