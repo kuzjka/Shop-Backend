@@ -1,7 +1,10 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.*;
+import com.example.authserverresourceserversameapp.exception.BrandOtherCanNotBeDeletedOrUpdatedException;
+import com.example.authserverresourceserversameapp.exception.ProductExistsException;
+import com.example.authserverresourceserversameapp.exception.TypeExistsException;
+import com.example.authserverresourceserversameapp.exception.TypeOtherCanNotBeDeletedOrUpdatedException;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -171,22 +174,21 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addBrand(BrandDto dto) {
-
-        if (brandRepository.getAllByName(dto.getName()) != null) {
-            throw new BrandExistsException(dto.getName());
-        }
         Brand brand;
+        brand = brandRepository.getAllByName(dto.getName());
         Type type = typeRepository.findById(dto.getTypeId()).get();
-        if (dto.getId() <= 0) {
+        if (brand != null) {
+            type.addBrand(brand);
+        } else if (dto.getId() == 0) {
             brand = new Brand();
             brand.setName(dto.getName());
             type.addBrand(brand);
-        } else {
+        } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
             brand.setName(dto.getName());
-            if (brand.getName().equals("Other")) {
-                throw new BrandOtherCanNotBeDeletedOrUpdatedException();
-            }
+        }
+        if (brand.getName().equals("Other")) {
+            throw new BrandOtherCanNotBeDeletedOrUpdatedException();
         }
         return brandRepository.save(brand).getId();
     }
@@ -251,7 +253,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deletePhoto(Photo photo) {
         long photoId = photo.getId();
-
         int index = photo.getUrl().indexOf("photo_");
         photoRepository.delete(photo);
         if (index > -1) {
