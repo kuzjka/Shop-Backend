@@ -9,8 +9,7 @@ import java.util.List;
 @Table(name = "users")
 public class User {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    List<Order> orders = new ArrayList<>();
+
     @Id
     @SequenceGenerator(name = "userGen", sequenceName = "userSeq", initialValue = 10)
     @GeneratedValue(generator = "userGen")
@@ -21,7 +20,8 @@ public class User {
     private boolean enabled;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Role role;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    List<Order> orders = new ArrayList<>();
     public User() {
         this.enabled = false;
     }

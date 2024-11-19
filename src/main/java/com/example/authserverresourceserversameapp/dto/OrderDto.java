@@ -4,6 +4,9 @@ public class OrderDto {
 
     private String description;
 
+    public OrderDto() {
+    }
+
     public String getDescription() {
         return description;
     }

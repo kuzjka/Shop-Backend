@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public long addOrder(@RequestBody OrderDto dto,  Principal principal) {
+    public Order addOrder(@RequestBody OrderDto dto,  Principal principal) {
         User user = userService.findByUsername(principal.getName());
         return orderService.addOrder(dto, user);
     }

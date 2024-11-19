@@ -80,9 +80,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public long addOrder(OrderDto dto, User user) {
+    public Order addOrder(OrderDto dto, User user) {
         Cart cart = cartRepository.getByUser(user);
-        System.out.println(cart.getId());
         Order order = new Order();
         List<Item> items = new ArrayList<>(cart.getItems());
         for (Item item : items) {
@@ -91,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setDescription(dto.getDescription());
         user.addOrder(order);
-        return userRepository.save(user).getId();
+        return orderRepository.save(order);
     }
 
     /**

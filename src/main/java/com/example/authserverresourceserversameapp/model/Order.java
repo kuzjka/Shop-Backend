@@ -15,7 +15,7 @@ public class Order {
     private Long id;
     private String description;
     private transient long totalPrice;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
