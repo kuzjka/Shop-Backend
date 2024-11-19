@@ -1,10 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.BrandOtherCanNotBeDeletedOrUpdatedException;
-import com.example.authserverresourceserversameapp.exception.ProductExistsException;
-import com.example.authserverresourceserversameapp.exception.TypeExistsException;
-import com.example.authserverresourceserversameapp.exception.TypeOtherCanNotBeDeletedOrUpdatedException;
+import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -153,10 +150,12 @@ public class ProductServiceImpl implements ProductService {
         if (typeRepository.getAllByName(dto.getName()) != null) {
             throw new TypeExistsException(dto.getName());
         }
-        Type type;
+        Type type = null;
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
         if (dto.getId() == 0) {
             type = new Type();
-        } else {
+            type.addBrand(brand);
+        } else if (dto.getId() > 0) {
             type = typeRepository.findById(dto.getId()).get();
             if (type.getName().equals("Other")) {
                 throw new TypeOtherCanNotBeDeletedOrUpdatedException();
@@ -174,21 +173,21 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addBrand(BrandDto dto) {
-        Brand brand;
-        brand = brandRepository.getAllByName(dto.getName());
+        if (brandRepository.getAllByName(dto.getName()) != null) {
+            throw new BrandExistsException(dto.getName());
+        }
+        Brand brand = null;
         Type type = typeRepository.findById(dto.getTypeId()).get();
-        if (brand != null) {
-            type.addBrand(brand);
-        } else if (dto.getId() == 0) {
+        if (dto.getId() == 0) {
             brand = new Brand();
             brand.setName(dto.getName());
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
             brand.setName(dto.getName());
-        }
-        if (brand.getName().equals("Other")) {
-            throw new BrandOtherCanNotBeDeletedOrUpdatedException();
+            if (brand.getName().equals("Other")) {
+                throw new BrandOtherCanNotBeDeletedOrUpdatedException();
+            }
         }
         return brandRepository.save(brand).getId();
     }
