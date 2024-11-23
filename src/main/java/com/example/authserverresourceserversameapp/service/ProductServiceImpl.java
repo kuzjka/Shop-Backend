@@ -151,7 +151,12 @@ public class ProductServiceImpl implements ProductService {
             throw new TypeExistsException(dto.getName());
         }
         Type type = null;
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
+        Brand brand = null;
+        if (dto.getBrandId() == 0) {
+            brand = brandRepository.getAllByName("Other");
+        } else if (dto.getBrandId() > 0) {
+            brand = brandRepository.findById(dto.getBrandId()).get();
+        }
         if (dto.getId() == 0) {
             type = new Type();
             type.addBrand(brand);
@@ -177,7 +182,12 @@ public class ProductServiceImpl implements ProductService {
             throw new BrandExistsException(dto.getName());
         }
         Brand brand = null;
-        Type type = typeRepository.findById(dto.getTypeId()).get();
+        Type type = null;
+        if (dto.getTypeId() == 0) {
+            type = typeRepository.getAllByName("Other");
+        } else if (dto.getTypeId() > 0) {
+            type = typeRepository.findById(dto.getTypeId()).get();
+        }
         if (dto.getId() == 0) {
             brand = new Brand();
             brand.setName(dto.getName());
