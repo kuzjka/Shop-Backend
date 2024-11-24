@@ -2,23 +2,23 @@ package com.example.authserverresourceserversameapp.dto;
 
 
 public class BrandDto {
-    private Long id;
-    private Long typeId;
+    private long id;
+    private long typeId;
     private String name;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Long getTypeId() {
+    public long getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Long typeId) {
+    public void setTypeId(long typeId) {
         this.typeId = typeId;
     }
 

@@ -151,22 +151,21 @@ public class ProductServiceImpl implements ProductService {
             throw new TypeExistsException(dto.getName());
         }
         Type type = null;
-        Brand brand = null;
-        if (dto.getBrandId() == 0) {
-            brand = brandRepository.getAllByName("Other");
-        } else if (dto.getBrandId() > 0) {
-            brand = brandRepository.findById(dto.getBrandId()).get();
-        }
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
+        Type other = typeRepository.getAllByName("Other");
+        other.getBrands().clear();
         if (dto.getId() == 0) {
             type = new Type();
+            type.setName(dto.getName());
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
             type = typeRepository.findById(dto.getId()).get();
-            if (type.getName().equals("Other")) {
-                throw new TypeOtherCanNotBeDeletedOrUpdatedException();
-            }
+            type.setName(dto.getName());
+            type.addBrand(brand);
         }
-        type.setName(dto.getName());
+        if (type.getName().equals("Other")) {
+            throw new TypeOtherCanNotBeDeletedOrUpdatedException();
+        }
         return typeRepository.save(type).getId();
     }
 
@@ -182,12 +181,9 @@ public class ProductServiceImpl implements ProductService {
             throw new BrandExistsException(dto.getName());
         }
         Brand brand = null;
-        Type type = null;
-        if (dto.getTypeId() == 0) {
-            type = typeRepository.getAllByName("Other");
-        } else if (dto.getTypeId() > 0) {
-            type = typeRepository.findById(dto.getTypeId()).get();
-        }
+        Type type = typeRepository.findById(dto.getTypeId()).get();
+        Brand other = brandRepository.getAllByName("Other");
+        type.removeBrand(other);
         if (dto.getId() == 0) {
             brand = new Brand();
             brand.setName(dto.getName());
@@ -195,6 +191,7 @@ public class ProductServiceImpl implements ProductService {
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
             brand.setName(dto.getName());
+            type.addBrand(brand);
             if (brand.getName().equals("Other")) {
                 throw new BrandOtherCanNotBeDeletedOrUpdatedException();
             }

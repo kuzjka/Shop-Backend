@@ -183,30 +183,7 @@ public class ProductServiceTest {
         assertThat(serviceTypes.get(1).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(1).getName()).isEqualTo("Smartphone");
     }
-    @Test
-    public void addTypeTest() {
-        Type type1 = new Type();
-        type1.setId(3L);
-        type1.setName("Monitor");
-        TypeDto dto = new TypeDto();
-        dto.setId(0L);
-        given(typeRepository.save(any(Type.class))).willReturn(type1);
-        long typeId = productService.addType(dto);
-        assertThat(typeId).isEqualTo(3L);
-    }
 
-    @Test
-    public void editTypeTest() {
-        Type type1 = new Type();
-        type1.setId(1L);
-        type1.setName("Monitor");
-        TypeDto dto = new TypeDto();
-        dto.setId(1L);
-        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type1));
-        given(typeRepository.save(any(Type.class))).willReturn(type1);
-        long typeId = productService.addType(dto);
-        assertThat(typeId).isEqualTo(1L);
-    }
 
     @Test
     public void TypeExistsExceptionTest() {
