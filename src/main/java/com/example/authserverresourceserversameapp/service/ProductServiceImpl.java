@@ -132,6 +132,7 @@ public class ProductServiceImpl implements ProductService {
         if (!type.getBrands().contains(brand)) {
             type.addBrand(brand);
         }
+        assert product != null;
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         type.addProduct(product);
@@ -151,18 +152,17 @@ public class ProductServiceImpl implements ProductService {
             throw new TypeExistsException(dto.getName());
         }
         Type type = null;
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
         Type other = typeRepository.getAllByName("Other");
-        other.getBrands().clear();
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
+        other.removeBrand(brand);
         if (dto.getId() == 0) {
             type = new Type();
-            type.setName(dto.getName());
-            type.addBrand(brand);
         } else if (dto.getId() > 0) {
             type = typeRepository.findById(dto.getId()).get();
-            type.setName(dto.getName());
-
         }
+        assert type != null;
+        type.setName(dto.getName());
+        type.addBrand(brand);
         if (type.getName().equals("Other")) {
             throw new TypeOtherCanNotBeDeletedOrUpdatedException();
         }
@@ -186,15 +186,14 @@ public class ProductServiceImpl implements ProductService {
         type.removeBrand(other);
         if (dto.getId() == 0) {
             brand = new Brand();
-            brand.setName(dto.getName());
-            type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
-            brand.setName(dto.getName());
-
-            if (brand.getName().equals("Other")) {
-                throw new BrandOtherCanNotBeDeletedOrUpdatedException();
-            }
+        }
+        assert brand != null;
+        brand.setName(dto.getName());
+        type.addBrand(brand);
+        if (brand.getName().equals("Other")) {
+            throw new BrandOtherCanNotBeDeletedOrUpdatedException();
         }
         return brandRepository.save(brand).getId();
     }
