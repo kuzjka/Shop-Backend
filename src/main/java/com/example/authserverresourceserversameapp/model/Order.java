@@ -14,7 +14,10 @@ public class Order {
     @GeneratedValue(generator = "orderGen")
     private Long id;
     private String description;
+    private String username;
+    private String email;
     private transient long totalPrice;
+    private transient long totalQuantity;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private User user;
@@ -38,6 +41,22 @@ public class Order {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public User getUser() {
@@ -66,5 +85,12 @@ public class Order {
             this.totalPrice += item.getTotalPrice();
         }
         return this.totalPrice;
+    }
+
+    public long getTotalQuantity() {
+        for (Item item : this.items) {
+            this.totalQuantity += item.getQuantity();
+        }
+        return this.totalQuantity;
     }
 }

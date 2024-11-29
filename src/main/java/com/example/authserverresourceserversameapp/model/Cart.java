@@ -12,8 +12,8 @@ public class Cart {
     @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
     @GeneratedValue(generator = "cartGen")
     private long id;
-    @Transient
-    private long totalPrice;
+    private transient long totalPrice;
+    private transient long totalQuantity;
     @OneToOne
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
@@ -51,6 +51,13 @@ public class Cart {
             this.totalPrice += item.getTotalPrice();
         }
         return this.totalPrice;
+    }
+
+    public long getTotalQuantity() {
+        for (Item item : this.items) {
+            this.totalQuantity += item.getQuantity();
+        }
+        return this.totalQuantity;
     }
 
     public void addItem(Item item) {

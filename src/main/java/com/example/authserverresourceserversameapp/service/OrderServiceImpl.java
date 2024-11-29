@@ -89,9 +89,10 @@ public class OrderServiceImpl implements OrderService {
             order.addItem(item);
         }
         user.addOrder(order);
-        Order saved = orderRepository.save(order);
-        saved.setDescription("order_" + saved.getId());
-        return orderRepository.save(saved);
+        order.setDescription(dto.getDescription());
+        order.setUsername(dto.getUsername());
+        order.setEmail(dto.getEmail());
+        return orderRepository.save(order);
     }
 
     /**
