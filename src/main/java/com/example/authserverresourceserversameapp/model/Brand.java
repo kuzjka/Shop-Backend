@@ -16,9 +16,8 @@ public class Brand {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-    @JsonIgnore
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brands")
-    private List<Type> types = new ArrayList<>();
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TypeBrand> types = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -44,11 +43,11 @@ public class Brand {
         this.products = products;
     }
 
-    public List<Type> getTypes() {
+    public List<TypeBrand> getTypes() {
         return types;
     }
 
-    public void setTypes(List<Type> types) {
+    public void setTypes(List<TypeBrand> types) {
         this.types = types;
     }
 
@@ -60,12 +59,5 @@ public class Brand {
     public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
-    }
-
-    @PreRemove
-    public void removeTypeAssociations() {
-        for (Type type : this.types) {
-            type.getBrands().remove(this);
-        }
     }
 }

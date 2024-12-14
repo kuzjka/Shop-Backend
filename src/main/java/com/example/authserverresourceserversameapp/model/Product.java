@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,11 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     @OrderBy("name")
     private List<Photo> photos = new ArrayList<>();
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Type type;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Brand brand;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
@@ -85,10 +88,12 @@ public class Product {
         this.photos.add(photo);
         photo.setProduct(this);
     }
+
     public void removePhoto(Photo photo) {
         this.photos.remove(photo);
         photo.setProduct(null);
     }
+
     public void addItem(Item item) {
         this.items.add(item);
         item.setProduct(this);

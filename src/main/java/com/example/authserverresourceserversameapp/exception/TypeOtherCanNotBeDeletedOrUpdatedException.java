@@ -6,7 +6,7 @@ public class TypeOtherCanNotBeDeletedOrUpdatedException extends RuntimeException
     private String message;
 
     public TypeOtherCanNotBeDeletedOrUpdatedException() {
-        this.message = "Type \"Other\" can't be deleted or updated!";
+        this.message = "Type \"No type\" can't be deleted or updated!";
     }
 
     @Override

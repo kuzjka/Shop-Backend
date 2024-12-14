@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,17 +13,14 @@ public class Type {
     @SequenceGenerator(name = "typeGen", sequenceName = "typeSeq", initialValue = 20)
     @GeneratedValue(generator = "typeGen")
     private Long id;
+    @NaturalId
     private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "type_brand",
-            joinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
-    )
 
-    private List<Brand> brands = new ArrayList<>();
+    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TypeBrand> brands = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -48,11 +46,11 @@ public class Type {
         this.products = products;
     }
 
-    public List<Brand> getBrands() {
+    public List<TypeBrand> getBrands() {
         return brands;
     }
 
-    public void setBrands(List<Brand> brands) {
+    public void setBrands(List<TypeBrand> brands) {
         this.brands = brands;
     }
 
@@ -67,12 +65,15 @@ public class Type {
     }
 
     public void addBrand(Brand brand) {
-        this.brands.add(brand);
-        brand.getTypes().add(this);
+        TypeBrand typeBrand = new TypeBrand(this, brand);
+        this.brands.add(typeBrand);
+        brand.getTypes().add(typeBrand);
     }
 
     public void removeBrand(Brand brand) {
-        this.brands.remove(brand);
-        brand.getTypes().remove(this);
+        TypeBrand typeBrand = new TypeBrand(this, brand);
+        this.brands.remove(typeBrand);
+        typeBrand.setBrand(null);
+        typeBrand.setType(null);
     }
 }
