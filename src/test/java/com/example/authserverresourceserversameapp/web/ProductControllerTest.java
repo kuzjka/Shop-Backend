@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -33,13 +32,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProductController.class)
 public class ProductControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private ProductService productService;
     @MockBean
     AppUserDetailsService userDetailsService;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private ProductService productService;
     private Type type;
 
     private Brand brand;
@@ -61,6 +59,7 @@ public class ProductControllerTest {
         photo.setId(1L);
         photo.setName("photo1.jpg");
     }
+
     @Test
     @WithMockUser
     public void getProductsTest() throws Exception {
@@ -123,6 +122,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("BMW"));
     }
+
     @Test
     @WithMockUser
     public void addProductTest() throws Exception {
@@ -134,6 +134,7 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
+
     @Test
     @WithMockUser
     public void editProductTest() throws Exception {
@@ -154,6 +155,7 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
+
     @Test
     @WithMockUser
     public void deletePhotoTest() throws Exception {
@@ -281,7 +283,7 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Brand \"Other\" can't be deleted or updated!"));
+                        .value("Brand \"No brand\" can't be deleted or updated!"));
     }
 
     @Test
@@ -294,7 +296,7 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Type \"Other\" can't be deleted or updated!"));
+                        .value("Type \"No type\" can't be deleted or updated!"));
     }
 
     @Test
@@ -304,8 +306,9 @@ public class ProductControllerTest {
                 .willThrow(new TypeOtherCanNotBeDeletedOrUpdatedException());
         this.mockMvc.perform(delete("/api/type/4").with(csrf()))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Type \"Other\" can't be deleted or updated!"));
+                        .value("Type \"No type\" can't be deleted or updated!"));
     }
+
     @Test
     @WithMockUser
     public void brandOtherCanNotBeDeletedTest() throws Exception {
@@ -313,6 +316,6 @@ public class ProductControllerTest {
                 .willThrow(new BrandOtherCanNotBeDeletedOrUpdatedException());
         this.mockMvc.perform(delete("/api/brand/9").with(csrf()))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Brand \"Other\" can't be deleted or updated!"));
+                        .value("Brand \"No brand\" can't be deleted or updated!"));
     }
 }

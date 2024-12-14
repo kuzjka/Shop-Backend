@@ -199,7 +199,7 @@ public class ProductServiceTest {
     public void getBrandsByTypeIdTest() {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
-        given(brandRepository.getAllByTypeTypesId(anyLong())).willReturn(brands);
+        given(brandRepository.getAllByTypesTypeId(anyLong())).willReturn(brands);
         List<Brand> serviceBrands = productService.getAllBrandsByTypeId(1L);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(1);

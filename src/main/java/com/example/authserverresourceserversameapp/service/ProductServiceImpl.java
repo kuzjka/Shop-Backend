@@ -129,14 +129,11 @@ public class ProductServiceImpl implements ProductService {
             type.removeProduct(product);
             brand.removeProduct(product);
         }
-
         assert product != null;
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         type.addProduct(product);
         brand.addProduct(product);
-
-
         return productRepository.save(product).getId();
     }
 
