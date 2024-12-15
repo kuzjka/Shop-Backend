@@ -6,7 +6,7 @@ public class BrandOtherCanNotBeDeletedOrUpdatedException extends RuntimeExceptio
     private String message;
 
     public BrandOtherCanNotBeDeletedOrUpdatedException() {
-        this.message = "Brand \"No brand\" can't be deleted or updated!";
+        this.message = "Brand \"None\" can't be deleted or updated!";
     }
 
     @Override

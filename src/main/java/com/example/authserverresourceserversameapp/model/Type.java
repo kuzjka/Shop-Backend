@@ -2,7 +2,6 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.NaturalId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +12,10 @@ public class Type {
     @SequenceGenerator(name = "typeGen", sequenceName = "typeSeq", initialValue = 20)
     @GeneratedValue(generator = "typeGen")
     private Long id;
-    @NaturalId
     private String name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-
     @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TypeBrand> brands = new ArrayList<>();
 

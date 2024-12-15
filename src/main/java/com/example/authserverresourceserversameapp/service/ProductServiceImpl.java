@@ -74,11 +74,11 @@ public class ProductServiceImpl implements ProductService {
         } else if (typeId == 0 && brandId > 0) {
             products = productRepository.getAllByBrandId(brandId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-
         } else if (typeId > 0 && brandId > 0) {
             products = productRepository.getAllByTypeIdAndBrandId(typeId,
                     brandId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         }
+        assert products != null;
         dto.setProducts(products.getContent());
         dto.setPageSize(products.getSize());
         dto.setTotalProducts(products.getTotalElements());
@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getAllTypes() {
-        return typeRepository.findAll();
+        return typeRepository.findAll(Sort.by("id"));
     }
 
     /**
@@ -104,9 +104,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getAllBrandsByTypeId(long typeId) {
         if (typeId == 0) {
-            return brandRepository.findAll();
+            return brandRepository.findAll(Sort.by("id"));
         }
-        return brandRepository.getAllByTypesTypeId(typeId);
+        return brandRepository.getAllByTypesTypeIdOrderById(typeId);
     }
 
     /**
@@ -149,9 +149,6 @@ public class ProductServiceImpl implements ProductService {
             throw new TypeExistsException(dto.getName());
         }
         Type type = null;
-        Type other = typeRepository.getAllByName("No type");
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
-        other.removeBrand(brand);
         if (dto.getId() == 0) {
             type = new Type();
         } else if (dto.getId() > 0) {
@@ -159,8 +156,7 @@ public class ProductServiceImpl implements ProductService {
         }
         assert type != null;
         type.setName(dto.getName());
-        type.addBrand(brand);
-        if (type.getName().equals("No type")) {
+        if (type.getName().equals("None")) {
             throw new TypeOtherCanNotBeDeletedOrUpdatedException();
         }
         return typeRepository.save(type).getId();
@@ -179,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
         }
         Brand brand = null;
         Type type = typeRepository.findById(dto.getTypeId()).get();
-        Brand other = brandRepository.getAllByName("No type");
+        Brand other = brandRepository.getAllByName("None");
         type.removeBrand(other);
         if (dto.getId() == 0) {
             brand = new Brand();
@@ -189,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
         assert brand != null;
         brand.setName(dto.getName());
         type.addBrand(brand);
-        if (brand.getName().equals("No brand")) {
+        if (brand.getName().equals("None")) {
             throw new BrandOtherCanNotBeDeletedOrUpdatedException();
         }
         return brandRepository.save(brand).getId();
@@ -291,11 +287,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
-        if (type.getName().equals("No type")) {
+        if (type.getName().equals("None")) {
             throw new TypeOtherCanNotBeDeletedOrUpdatedException();
         }
         long id = type.getId();
-        Type other = typeRepository.getAllByName("No type");
+        Type other = typeRepository.getAllByName("None");
         List<Product> products = new ArrayList<>(type.getProducts());
         for (Product product : products) {
             type.removeProduct(product);
@@ -314,11 +310,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
-        if (brand.getName().equals("No brand")) {
+        if (brand.getName().equals("None")) {
             throw new BrandOtherCanNotBeDeletedOrUpdatedException();
         }
         long id = brand.getId();
-        Brand other = brandRepository.getAllByName("No brand");
+        Brand other = brandRepository.getAllByName("None");
         List<Product> products = new ArrayList<>(brand.getProducts());
         for (Product product : products) {
             brand.removeProduct(product);

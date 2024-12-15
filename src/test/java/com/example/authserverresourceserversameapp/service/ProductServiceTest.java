@@ -174,7 +174,7 @@ public class ProductServiceTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(typeRepository.findAll()).willReturn(types);
+        given(typeRepository.findAll(any(Sort.class))).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes();
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
@@ -199,7 +199,7 @@ public class ProductServiceTest {
     public void getBrandsByTypeIdTest() {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
-        given(brandRepository.getAllByTypesTypeId(anyLong())).willReturn(brands);
+        given(brandRepository.getAllByTypesTypeIdOrderById(anyLong())).willReturn(brands);
         List<Brand> serviceBrands = productService.getAllBrandsByTypeId(1L);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(1);
@@ -215,7 +215,7 @@ public class ProductServiceTest {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
-        given(brandRepository.findAll()).willReturn(brands);
+        given(brandRepository.findAll(any(Sort.class))).willReturn(brands);
         List<Brand> serviceBrands = productService.getAllBrandsByTypeId(0L);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(2);

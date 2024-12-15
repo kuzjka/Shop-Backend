@@ -2,7 +2,6 @@ package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +18,8 @@ public class Product {
     @OrderBy("name")
     private List<Photo> photos = new ArrayList<>();
     @ManyToOne
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Type type;
     @ManyToOne
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Brand brand;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")

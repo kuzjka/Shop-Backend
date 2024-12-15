@@ -283,7 +283,7 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Brand \"No brand\" can't be deleted or updated!"));
+                        .value("Brand \"None\" can't be deleted or updated!"));
     }
 
     @Test
@@ -296,7 +296,7 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Type \"No type\" can't be deleted or updated!"));
+                        .value("Type \"None\" can't be deleted or updated!"));
     }
 
     @Test
@@ -306,7 +306,7 @@ public class ProductControllerTest {
                 .willThrow(new TypeOtherCanNotBeDeletedOrUpdatedException());
         this.mockMvc.perform(delete("/api/type/4").with(csrf()))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Type \"No type\" can't be deleted or updated!"));
+                        .value("Type \"None\" can't be deleted or updated!"));
     }
 
     @Test
@@ -316,6 +316,6 @@ public class ProductControllerTest {
                 .willThrow(new BrandOtherCanNotBeDeletedOrUpdatedException());
         this.mockMvc.perform(delete("/api/brand/9").with(csrf()))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Brand \"No brand\" can't be deleted or updated!"));
+                        .value("Brand \"None\" can't be deleted or updated!"));
     }
 }

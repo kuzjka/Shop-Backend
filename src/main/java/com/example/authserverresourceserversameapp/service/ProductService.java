@@ -17,7 +17,7 @@ public interface ProductService {
 
     List<Brand> getAllBrandsByTypeId(long typeId);
 
-    long addProduct(ProductDto dto) throws IOException;
+    long addProduct(ProductDto dto);
 
     long addType(TypeDto dto);
 

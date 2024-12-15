@@ -41,12 +41,12 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public long addProduct(@RequestBody ProductDto dto) throws IOException {
+    public long addProduct(@RequestBody ProductDto dto) {
         return productService.addProduct(dto);
     }
 
     @PutMapping("/product")
-    public long editProduct(@RequestBody ProductDto dto) throws IOException {
+    public long editProduct(@RequestBody ProductDto dto) {
         return productService.addProduct(dto);
     }
 

@@ -14,7 +14,7 @@ insert into cart(id, user_id)
 values (2, 2);
 
 insert into type (id, name)
-values (1, 'No type');
+values (1, 'None');
 insert into type (id, name)
 values (2, 'Car');
 insert into type (id, name)
@@ -24,7 +24,7 @@ values (4, 'Plane');
 
 
 insert into brand (id, name)
-values (1, 'No brand');
+values (1, 'None');
 insert into brand (id, name)
 values (2, 'Mercedes');
 insert into brand (id, name)
