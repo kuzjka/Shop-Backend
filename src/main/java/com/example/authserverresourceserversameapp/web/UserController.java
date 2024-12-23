@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.SuccessResponse;
 import com.example.authserverresourceserversameapp.dto.UserDto;
+import com.example.authserverresourceserversameapp.dto.UserInfo;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.service.UserService;
@@ -51,11 +52,13 @@ public class UserController {
 
     @GetMapping
     @ResponseBody
-    public User getUser(Principal principal) {
+    public UserInfo getUserInfo(Principal principal) {
         if (principal == null) {
-            return null;
+            return new UserInfo("none", "none", "none");
+        } else {
+            User user = userService.findByUsername(principal.getName());
+            return new UserInfo(user.getUsername(), user.getEmail(), user.getRole().getName());
         }
-        return userService.findByUsername(principal.getName());
     }
 
     @PutMapping
