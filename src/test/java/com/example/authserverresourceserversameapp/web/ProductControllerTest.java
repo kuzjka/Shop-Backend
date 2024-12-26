@@ -93,8 +93,8 @@ public class ProductControllerTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(productService.getAllTypes()).willReturn(types);
-        this.mockMvc.perform(get("/products/type").accept(MediaType.APPLICATION_JSON))
+        given(productService.getAllTypes("name", "ASC")).willReturn(types);
+        this.mockMvc.perform(get("/products/type?sort=name&dir=ASC").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(1))

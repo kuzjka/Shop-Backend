@@ -91,8 +91,8 @@ public class ProductServiceImpl implements ProductService {
      * @return list of types
      */
     @Override
-    public List<Type> getAllTypes() {
-        return typeRepository.findAll(Sort.by("id"));
+    public List<Type> getAllTypes(String sort, String dir) {
+        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**

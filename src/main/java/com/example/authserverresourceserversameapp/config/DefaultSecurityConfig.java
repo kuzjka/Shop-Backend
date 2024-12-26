@@ -22,9 +22,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class DefaultSecurityConfig {
     private final AppUserDetailsService userDetailsService;
-    private final Converter converter;
+    private final MyConverter converter;
 
-    public DefaultSecurityConfig(AppUserDetailsService userDetailsService, Converter converter) {
+    public DefaultSecurityConfig(AppUserDetailsService userDetailsService, MyConverter converter) {
         this.userDetailsService = userDetailsService;
         this.converter = converter;
     }
@@ -38,23 +38,18 @@ public class DefaultSecurityConfig {
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"),
                                         AntPathRequestMatcher.antMatcher("/user/**"),
                                         AntPathRequestMatcher.antMatcher("/images/**"),
-                                        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/products/**"),
-                                        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/cart/**"))
+                                        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/products/**"))
                                 .permitAll()
-                                .requestMatchers(AntPathRequestMatcher.antMatcher("/order/**"))
-                                .hasAnyRole("user", "admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/products/**"))
                                 .hasRole("admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT, "/products/**"))
                                 .hasRole("admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/products/**"))
                                 .hasRole("admin")
-                                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/cart/**"))
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/cart/**"))
                                 .hasAnyRole("user", "admin")
-                                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT, "/cart/**"))
-                                .hasAnyRole("user", "admin")
-                                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/cart/**"))
-                                .hasAnyRole("user", "admin"))
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/order/**"))
+                .hasAnyRole("user", "admin"))
                 .formLogin(withDefaults());
         http.cors(withDefaults());
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();

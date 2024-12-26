@@ -20,8 +20,9 @@ public class ProductController {
     }
 
     @GetMapping("/type")
-    public List<Type> getAllTypes() {
-        return productService.getAllTypes();
+    public List<Type> getAllTypes(@RequestParam(required = false, defaultValue = "id") String sort,
+                                  @RequestParam(required = false, defaultValue = "ASC") String dir) {
+        return productService.getAllTypes(sort, dir);
     }
 
 
