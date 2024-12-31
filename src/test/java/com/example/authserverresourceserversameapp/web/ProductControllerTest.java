@@ -273,49 +273,5 @@ public class ProductControllerTest {
                         .value("Product with name: \"Mercedes S600\" already exists!"));
     }
 
-    @Test
-    @WithMockUser
-    public void brandOtherCanNotBeUpdatedTest() throws Exception {
-        String json = "{\"name\":\"Other2\"}";
-        given(productService.addBrand(any(BrandDto.class)))
-                .willThrow(new BrandOtherCanNotBeDeletedOrUpdatedException());
-        this.mockMvc.perform(post("/products/brand").with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Brand \"None\" can't be deleted or updated!"));
-    }
 
-    @Test
-    @WithMockUser
-    public void typeOtherCanNotBeUpdatedTest() throws Exception {
-        String json = "{\"name\":\"Other2\"}";
-        given(productService.addType(any(TypeDto.class)))
-                .willThrow(new TypeOtherCanNotBeDeletedOrUpdatedException());
-        this.mockMvc.perform(post("/products/type").with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Type \"None\" can't be deleted or updated!"));
-    }
-
-    @Test
-    @WithMockUser
-    public void typeOtherCanNotBeDeletedTest() throws Exception {
-        given(productService.deleteType(anyLong()))
-                .willThrow(new TypeOtherCanNotBeDeletedOrUpdatedException());
-        this.mockMvc.perform(delete("/products/type/4").with(csrf()))
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Type \"None\" can't be deleted or updated!"));
-    }
-
-    @Test
-    @WithMockUser
-    public void brandOtherCanNotBeDeletedTest() throws Exception {
-        given(productService.deleteBrand(anyLong()))
-                .willThrow(new BrandOtherCanNotBeDeletedOrUpdatedException());
-        this.mockMvc.perform(delete("/products/brand/9").with(csrf()))
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
-                        .value("Brand \"None\" can't be deleted or updated!"));
-    }
 }

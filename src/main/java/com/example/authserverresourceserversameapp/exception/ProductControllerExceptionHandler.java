@@ -49,22 +49,6 @@ public class ProductControllerExceptionHandler {
         return ResponseEntity.status(409).body(response);
     }
 
-    @ExceptionHandler(TypeOtherCanNotBeDeletedOrUpdatedException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CONFLICT)
-    protected ResponseEntity<ErrorResponse> handleTypeOtherCantBeDeletedException(RuntimeException ex) {
-        ErrorResponse response = new ErrorResponse(ex.getMessage());
-        return ResponseEntity.status(409).body(response);
-    }
-
-    @ExceptionHandler(BrandOtherCanNotBeDeletedOrUpdatedException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CONFLICT)
-    protected ResponseEntity<ErrorResponse> handleBrandOtherCantBeDeletedException(RuntimeException ex) {
-        ErrorResponse response = new ErrorResponse(ex.getMessage());
-        return ResponseEntity.status(409).body(response);
-    }
-
     @ExceptionHandler(WrongPasswordException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.FORBIDDEN)
