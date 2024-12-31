@@ -293,10 +293,6 @@ public class ProductServiceImpl implements ProductService {
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
         long id = type.getId();
-        List<Product> products = new ArrayList<>(type.getProducts());
-        for (Product product : products) {
-            type.removeProduct(product);
-        }
         typeRepository.deleteById(id);
         return id;
     }
@@ -311,10 +307,6 @@ public class ProductServiceImpl implements ProductService {
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
         long id = brand.getId();
-        List<Product> products = new ArrayList<>(brand.getProducts());
-        for (Product product : products) {
-            brand.removeProduct(product);
-        }
         brandRepository.deleteById(id);
         return id;
     }
