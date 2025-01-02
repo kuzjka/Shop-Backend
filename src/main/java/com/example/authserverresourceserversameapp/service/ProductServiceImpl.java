@@ -182,15 +182,15 @@ public class ProductServiceImpl implements ProductService {
             throw new BrandExistsException(dto.getName());
         }
         Brand brand = null;
-        Type type = typeRepository.findById(dto.getTypeId()).get();
         if (dto.getId() == 0) {
+            Type type = typeRepository.findById(dto.getTypeId()).get();
             brand = new Brand();
+            type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
         }
         assert brand != null;
         brand.setName(dto.getName());
-        type.addBrand(brand);
         return brandRepository.save(brand).getId();
     }
 
