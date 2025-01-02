@@ -178,12 +178,12 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addBrand(BrandDto dto) {
-        if (brandRepository.getAllByName(dto.getName()) != null) {
-            throw new BrandExistsException(dto.getName());
-        }
+        Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = null;
         if (dto.getId() == 0) {
-            Type type = typeRepository.findById(dto.getTypeId()).get();
+            if (brandRepository.getAllByName(dto.getName()) != null) {
+                throw new BrandExistsException(dto.getName());
+            }
             brand = new Brand();
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
