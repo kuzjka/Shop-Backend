@@ -41,4 +41,19 @@ public class TypeBrand {
     public void setBrand(Brand brand) {
         this.brand = brand;
     }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TypeBrand typeBrand)) return false;
+
+        return getType().equals(typeBrand.getType()) && getBrand().equals(typeBrand.getBrand());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getType().hashCode();
+        result = 31 * result + getBrand().hashCode();
+        return result;
+    }
 }
