@@ -69,8 +69,11 @@ public class Type {
 
     public void removeBrand(Brand brand) {
         TypeBrand typeBrand = new TypeBrand(this, brand);
-        this.brands.remove(typeBrand);
-        typeBrand.setBrand(null);
-        typeBrand.setType(null);
+        if (this.brands.contains(typeBrand)) {
+            this.brands.remove(typeBrand);
+            brand.getTypes().remove(typeBrand);
+            typeBrand.setBrand(null);
+            typeBrand.setType(null);
+        }
     }
 }

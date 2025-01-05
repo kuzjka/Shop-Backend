@@ -188,6 +188,7 @@ public class ProductServiceImpl implements ProductService {
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
+            type.removeBrand(brand);
         }
         assert brand != null;
         brand.setName(dto.getName());
