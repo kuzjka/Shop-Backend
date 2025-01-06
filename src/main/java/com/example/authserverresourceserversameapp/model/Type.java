@@ -63,17 +63,17 @@ public class Type {
 
     public void addBrand(Brand brand) {
         TypeBrand typeBrand = new TypeBrand(this, brand);
-        this.brands.add(typeBrand);
-        brand.getTypes().add(typeBrand);
+        if (!this.brands.contains(typeBrand)) {
+            this.brands.add(typeBrand);
+            brand.getTypes().add(typeBrand);
+        }
     }
 
     public void removeBrand(Brand brand) {
         TypeBrand typeBrand = new TypeBrand(this, brand);
-        if (this.brands.contains(typeBrand)) {
-            this.brands.remove(typeBrand);
-            brand.getTypes().remove(typeBrand);
-            typeBrand.setBrand(null);
-            typeBrand.setType(null);
-        }
+        this.brands.remove(typeBrand);
+        brand.getTypes().remove(typeBrand);
+        typeBrand.setBrand(null);
+        typeBrand.setType(null);
     }
 }

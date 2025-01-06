@@ -37,18 +37,18 @@ insert into brand (id, name)
 values (6, 'Concorde');
 
 
-insert into type_brand(type_id, brand_id)
-values (1, 1);
-insert into type_brand(type_id, brand_id)
-values (1, 2);
-insert into type_brand(type_id, brand_id)
-values (2, 3);
-insert into type_brand(type_id, brand_id)
-values (2, 4);
-insert into type_brand(type_id, brand_id)
-values (3, 5);
-insert into type_brand(type_id, brand_id)
-values (3, 6);
+insert into type_brand(id, type_id, brand_id)
+values (1, 1, 1);
+insert into type_brand(id, type_id, brand_id)
+values (2,1, 2);
+insert into type_brand(id, type_id, brand_id)
+values (3,2, 3);
+insert into type_brand(id, type_id, brand_id)
+values (4,2, 4);
+insert into type_brand(id, type_id, brand_id)
+values (5,3, 5);
+insert into type_brand(id, type_id, brand_id)
+values (6,3, 6);
 insert into product (id, name, price, type_id, brand_id)
 values (1, 'Mercedes S600', 200000, 1, 1);
 insert into product (id, name, price, type_id, brand_id)

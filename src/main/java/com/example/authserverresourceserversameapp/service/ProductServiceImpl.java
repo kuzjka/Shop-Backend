@@ -4,14 +4,8 @@ import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.ProductExistsException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
-import com.example.authserverresourceserversameapp.model.Brand;
-import com.example.authserverresourceserversameapp.model.Photo;
-import com.example.authserverresourceserversameapp.model.Product;
-import com.example.authserverresourceserversameapp.model.Type;
-import com.example.authserverresourceserversameapp.repository.BrandRepository;
-import com.example.authserverresourceserversameapp.repository.PhotoRepository;
-import com.example.authserverresourceserversameapp.repository.ProductRepository;
-import com.example.authserverresourceserversameapp.repository.TypeRepository;
+import com.example.authserverresourceserversameapp.model.*;
+import com.example.authserverresourceserversameapp.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -34,17 +28,20 @@ public class ProductServiceImpl implements ProductService {
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
+    private final TypeBrandRepository typeBrandRepository;
 
     public ProductServiceImpl(ProductRepository productRepository,
                               TypeRepository typeRepository,
                               BrandRepository brandRepository,
-                              PhotoRepository photoRepository) {
+                              PhotoRepository photoRepository, TypeBrandRepository typeBrandRepository) {
+        this.typeBrandRepository = typeBrandRepository;
         this.imageDir = "src/main/webapp/WEB-INF/images/";
         this.imageUrl = "http://localhost:8080/images/";
         this.productRepository = productRepository;
         this.typeRepository = typeRepository;
         this.brandRepository = brandRepository;
         this.photoRepository = photoRepository;
+
     }
 
     /**
@@ -178,20 +175,24 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addBrand(BrandDto dto) {
-        if (brandRepository.getAllByName(dto.getName()) != null) {
-            throw new BrandExistsException(dto.getName());
-        }
         Brand brand = null;
         Type type = typeRepository.findById(dto.getTypeId()).get();
         if (dto.getId() == 0) {
+            if (brandRepository.getAllByName(dto.getName()) != null) {
+                throw new BrandExistsException(dto.getName());
+            }
             brand = new Brand();
+            brand.setName(dto.getName());
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
-            type.removeBrand(brand);
+            brand.setName(dto.getName());
+            Optional<TypeBrand> typeBrand = typeBrandRepository.findByTypeAndBrand(type, brand);
+            if (typeBrand.isEmpty()) {
+                type.addBrand(brand);
+            }
         }
         assert brand != null;
-        brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
     }
 
