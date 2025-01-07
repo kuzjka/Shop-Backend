@@ -8,10 +8,7 @@ import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
-import com.example.authserverresourceserversameapp.repository.BrandRepository;
-import com.example.authserverresourceserversameapp.repository.PhotoRepository;
-import com.example.authserverresourceserversameapp.repository.ProductRepository;
-import com.example.authserverresourceserversameapp.repository.TypeRepository;
+import com.example.authserverresourceserversameapp.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +45,8 @@ public class ProductServiceTest {
     private BrandRepository brandRepository;
     @Mock
     private TypeRepository typeRepository;
+    @Mock
+    private TypeBrandRepository typeBrandRepository;
     @Mock
     private PhotoRepository photoRepository;
     @InjectMocks

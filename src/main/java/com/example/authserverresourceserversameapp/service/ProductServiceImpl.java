@@ -176,23 +176,30 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand = null;
+        if (brandRepository.getAllByName(dto.getName()) != null) {
+            throw new BrandExistsException(dto.getName());
+        }
         Type type = typeRepository.findById(dto.getTypeId()).get();
         if (dto.getId() == 0) {
-            if (brandRepository.getAllByName(dto.getName()) != null) {
-                throw new BrandExistsException(dto.getName());
-            }
             brand = new Brand();
-            brand.setName(dto.getName());
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
-            brand.setName(dto.getName());
-            Optional<TypeBrand> typeBrand = typeBrandRepository.findByTypeAndBrand(type, brand);
-            if (typeBrand.isEmpty()) {
-                type.addBrand(brand);
+            List<Type> types = typeRepository.getAllByBrandsBrand(brand);
+            for (Type type1 : types) {
+                if (!type1.getId().equals(type.getId())) {
+                    System.out.println(type1.getName());
+                    System.out.println(type.getName());
+                    TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type1, brand);
+                    long typeBrandId = typeBrand.getId();
+                    type1.removeBrand(brand);
+                    type.addBrand(brand);
+                    typeBrandRepository.deleteById(typeBrandId);
+                }
             }
         }
         assert brand != null;
+        brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
     }
 
