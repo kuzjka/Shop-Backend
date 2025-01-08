@@ -39,6 +39,10 @@ import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
+    PhotoDto photoDto;
+    List<MultipartFile> files;
+    MultipartFile mockMultipartFile;
+    byte[] bytes;
     @Mock
     private ProductRepository productRepository;
     @Mock
@@ -55,10 +59,7 @@ public class ProductServiceTest {
     private Type type;
     private Brand brand;
     private Photo photo;
-    PhotoDto photoDto;
-    List<MultipartFile> files;
-    MultipartFile mockMultipartFile;
-    byte[] bytes;
+
     @BeforeEach
     public void setup() {
         photo = new Photo();
@@ -141,6 +142,7 @@ public class ProductServiceTest {
         long productId = productService.addProduct(dto);
         assertEquals(productId, 3L);
     }
+
     @Test
     public void editProductTest() {
         Product product1 = new Product();
@@ -155,6 +157,7 @@ public class ProductServiceTest {
         long productId = productService.addProduct(dto);
         assertEquals(productId, 1L);
     }
+
     @Test
     public void ProductExistsExceptionTest() {
         ProductDto dto = new ProductDto();
@@ -165,6 +168,7 @@ public class ProductServiceTest {
                 () -> productService.addProduct(dto));
         assertEquals("Product with name: \"Mercedes S600\" already exists!", exception.getMessage());
     }
+
     @Test
     public void getTypesTest() {
         Type type1 = new Type();
@@ -225,12 +229,12 @@ public class ProductServiceTest {
     }
 
 
-
     @Test
     public void BrandExistsExceptionTest() {
         BrandDto dto = new BrandDto();
         dto.setId(0L);
         dto.setName("Samsung");
+        given(typeRepository.findById(anyLong())).willReturn(Optional.of(type));
         given(brandRepository.getAllByName(anyString())).willThrow(new BrandExistsException("Samsung"));
         BrandExistsException exception = assertThrows(BrandExistsException.class, () -> productService.addBrand(dto));
         assertEquals("Brand with name: \"Samsung\" already exists!", exception.getMessage());

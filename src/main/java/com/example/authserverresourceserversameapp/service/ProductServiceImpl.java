@@ -176,11 +176,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand = null;
-        if (brandRepository.getAllByName(dto.getName()) != null) {
-            throw new BrandExistsException(dto.getName());
-        }
         Type type = typeRepository.findById(dto.getTypeId()).get();
         if (dto.getId() == 0) {
+            if (brandRepository.getAllByName(dto.getName()) != null) {
+                throw new BrandExistsException(dto.getName());
+            }
             brand = new Brand();
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
@@ -188,8 +188,6 @@ public class ProductServiceImpl implements ProductService {
             List<Type> types = typeRepository.getAllByBrandsBrand(brand);
             for (Type type1 : types) {
                 if (!type1.getId().equals(type.getId())) {
-                    System.out.println(type1.getName());
-                    System.out.println(type.getName());
                     TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type1, brand);
                     long typeBrandId = typeBrand.getId();
                     type1.removeBrand(brand);
