@@ -104,9 +104,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getAllBrandsByTypeId(long typeId) {
         if (typeId == 0) {
-            return brandRepository.findAll(Sort.by("id"));
+            return brandRepository.findAll(Sort.by("name"));
         }
-        return brandRepository.getAllByTypesTypeIdOrderById(typeId);
+        return brandRepository.getAllByTypesTypeIdOrderByName(typeId);
     }
 
     /**
@@ -185,12 +185,12 @@ public class ProductServiceImpl implements ProductService {
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
-            List<Type> types = typeRepository.getAllByBrandsBrand(brand);
-            for (Type type1 : types) {
-                if (!type1.getId().equals(type.getId())) {
-                    TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type1, brand);
+            List<Type> brandTypes = typeRepository.getAllByBrandsBrand(brand);
+            for (Type brandType : brandTypes) {
+                if (!brandType.equals(type)) {
+                    TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(brandType, brand);
                     long typeBrandId = typeBrand.getId();
-                    type1.removeBrand(brand);
+                    brandType.removeBrand(brand);
                     type.addBrand(brand);
                     typeBrandRepository.deleteById(typeBrandId);
                 }

@@ -71,7 +71,5 @@ public class Type {
         TypeBrand typeBrand = new TypeBrand(this, brand);
         this.brands.remove(typeBrand);
         brand.getTypes().remove(typeBrand);
-        typeBrand.setBrand(null);
-        typeBrand.setType(null);
     }
 }
