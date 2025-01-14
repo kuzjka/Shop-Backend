@@ -102,11 +102,11 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getAllBrandsByTypeId(long typeId) {
+    public List<Brand> getAllBrandsByTypeId(long typeId, String dir) {
         if (typeId == 0) {
-            return brandRepository.findAll(Sort.by("name"));
+            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "name"));
         }
-        return brandRepository.getAllByTypesTypeIdOrderByName(typeId);
+        return brandRepository.getAllByTypesTypeId(typeId, Sort.by(Sort.Direction.fromString(dir), "name"));
     }
 
     /**
