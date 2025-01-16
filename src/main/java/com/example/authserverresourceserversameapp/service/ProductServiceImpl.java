@@ -1,9 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.BrandExistsException;
-import com.example.authserverresourceserversameapp.exception.ProductExistsException;
-import com.example.authserverresourceserversameapp.exception.TypeExistsException;
+import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.*;
 import com.example.authserverresourceserversameapp.repository.*;
 import org.springframework.data.domain.Page;
@@ -161,6 +159,9 @@ public class ProductServiceImpl implements ProductService {
             type = new Type();
         } else if (dto.getId() > 0) {
             type = typeRepository.findById(dto.getId()).get();
+            if (type.getName().equals("Other")) {
+                throw new TypeOtherCanNotBeUpdatedOrDeletedException();
+            }
         }
         assert type != null;
         type.setName(dto.getName());
@@ -185,6 +186,9 @@ public class ProductServiceImpl implements ProductService {
             type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
+            if (brand.getName().equals("Other")) {
+                throw new BrandOtherCanNotBeUpdatedOrDeletedException();
+            }
             List<Type> brandTypes = typeRepository.getAllByBrandsBrand(brand);
             for (Type brandType : brandTypes) {
                 if (!brandType.equals(type)) {
@@ -299,6 +303,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
+        if (type.getName().equals("Other")) {
+            throw new TypeOtherCanNotBeUpdatedOrDeletedException();
+        }
         long id = type.getId();
         typeRepository.deleteById(id);
         return id;
@@ -313,6 +320,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
+        if (brand.getName().equals("Other")) {
+            throw new BrandOtherCanNotBeUpdatedOrDeletedException();
+        }
         long id = brand.getId();
         brandRepository.deleteById(id);
         return id;

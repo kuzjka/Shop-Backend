@@ -20,7 +20,8 @@ insert into type (id, name)
 values (2, 'Smartphone');
 insert into type (id, name)
 values (3, 'Plane');
-
+insert into type (id, name)
+values (10, 'Other');
 
 
 insert into brand (id, name)
@@ -35,6 +36,8 @@ insert into brand (id, name)
 values (5, 'Boeing');
 insert into brand (id, name)
 values (6, 'Concorde');
+insert into brand (id, name)
+values (10, 'Other');
 
 
 insert into type_brand(id, type_id, brand_id)

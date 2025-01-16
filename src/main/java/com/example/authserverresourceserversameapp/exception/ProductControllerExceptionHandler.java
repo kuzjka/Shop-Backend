@@ -56,4 +56,20 @@ public class ProductControllerExceptionHandler {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(403).body(response);
     }
+
+    @ExceptionHandler(TypeOtherCanNotBeUpdatedOrDeletedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleTypeOtherCanNotBeDeletedException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
+
+    @ExceptionHandler(BrandOtherCanNotBeUpdatedOrDeletedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleBrandOtherCanNotBeDeletedException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
 }
