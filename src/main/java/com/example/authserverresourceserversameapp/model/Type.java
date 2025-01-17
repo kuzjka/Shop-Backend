@@ -13,7 +13,7 @@ public class Type {
     @GeneratedValue(generator = "typeGen")
     private Long id;
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "type")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
     @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true)

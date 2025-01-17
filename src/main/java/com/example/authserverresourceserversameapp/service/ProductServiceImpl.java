@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -115,31 +114,24 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product = null;
-        if (productRepository.findByName(dto.getName()) != null && dto.getId() == 0) {
-            throw new ProductExistsException(dto.getName());
-        }
-        Optional<Type> type = typeRepository.findById(dto.getTypeId());
-        Optional<Brand> brand = brandRepository.findById(dto.getBrandId());
+        Type type = typeRepository.findById(dto.getTypeId()).get();
+        Brand brand = brandRepository.findById(dto.getBrandId()).get();
+        TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type, brand);
         if (dto.getId() == 0) {
+            if (productRepository.findByName(dto.getName()) != null) {
+                throw new ProductExistsException(dto.getName());
+            }
             product = new Product();
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
-            if (type.isPresent()) {
-                type.get().removeProduct(product);
-            }
-            if (brand.isPresent()) {
-                brand.get().removeProduct(product);
-            }
+            type.removeProduct(product);
+            brand.removeProduct(product);
         }
         assert product != null;
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-        if (type.isPresent()) {
-            type.get().addProduct(product);
-        }
-        if (brand.isPresent()) {
-            brand.get().addProduct(product);
-        }
+        type.addProduct(product);
+        brand.addProduct(product);
         return productRepository.save(product).getId();
     }
 
@@ -151,11 +143,11 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addType(TypeDto dto) {
-        if (typeRepository.getAllByName(dto.getName()) != null) {
-            throw new TypeExistsException(dto.getName());
-        }
         Type type = null;
         if (dto.getId() == 0) {
+            if (typeRepository.getOneByName(dto.getName()) != null) {
+                throw new TypeExistsException(dto.getName());
+            }
             type = new Type();
         } else if (dto.getId() > 0) {
             type = typeRepository.findById(dto.getId()).get();
@@ -177,27 +169,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand = null;
-        Type type = typeRepository.findById(dto.getTypeId()).get();
         if (dto.getId() == 0) {
-            if (brandRepository.getAllByName(dto.getName()) != null) {
+            if (brandRepository.getOneByName(dto.getName()) != null) {
                 throw new BrandExistsException(dto.getName());
             }
             brand = new Brand();
-            type.addBrand(brand);
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
             if (brand.getName().equals("Other")) {
                 throw new BrandOtherCanNotBeUpdatedOrDeletedException();
-            }
-            List<Type> brandTypes = typeRepository.getAllByBrandsBrand(brand);
-            for (Type brandType : brandTypes) {
-                if (!brandType.equals(type)) {
-                    TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(brandType, brand);
-                    long typeBrandId = typeBrand.getId();
-                    brandType.removeBrand(brand);
-                    type.addBrand(brand);
-                    typeBrandRepository.deleteById(typeBrandId);
-                }
             }
         }
         assert brand != null;
@@ -303,8 +283,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
+        Type other = typeRepository.getOneByName("Other");
         if (type.getName().equals("Other")) {
             throw new TypeOtherCanNotBeUpdatedOrDeletedException();
+        }
+        List<Product> products = new ArrayList<>(type.getProducts());
+        for (Product product : products) {
+            type.removeProduct(product);
+            other.addProduct(product);
         }
         long id = type.getId();
         typeRepository.deleteById(id);
@@ -320,8 +306,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
+        Brand other = brandRepository.getOneByName("Other");
         if (brand.getName().equals("Other")) {
             throw new BrandOtherCanNotBeUpdatedOrDeletedException();
+        }
+
+        List<Product> products = new ArrayList<>(brand.getProducts());
+        for (Product product : products) {
+            brand.removeProduct(product);
+            other.addProduct(product);
         }
         long id = brand.getId();
         brandRepository.deleteById(id);

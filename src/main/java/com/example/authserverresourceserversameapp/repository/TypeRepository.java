@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TypeRepository extends JpaRepository<Type, Long> {
 
-    Type getAllByName(String name);
+    Type getOneByName(String name);
 
     List<Type> getAllByBrandsBrand(Brand brand);
 }
