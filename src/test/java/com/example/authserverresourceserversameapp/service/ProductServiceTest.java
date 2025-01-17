@@ -161,7 +161,6 @@ public class ProductServiceTest {
     @Test
     public void ProductExistsExceptionTest() {
         ProductDto dto = new ProductDto();
-        dto.setId(1L);
         dto.setName("Mercedes S600");
         given(productRepository.findByName(anyString())).willThrow(new ProductExistsException("Mercedes S600"));
         ProductExistsException exception = assertThrows(ProductExistsException.class,
@@ -234,7 +233,6 @@ public class ProductServiceTest {
         BrandDto dto = new BrandDto();
         dto.setId(0L);
         dto.setName("Samsung");
-        given(typeRepository.findById(anyLong())).willReturn(Optional.of(type));
         given(brandRepository.getOneByName(anyString())).willThrow(new BrandExistsException("Samsung"));
         BrandExistsException exception = assertThrows(BrandExistsException.class, () -> productService.addBrand(dto));
         assertEquals("Brand with name: \"Samsung\" already exists!", exception.getMessage());
