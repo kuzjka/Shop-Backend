@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ public class Type {
     @GeneratedValue(generator = "typeGen")
     private Long id;
     private String name;
+
+
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "type")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
@@ -34,6 +37,10 @@ public class Type {
     public void setName(String name) {
         this.name = name;
     }
+
+
+
+
 
     public List<Product> getProducts() {
         return products;

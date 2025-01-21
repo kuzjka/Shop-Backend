@@ -93,6 +93,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * gets all types from database related to products
+     *
+     * @return list of types related to products
+     */
+    @Override
+    public List<Type> getProductTypes() {
+        return typeRepository.getProductTypes();
+    }
+
+    /**
      * gets all brands from database with particular type id
      *
      * @param typeId id of type
@@ -201,12 +211,8 @@ public class ProductServiceImpl implements ProductService {
         long id = product.getId();
         Type type = product.getType();
         Brand brand = product.getBrand();
-        if (type != null) {
-            type.removeProduct(product);
-        }
-        if (brand != null) {
-            brand.removeProduct(product);
-        }
+        type.removeProduct(product);
+        brand.removeProduct(product);
         productRepository.deleteById(id);
         return id;
     }
