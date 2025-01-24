@@ -88,8 +88,8 @@ public class ProductServiceImpl implements ProductService {
      * @return list of types
      */
     @Override
-    public List<Type> getAllTypes(String sort, String dir) {
-        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+    public List<Type> getAllTypes() {
+        return typeRepository.findAll();
     }
 
     /**
@@ -109,11 +109,11 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getAllBrandsByTypeId(long typeId, String dir) {
+    public List<Brand> getAllBrandsByTypeId(long typeId) {
         if (typeId == 0) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "name"));
+            return brandRepository.findAll();
         }
-        return brandRepository.getAllByTypesTypeId(typeId, Sort.by(Sort.Direction.fromString(dir), "name"));
+        return brandRepository.getAllByTypesTypeId(typeId);
     }
 
     /**
@@ -211,8 +211,17 @@ public class ProductServiceImpl implements ProductService {
         long id = product.getId();
         Type type = product.getType();
         Brand brand = product.getBrand();
+        TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type, brand);
         type.removeProduct(product);
         brand.removeProduct(product);
+        if (type.getProducts().isEmpty()) {
+            type.removeBrand(brand);
+            typeBrandRepository.delete(typeBrand);
+        }
+        if (brand.getProducts().isEmpty()) {
+            type.removeBrand(brand);
+            typeBrandRepository.delete(typeBrand);
+        }
         productRepository.deleteById(id);
         return id;
     }
