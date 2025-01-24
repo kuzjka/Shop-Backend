@@ -4,7 +4,6 @@ package com.example.authserverresourceserversameapp.config;
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,9 +46,7 @@ public class DefaultSecurityConfig {
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/products/**"))
                                 .hasRole("admin")
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/cart/**"))
-                                .hasAnyRole("user", "admin")
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/order/**"))
-                .hasAnyRole("user", "admin"))
+                                .hasAnyRole("user", "admin"))
                 .formLogin(withDefaults());
         http.cors(withDefaults());
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();

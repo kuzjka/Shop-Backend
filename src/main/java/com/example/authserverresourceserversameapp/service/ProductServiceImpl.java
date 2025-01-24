@@ -129,22 +129,40 @@ public class ProductServiceImpl implements ProductService {
         }
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
-        TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type, brand);
-        if (typeBrand == null) {
-            type.addBrand(brand);
-        }
         if (dto.getId() == 0) {
             product = new Product();
+            type.addProduct(product);
+            brand.addProduct(product);
+            TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type, brand);
+            if (typeBrand == null) {
+                type.addBrand(brand);
+            }
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
-            type.removeProduct(product);
-            brand.removeProduct(product);
+            Type productType = product.getType();
+            Brand productBrand = product.getBrand();
+            if (!productType.equals(type) && productBrand.equals(brand)) {
+                productType.removeProduct(product);
+                type.addProduct(product);
+                productType.removeBrand(brand);
+                type.addBrand(brand);
+            } else if (productType.equals(type) && !productBrand.equals(brand)) {
+                productBrand.removeProduct(product);
+                brand.addProduct(product);
+                type.removeBrand(productBrand);
+                type.addBrand(brand);
+            } else if (!productType.equals(type) && !productBrand.equals(brand)) {
+                productType.removeProduct(product);
+                type.addProduct(product);
+                productBrand.removeProduct(product);
+                brand.addProduct(product);
+                productType.removeBrand(productBrand);
+                type.addBrand(brand);
+            }
         }
         assert product != null;
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-        type.addProduct(product);
-        brand.addProduct(product);
         return productRepository.save(product).getId();
     }
 

@@ -11,7 +11,7 @@ public class Brand {
     @Id
     @SequenceGenerator(name = "brandGen", sequenceName = "brandSeq", initialValue = 20)
     @GeneratedValue(generator = "brandGen")
-    private Long id;
+    private long id;
     private String name;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
     @JsonIgnore
@@ -19,11 +19,11 @@ public class Brand {
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TypeBrand> types = new ArrayList<>();
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
