@@ -2,7 +2,10 @@ package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.exception.*;
-import com.example.authserverresourceserversameapp.model.*;
+import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Photo;
+import com.example.authserverresourceserversameapp.model.Product;
+import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -131,38 +134,20 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
         if (dto.getId() == 0) {
             product = new Product();
-            type.addProduct(product);
-            brand.addProduct(product);
-            TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type, brand);
-            if (typeBrand == null) {
-                type.addBrand(brand);
-            }
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            if (!productType.equals(type) && productBrand.equals(brand)) {
-                productType.removeProduct(product);
-                type.addProduct(product);
-                productType.removeBrand(brand);
-                type.addBrand(brand);
-            } else if (productType.equals(type) && !productBrand.equals(brand)) {
-                productBrand.removeProduct(product);
-                brand.addProduct(product);
-                type.removeBrand(productBrand);
-                type.addBrand(brand);
-            } else if (!productType.equals(type) && !productBrand.equals(brand)) {
-                productType.removeProduct(product);
-                type.addProduct(product);
-                productBrand.removeProduct(product);
-                brand.addProduct(product);
-                productType.removeBrand(productBrand);
-                type.addBrand(brand);
-            }
+            productType.removeProduct(product);
+            productBrand.removeProduct(product);
+            productType.removeBrand(productBrand);
         }
         assert product != null;
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
+        type.addProduct(product);
+        brand.addProduct(product);
+        type.addBrand(brand);
         return productRepository.save(product).getId();
     }
 
@@ -229,17 +214,9 @@ public class ProductServiceImpl implements ProductService {
         long id = product.getId();
         Type type = product.getType();
         Brand brand = product.getBrand();
-        TypeBrand typeBrand = typeBrandRepository.findFirstByTypeAndBrand(type, brand);
         type.removeProduct(product);
         brand.removeProduct(product);
-        if (type.getProducts().isEmpty()) {
-            type.removeBrand(brand);
-            typeBrandRepository.delete(typeBrand);
-        }
-        if (brand.getProducts().isEmpty()) {
-            type.removeBrand(brand);
-            typeBrandRepository.delete(typeBrand);
-        }
+        type.removeBrand(brand);
         productRepository.deleteById(id);
         return id;
     }
