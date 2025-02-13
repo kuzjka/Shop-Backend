@@ -10,6 +10,8 @@ public interface TypeRepository extends JpaRepository<Type, Long> {
 
     Type getOneByName(String name);
 
+    List<Type> findAllByNameNotLikeOrderByName(String name);
+
     @Query(value = "select t from Type t where size(t.products)>0")
     List<Type> getProductTypes();
 

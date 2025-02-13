@@ -176,7 +176,7 @@ public class ProductServiceTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(typeRepository.findAll()).willReturn(types);
+        given(typeRepository.findAllByNameNotLikeOrderByName(anyString())).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes();
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
@@ -185,7 +185,6 @@ public class ProductServiceTest {
         assertThat(serviceTypes.get(1).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(1).getName()).isEqualTo("Smartphone");
     }
-
 
     @Test
     public void TypeExistsExceptionTest() {
@@ -201,7 +200,7 @@ public class ProductServiceTest {
     public void getBrandsByTypeIdTest() {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
-        given(brandRepository.getAllByTypesTypeId(anyLong())).willReturn(brands);
+        given(brandRepository.getAllByTypesTypeIdOrderByName(anyLong())).willReturn(brands);
         List<Brand> serviceBrands = productService.getAllBrandsByTypeId(1L);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(1);
@@ -217,7 +216,7 @@ public class ProductServiceTest {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
-        given(brandRepository.findAll()).willReturn(brands);
+        given(brandRepository.getAllByNameNotLikeOrderByName(anyString())).willReturn(brands);
         List<Brand> serviceBrands = productService.getAllBrandsByTypeId(0L);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(2);
@@ -226,7 +225,6 @@ public class ProductServiceTest {
         assertThat(serviceBrands.get(1).getId()).isEqualTo(2L);
         assertThat(serviceBrands.get(1).getName()).isEqualTo("Apple");
     }
-
 
     @Test
     public void BrandExistsExceptionTest() {
@@ -237,7 +235,6 @@ public class ProductServiceTest {
         BrandExistsException exception = assertThrows(BrandExistsException.class, () -> productService.addBrand(dto));
         assertEquals("Brand with name: \"Samsung\" already exists!", exception.getMessage());
     }
-
 
     @Test
     public void deleteProductTest() {

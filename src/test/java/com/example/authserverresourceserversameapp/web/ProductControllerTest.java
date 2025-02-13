@@ -1,7 +1,9 @@
 package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.*;
+import com.example.authserverresourceserversameapp.exception.BrandExistsException;
+import com.example.authserverresourceserversameapp.exception.ProductExistsException;
+import com.example.authserverresourceserversameapp.exception.TypeExistsException;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -272,6 +274,4 @@ public class ProductControllerTest {
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.message")
                         .value("Product with name: \"Mercedes S600\" already exists!"));
     }
-
-
 }

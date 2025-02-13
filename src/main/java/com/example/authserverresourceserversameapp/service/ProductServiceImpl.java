@@ -89,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getAllTypes() {
-        return typeRepository.findAll();
+        return typeRepository.findAllByNameNotLikeOrderByName("Not selected");
     }
 
     /**
@@ -111,9 +111,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getAllBrandsByTypeId(long typeId) {
         if (typeId == 0) {
-            return brandRepository.findAll();
+            return brandRepository.getAllByNameNotLikeOrderByName("Not selected");
         }
-        return brandRepository.getAllByTypesTypeId(typeId);
+        return brandRepository.getAllByTypesTypeIdOrderByName(typeId);
     }
 
     /**
@@ -182,8 +182,8 @@ public class ProductServiceImpl implements ProductService {
             type = new Type();
         } else if (dto.getId() > 0) {
             type = typeRepository.findById(dto.getId()).get();
-            if (type.getName().equals("Other")) {
-                throw new TypeOtherCanNotBeUpdatedOrDeletedException();
+            if (type.getName().equals("Not selected")) {
+                throw new TypeNotSelectedCanNotBeUpdatedOrDeletedException();
             }
         }
         assert type != null;
@@ -207,8 +207,8 @@ public class ProductServiceImpl implements ProductService {
             brand = new Brand();
         } else if (dto.getId() > 0) {
             brand = brandRepository.findById(dto.getId()).get();
-            if (brand.getName().equals("Other")) {
-                throw new BrandOtherCanNotBeUpdatedOrDeletedException();
+            if (brand.getName().equals("Not selected")) {
+                throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
             }
         }
         assert brand != null;
@@ -311,9 +311,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
-        Type other = typeRepository.getOneByName("Other");
-        if (type.getName().equals("Other")) {
-            throw new TypeOtherCanNotBeUpdatedOrDeletedException();
+        Type other = typeRepository.getOneByName("Not selected");
+        if (type.getName().equals("Not selected")) {
+            throw new TypeNotSelectedCanNotBeUpdatedOrDeletedException();
         }
         List<Product> products = new ArrayList<>(type.getProducts());
         for (Product product : products) {
@@ -334,9 +334,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
-        Brand other = brandRepository.getOneByName("Other");
-        if (brand.getName().equals("Other")) {
-            throw new BrandOtherCanNotBeUpdatedOrDeletedException();
+        Brand other = brandRepository.getOneByName("Not selected");
+        if (brand.getName().equals("Not selected")) {
+            throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
         }
 
         List<Product> products = new ArrayList<>(brand.getProducts());
