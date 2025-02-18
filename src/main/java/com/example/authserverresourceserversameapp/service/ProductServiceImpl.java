@@ -134,42 +134,26 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
         if (dto.getId() == 0) {
             product = new Product();
-            type.addProduct(product);
-            brand.addProduct(product);
-            addTypeBrand(type, brand);
+            if (typeBrandRepository.findFirstByTypeAndBrand(type, brand) == null) {
+                type.addBrand(brand);
+            }
         } else if (dto.getId() > 0) {
             product = productRepository.findById(dto.getId()).get();
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            if (type.equals(productType) && !brand.equals(productBrand)) {
-                productBrand.removeProduct(product);
-                brand.addProduct(product);
-                type.removeBrand(productBrand);
-            } else if (!type.equals(productType) && brand.equals(productBrand)) {
-                productType.removeProduct(product);
-                type.addProduct(product);
-                productType.removeBrand(brand);
-            } else if (!type.equals(productType) && !brand.equals(productBrand)) {
-                productType.removeProduct(product);
-                type.addProduct(product);
-                productBrand.removeProduct(product);
-                brand.addProduct(product);
-                productType.removeBrand(productBrand);
-            }
-            addTypeBrand(type, brand);
+            productType.removeProduct(product);
+            productBrand.removeProduct(product);
+            productType.removeBrand(productBrand);
+            type.addBrand(brand);
         }
         assert product != null;
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
+        type.addProduct(product);
+        brand.addProduct(product);
         return productRepository.save(product).getId();
     }
 
-    public void addTypeBrand(Type type, Brand brand) {
-        Brand exists = brandRepository.getOneByTypesType(type);
-        if (exists == null) {
-            type.addBrand(brand);
-        }
-    }
 
     /**
      * adds new type to database or updates existing
