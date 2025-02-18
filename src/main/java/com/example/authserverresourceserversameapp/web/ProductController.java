@@ -45,12 +45,12 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public long addProduct(@RequestBody ProductDto dto) {
+    public long addProduct(ProductDto dto) {
         return productService.addProduct(dto);
     }
 
     @PutMapping("/product")
-    public long editProduct(@RequestBody ProductDto dto) {
+    public long editProduct(ProductDto dto) {
         return productService.addProduct(dto);
     }
 

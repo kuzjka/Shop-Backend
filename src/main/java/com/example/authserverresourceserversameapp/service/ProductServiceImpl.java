@@ -126,31 +126,34 @@ public class ProductServiceImpl implements ProductService {
      * @return id of created or updated product
      */
     public long addProduct(ProductDto dto) {
-        Product product = null;
+        Product product;
         if (productRepository.findByName(dto.getName()) != null && dto.getId() == 0) {
             throw new ProductExistsException(dto.getName());
         }
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
-        if (dto.getId() == 0) {
+        if (dto.getId() <= 0) {
             product = new Product();
+            type.addProduct(product);
+            brand.addProduct(product);
             if (typeBrandRepository.findFirstByTypeAndBrand(type, brand) == null) {
                 type.addBrand(brand);
             }
-        } else if (dto.getId() > 0) {
+        } else {
             product = productRepository.findById(dto.getId()).get();
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            productType.removeProduct(product);
-            productBrand.removeProduct(product);
-            productType.removeBrand(productBrand);
-            type.addBrand(brand);
+            if (!type.equals(productType) || !brand.equals(productBrand)) {
+                productType.removeProduct(product);
+                productBrand.removeProduct(product);
+                productType.removeBrand(productBrand);
+                type.addProduct(product);
+                brand.addProduct(product);
+                type.addBrand(brand);
+            }
         }
-        assert product != null;
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-        type.addProduct(product);
-        brand.addProduct(product);
         return productRepository.save(product).getId();
     }
 
