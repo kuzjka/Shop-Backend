@@ -127,12 +127,12 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product;
-        if (productRepository.findByName(dto.getName()) != null && dto.getId() == 0) {
+        if (productRepository.findByName(dto.getName()) != null && dto.getId() == null) {
             throw new ProductExistsException(dto.getName());
         }
         Type type = typeRepository.findById(dto.getTypeId()).get();
         Brand brand = brandRepository.findById(dto.getBrandId()).get();
-        if (dto.getId() <= 0) {
+        if (dto.getId() == null) {
             product = new Product();
             type.addProduct(product);
             brand.addProduct(product);
@@ -166,19 +166,18 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addType(TypeDto dto) {
-        Type type = null;
-        if (dto.getId() == 0) {
+        Type type;
+        if (dto.getId() <= 0) {
             if (typeRepository.getOneByName(dto.getName()) != null) {
                 throw new TypeExistsException(dto.getName());
             }
             type = new Type();
-        } else if (dto.getId() > 0) {
+        } else {
             type = typeRepository.findById(dto.getId()).get();
             if (type.getName().equals("Not selected")) {
                 throw new TypeNotSelectedCanNotBeUpdatedOrDeletedException();
             }
         }
-        assert type != null;
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
     }
@@ -191,19 +190,18 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long addBrand(BrandDto dto) {
-        Brand brand = null;
-        if (dto.getId() == 0) {
+        Brand brand;
+        if (dto.getId() <= 0) {
             if (brandRepository.getOneByName(dto.getName()) != null) {
                 throw new BrandExistsException(dto.getName());
             }
             brand = new Brand();
-        } else if (dto.getId() > 0) {
+        } else {
             brand = brandRepository.findById(dto.getId()).get();
             if (brand.getName().equals("Not selected")) {
                 throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
             }
         }
-        assert brand != null;
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
     }

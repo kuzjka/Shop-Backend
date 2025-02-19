@@ -135,7 +135,7 @@ public class ProductServiceTest {
         product1.setId(3L);
         product1.setName("Mercedes S500");
         ProductDto dto = new ProductDto();
-        dto.setId(0L);
+        dto.setId(null);
         given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
         given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
         given(productRepository.save(any(Product.class))).willReturn(product1);
