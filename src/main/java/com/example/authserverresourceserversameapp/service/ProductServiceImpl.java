@@ -167,10 +167,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addType(TypeDto dto) {
         Type type;
-        if (dto.getId() <= 0) {
-            if (typeRepository.getOneByName(dto.getName()) != null) {
-                throw new TypeExistsException(dto.getName());
-            }
+        if (typeRepository.getOneByName(dto.getName()) != null) {
+            throw new TypeExistsException(dto.getName());
+        }
+        if (dto.getId() == null) {
             type = new Type();
         } else {
             type = typeRepository.findById(dto.getId()).get();
