@@ -41,7 +41,6 @@ public class ProductControllerTest {
     @MockBean
     private ProductService productService;
     private Type type;
-
     private Brand brand;
     private Product product;
     private Photo photo;

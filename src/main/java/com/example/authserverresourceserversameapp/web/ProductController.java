@@ -86,12 +86,12 @@ public class ProductController {
     }
 
     @PostMapping("/brand")
-    public long addBrand(@RequestBody BrandDto dto) {
+    public long addBrand(BrandDto dto) {
         return productService.addBrand(dto);
     }
 
     @PutMapping("/brand")
-    public long editBrand(@RequestBody BrandDto dto) {
+    public long editBrand(BrandDto dto) {
         return productService.addBrand(dto);
     }
 
