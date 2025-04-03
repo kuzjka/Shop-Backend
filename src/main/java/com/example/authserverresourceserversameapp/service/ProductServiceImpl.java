@@ -143,7 +143,17 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findById(dto.getId()).get();
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            if (!type.equals(productType) || !brand.equals(productBrand)) {
+            if (!type.equals(productType) && brand.equals(productBrand)) {
+                productType.removeProduct(product);
+                productType.removeBrand(brand);
+                type.addProduct(product);
+                type.addBrand(productBrand);
+            } else if (type.equals(productType) && !brand.equals(productBrand)) {
+                productBrand.removeProduct(product);
+                type.removeBrand(productBrand);
+                brand.addProduct(product);
+                productType.addBrand(brand);
+            } else if (!type.equals(productType) && !brand.equals(productBrand)) {
                 productType.removeProduct(product);
                 productBrand.removeProduct(product);
                 productType.removeBrand(productBrand);
