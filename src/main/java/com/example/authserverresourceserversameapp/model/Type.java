@@ -16,8 +16,11 @@ public class Type {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "type")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TypeBrand> brands = new ArrayList<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "type_brand", joinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
+    )
+    private List<Brand> brands = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -44,11 +47,11 @@ public class Type {
         this.products = products;
     }
 
-    public List<TypeBrand> getBrands() {
+    public List<Brand> getBrands() {
         return brands;
     }
 
-    public void setBrands(List<TypeBrand> brands) {
+    public void setBrands(List<Brand> brands) {
         this.brands = brands;
     }
 
@@ -63,14 +66,13 @@ public class Type {
     }
 
     public void addBrand(Brand brand) {
-        TypeBrand typeBrand = new TypeBrand(this, brand);
-        this.brands.add(typeBrand);
-        brand.getTypes().add(typeBrand);
+
+        this.brands.add(brand);
+        brand.getTypes().add(this);
     }
 
     public void removeBrand(Brand brand) {
-        TypeBrand typeBrand = new TypeBrand(this, brand);
-        this.brands.remove(typeBrand);
-        brand.getTypes().remove(typeBrand);
+        this.brands.remove(brand);
+        brand.getTypes().remove(this);
     }
 }

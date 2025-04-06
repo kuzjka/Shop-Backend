@@ -10,7 +10,10 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     List<Brand> getAllByNameNotLikeOrderByName(String name);
 
-    List<Brand> getAllByTypesTypeIdOrderByName(long typeId);
+    List<Brand> getAllByTypesIdOrderByName(long typeId);
+
+    Brand getFirstByTypesIdAndId(long typeId, long brandId);
+
 }
 
 

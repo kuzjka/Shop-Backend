@@ -40,18 +40,18 @@ values (7, 'Concorde');
 
 
 
-insert into type_brand(id, type_id, brand_id)
-values (1, 2, 2);
-insert into type_brand(id, type_id, brand_id)
-values (2, 2, 3);
-insert into type_brand(id, type_id, brand_id)
-values (3, 3, 4);
-insert into type_brand(id, type_id, brand_id)
-values (4, 3, 5);
-insert into type_brand(id, type_id, brand_id)
-values (5, 4, 6);
-insert into type_brand(id, type_id, brand_id)
-values (6, 4, 7);
+insert into type_brand(type_id, brand_id)
+values (2, 2);
+insert into type_brand(type_id, brand_id)
+values ( 2, 3);
+insert into type_brand( type_id, brand_id)
+values (3, 4);
+insert into type_brand(type_id, brand_id)
+values (3, 5);
+insert into type_brand(type_id, brand_id)
+values (4, 6);
+insert into type_brand(type_id, brand_id)
+values (4, 7);
 insert into product (id, name, price, type_id, brand_id)
 values (1, 'Mercedes S600', 200000, 2, 2);
 insert into product (id, name, price, type_id, brand_id)

@@ -6,7 +6,10 @@ import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
-import com.example.authserverresourceserversameapp.repository.*;
+import com.example.authserverresourceserversameapp.repository.BrandRepository;
+import com.example.authserverresourceserversameapp.repository.PhotoRepository;
+import com.example.authserverresourceserversameapp.repository.ProductRepository;
+import com.example.authserverresourceserversameapp.repository.TypeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,13 +31,12 @@ public class ProductServiceImpl implements ProductService {
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
     private final PhotoRepository photoRepository;
-    private final TypeBrandRepository typeBrandRepository;
+
 
     public ProductServiceImpl(ProductRepository productRepository,
                               TypeRepository typeRepository,
                               BrandRepository brandRepository,
-                              PhotoRepository photoRepository, TypeBrandRepository typeBrandRepository) {
-        this.typeBrandRepository = typeBrandRepository;
+                              PhotoRepository photoRepository) {
         this.imageDir = "src/main/webapp/WEB-INF/images/";
         this.imageUrl = "http://localhost:8080/images/";
         this.productRepository = productRepository;
@@ -116,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
         if (typeId == 0) {
             return brandRepository.getAllByNameNotLikeOrderByName("Not selected");
         }
-        return brandRepository.getAllByTypesTypeIdOrderByName(typeId);
+        return brandRepository.getAllByTypesIdOrderByName(typeId);
     }
 
     /**
@@ -136,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
             product = new Product();
             type.addProduct(product);
             brand.addProduct(product);
-            if (typeBrandRepository.findFirstByTypeAndBrand(type, brand) == null) {
+            if (brandRepository.getFirstByTypesIdAndId(type.getId(), brand.getId()) == null) {
                 type.addBrand(brand);
             }
         } else {

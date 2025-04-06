@@ -16,8 +16,9 @@ public class Brand {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TypeBrand> types = new ArrayList<>();
+    @ManyToMany(mappedBy = "brands")
+    @JsonIgnore
+    private List<Type> types = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -43,11 +44,11 @@ public class Brand {
         this.products = products;
     }
 
-    public List<TypeBrand> getTypes() {
+    public List<Type> getTypes() {
         return types;
     }
 
-    public void setTypes(List<TypeBrand> types) {
+    public void setTypes(List<Type> types) {
         this.types = types;
     }
 

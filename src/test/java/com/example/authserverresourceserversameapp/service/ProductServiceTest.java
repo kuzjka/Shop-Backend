@@ -49,8 +49,7 @@ public class ProductServiceTest {
     private BrandRepository brandRepository;
     @Mock
     private TypeRepository typeRepository;
-    @Mock
-    private TypeBrandRepository typeBrandRepository;
+
     @Mock
     private PhotoRepository photoRepository;
     @InjectMocks
@@ -200,7 +199,7 @@ public class ProductServiceTest {
     public void getBrandsByTypeIdTest() {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
-        given(brandRepository.getAllByTypesTypeIdOrderByName(anyLong())).willReturn(brands);
+        given(brandRepository.getAllByTypesIdOrderByName(anyLong())).willReturn(brands);
         List<Brand> serviceBrands = productService.getAllBrandsByTypeId(1L);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(1);
