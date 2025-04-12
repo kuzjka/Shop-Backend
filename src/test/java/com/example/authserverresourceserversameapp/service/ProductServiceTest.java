@@ -8,7 +8,10 @@ import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
-import com.example.authserverresourceserversameapp.repository.*;
+import com.example.authserverresourceserversameapp.repository.BrandRepository;
+import com.example.authserverresourceserversameapp.repository.PhotoRepository;
+import com.example.authserverresourceserversameapp.repository.ProductRepository;
+import com.example.authserverresourceserversameapp.repository.TypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -119,8 +122,8 @@ public class ProductServiceTest {
         Page<Product> page = new PageImpl<>(products);
         given(productRepository.findAll(PageRequest.of(0, 10, Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        dto = productService.getProducts(0L, 0L, "name", "ASC", 0, 10);
-        assertThat(dto).isNotNull();
+        dto = productService.getProducts(null, null, "name", "ASC", 0, 10);
+
         assertThat(dto.getProducts().size()).isEqualTo(2);
         assertThat(dto.getProducts().get(0).getId()).isEqualTo(1L);
         assertThat(dto.getProducts().get(0).getName()).isEqualTo("Mercedes S600");
@@ -208,7 +211,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void getBrandsByTypeIdEquals0Test() {
+    public void getBrandsByTypeIdIsNullTest() {
         Brand brand1 = new Brand();
         brand1.setId(2L);
         brand1.setName("Apple");
@@ -216,7 +219,7 @@ public class ProductServiceTest {
         brands.add(brand);
         brands.add(brand1);
         given(brandRepository.getAllByNameNotLikeOrderByName(anyString())).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(0L);
+        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(null);
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(2);
         assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);

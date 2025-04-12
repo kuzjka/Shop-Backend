@@ -25,8 +25,8 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    private final String imageDir;
-    private final String imageUrl;
+    private static final String imageDir = "src/main/webapp/WEB-INF/images/";
+    private static final String imageUrl = "http://localhost:8080/images/";
     private final ProductRepository productRepository;
     private final TypeRepository typeRepository;
     private final BrandRepository brandRepository;
@@ -37,13 +37,10 @@ public class ProductServiceImpl implements ProductService {
                               TypeRepository typeRepository,
                               BrandRepository brandRepository,
                               PhotoRepository photoRepository) {
-        this.imageDir = "src/main/webapp/WEB-INF/images/";
-        this.imageUrl = "http://localhost:8080/images/";
         this.productRepository = productRepository;
         this.typeRepository = typeRepository;
         this.brandRepository = brandRepository;
         this.photoRepository = photoRepository;
-
     }
 
     /**
@@ -58,29 +55,29 @@ public class ProductServiceImpl implements ProductService {
      * @return dto with list of products
      */
     @Override
-    public ResponseProductDto getProducts(long typeId, long brandId, String sort,
+    public ResponseProductDto getProducts(Long typeId, Long brandId, String sort,
                                           String dir, int page, int size) {
         ResponseProductDto dto = new ResponseProductDto();
-        Page<Product> products = null;
+        Page<Product> products;
         if (sort.equals("type")) {
             sort = "type.name";
         }
         if (sort.equals("brand")) {
             sort = "brand.name";
         }
-        if (typeId == 0 && brandId == 0) {
+        if (typeId == null && brandId == null) {
             products = productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0 && brandId == 0) {
+        } else if (typeId != null && brandId == null) {
             products = productRepository.getAllByTypeId(typeId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId == 0 && brandId > 0) {
+        } else if (typeId == null) {
             products = productRepository.getAllByBrandId(brandId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0 && brandId > 0) {
+        } else {
             products = productRepository.getAllByTypeIdAndBrandId(typeId,
                     brandId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         }
-        assert products != null;
+
         dto.setProducts(products.getContent());
         dto.setPageSize(products.getSize());
         dto.setTotalProducts(products.getTotalElements());
@@ -114,8 +111,8 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getAllBrandsByTypeId(long typeId) {
-        if (typeId == 0) {
+    public List<Brand> getAllBrandsByTypeId(Long typeId) {
+        if (typeId == null) {
             return brandRepository.getAllByNameNotLikeOrderByName("Not selected");
         }
         return brandRepository.getAllByTypesIdOrderByName(typeId);
@@ -233,7 +230,6 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = product.getBrand();
         type.removeProduct(product);
         brand.removeProduct(product);
-        type.removeBrand(brand);
         productRepository.deleteById(id);
         return id;
     }
@@ -340,7 +336,6 @@ public class ProductServiceImpl implements ProductService {
         if (brand.getName().equals("Not selected")) {
             throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
         }
-
         List<Product> products = new ArrayList<>(brand.getProducts());
         for (Product product : products) {
             brand.removeProduct(product);
