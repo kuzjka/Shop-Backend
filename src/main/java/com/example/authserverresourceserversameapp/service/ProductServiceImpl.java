@@ -77,9 +77,9 @@ public class ProductServiceImpl implements ProductService {
             products = productRepository.getAllByTypeIdAndBrandId(typeId,
                     brandId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         }
-
         dto.setProducts(products.getContent());
         dto.setPageSize(products.getSize());
+        dto.setCurrentPage(products.getNumber());
         dto.setTotalProducts(products.getTotalElements());
         return dto;
     }
