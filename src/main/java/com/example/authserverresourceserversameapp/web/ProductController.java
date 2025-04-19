@@ -20,8 +20,9 @@ public class ProductController {
     }
 
     @GetMapping("/type")
-    public List<Type> getAllTypes() {
-        return productService.getAllTypes();
+    public List<Type> getAllTypes(@RequestParam(required = false, defaultValue = "ASC") String dir,
+                                  @RequestParam(required = false, defaultValue = "name") String sort) {
+        return productService.getAllTypes(dir, sort);
     }
 
     @GetMapping("/productType")
@@ -30,8 +31,10 @@ public class ProductController {
     }
 
     @GetMapping("/brand")
-    public List<Brand> getBrands(@RequestParam(required = false) Long typeId) {
-        return productService.getAllBrandsByTypeId(typeId);
+    public List<Brand> getBrands(@RequestParam(required = false) Long typeId,
+                                 @RequestParam(required = false, defaultValue = "ASC") String dir,
+                                 @RequestParam(required = false, defaultValue = "name") String sort) {
+        return productService.getAllBrandsByTypeId(typeId, dir, sort);
     }
 
     @GetMapping(value = "/product")

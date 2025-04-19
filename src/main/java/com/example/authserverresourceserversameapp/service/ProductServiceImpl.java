@@ -90,8 +90,9 @@ public class ProductServiceImpl implements ProductService {
      * @return list of types
      */
     @Override
-    public List<Type> getAllTypes() {
-        return typeRepository.findAllByNameNotLikeOrderByName("Not selected");
+    public List<Type> getAllTypes(String dir, String sort) {
+        return typeRepository.findAllByNameNotLike("Not selected",
+                Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**
@@ -111,11 +112,13 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getAllBrandsByTypeId(Long typeId) {
+    public List<Brand> getAllBrandsByTypeId(Long typeId, String dir, String sort) {
         if (typeId == null) {
-            return brandRepository.getAllByNameNotLikeOrderByName("Not selected");
+            return brandRepository.getAllByNameNotLike("Not selected",
+                    Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByTypesIdOrderByName(typeId);
+        return brandRepository.getAllByTypesId(typeId,
+                Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**
