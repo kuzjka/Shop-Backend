@@ -13,7 +13,7 @@ public class Brand {
     @GeneratedValue(generator = "brandGen")
     private long id;
     private String name;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand", orphanRemoval = true)
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
     @ManyToMany(mappedBy = "brands")
@@ -60,5 +60,14 @@ public class Brand {
     public void removeProduct(Product product) {
         this.products.remove(product);
         product.setBrand(null);
+    }
+
+    @PreRemove
+    public void removeTypeAssociations() {
+        List<Type> toDelete = new ArrayList<>(this.types);
+        for (Type type : toDelete) {
+            type.removeBrand(this);
+            this.getTypes().remove(type);
+        }
     }
 }

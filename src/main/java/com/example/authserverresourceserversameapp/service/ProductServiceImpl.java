@@ -1,7 +1,9 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.*;
+import com.example.authserverresourceserversameapp.exception.BrandExistsException;
+import com.example.authserverresourceserversameapp.exception.ProductExistsException;
+import com.example.authserverresourceserversameapp.exception.TypeExistsException;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -55,8 +57,9 @@ public class ProductServiceImpl implements ProductService {
      * @return dto with list of products
      */
     @Override
-    public ResponseProductDto getProducts(Long typeId, Long brandId, String sort,
-                                          String dir, int page, int size) {
+    public ResponseProductDto getProducts(Long typeId, Long brandId,
+                                          String sort, String dir,
+                                          int page, int size) {
         ResponseProductDto dto = new ResponseProductDto();
         Page<Product> products;
         if (sort.equals("type")) {
@@ -91,8 +94,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getAllTypes(String dir, String sort) {
-        return typeRepository.findAllByNameNotLike("Not selected",
-                Sort.by(Sort.Direction.fromString(dir), sort));
+        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**
@@ -114,8 +116,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getAllBrandsByTypeId(Long typeId, String dir, String sort) {
         if (typeId == null) {
-            return brandRepository.getAllByNameNotLike("Not selected",
-                    Sort.by(Sort.Direction.fromString(dir), sort));
+            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         }
         return brandRepository.getAllByTypesId(typeId,
                 Sort.by(Sort.Direction.fromString(dir), sort));
@@ -129,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product;
-        if (productRepository.findByName(dto.getName()) != null && dto.getId() == null) {
+        if (productRepository.findByName(dto.getName()) != null) {
             throw new ProductExistsException(dto.getName());
         }
         Type type = typeRepository.findById(dto.getTypeId()).get();
@@ -145,24 +146,12 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findById(dto.getId()).get();
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            if (!type.equals(productType) && brand.equals(productBrand)) {
-                productType.removeProduct(product);
-                productType.removeBrand(brand);
-                type.addProduct(product);
-                type.addBrand(productBrand);
-            } else if (type.equals(productType) && !brand.equals(productBrand)) {
-                productBrand.removeProduct(product);
-                type.removeBrand(productBrand);
-                brand.addProduct(product);
-                productType.addBrand(brand);
-            } else if (!type.equals(productType) && !brand.equals(productBrand)) {
-                productType.removeProduct(product);
-                productBrand.removeProduct(product);
-                productType.removeBrand(productBrand);
-                type.addProduct(product);
-                brand.addProduct(product);
-                type.addBrand(brand);
-            }
+            productType.removeProduct(product);
+            productBrand.removeProduct(product);
+            productType.removeBrand(productBrand);
+            type.addProduct(product);
+            brand.addProduct(product);
+            type.addBrand(brand);
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
@@ -186,9 +175,6 @@ public class ProductServiceImpl implements ProductService {
             type = new Type();
         } else {
             type = typeRepository.findById(dto.getId()).get();
-            if (type.getName().equals("Not selected")) {
-                throw new TypeNotSelectedCanNotBeUpdatedOrDeletedException();
-            }
         }
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
@@ -210,9 +196,6 @@ public class ProductServiceImpl implements ProductService {
             brand = new Brand();
         } else {
             brand = brandRepository.findById(dto.getId()).get();
-            if (brand.getName().equals("Not selected")) {
-                throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
-            }
         }
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
@@ -312,15 +295,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
-        Type other = typeRepository.getOneByName("Not selected");
-        if (type.getName().equals("Not selected")) {
-            throw new TypeNotSelectedCanNotBeUpdatedOrDeletedException();
-        }
-        List<Product> products = new ArrayList<>(type.getProducts());
-        for (Product product : products) {
-            type.removeProduct(product);
-            other.addProduct(product);
-        }
         long id = type.getId();
         typeRepository.deleteById(id);
         return id;
@@ -335,15 +309,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
-        Brand other = brandRepository.getOneByName("Not selected");
-        if (brand.getName().equals("Not selected")) {
-            throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
-        }
-        List<Product> products = new ArrayList<>(brand.getProducts());
-        for (Product product : products) {
-            brand.removeProduct(product);
-            other.addProduct(product);
-        }
         long id = brand.getId();
         brandRepository.deleteById(id);
         return id;
