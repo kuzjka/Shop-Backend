@@ -3,6 +3,7 @@ package com.example.authserverresourceserversameapp.dto;
 
 public class TypeDto {
     private Long id;
+    private Long brandId;
     private String name;
 
     public Long getId() {
@@ -11,6 +12,14 @@ public class TypeDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Long brandId) {
+        this.brandId = brandId;
     }
 
     public String getName() {
