@@ -13,7 +13,7 @@ public class Brand {
     @GeneratedValue(generator = "brandGen")
     private long id;
     private String name;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand", orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
     @ManyToMany(mappedBy = "brands")

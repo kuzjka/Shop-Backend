@@ -143,6 +143,14 @@ public class ProductServiceImpl implements ProductService {
             brand.ifPresent(value -> value.addProduct(product));
         } else {
             product = productRepository.findById(dto.getId()).get();
+            Type productType = product.getType();
+            Brand productBrand = product.getBrand();
+            if (productType != null) {
+                productType.removeProduct(product);
+            }
+            if (productBrand != null) {
+                productBrand.removeProduct(product);
+            }
             type.ifPresent(value -> value.addProduct(product));
             brand.ifPresent(value -> value.addProduct(product));
         }
@@ -150,7 +158,6 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(dto.getPrice());
         return productRepository.save(product).getId();
     }
-
 
     /**
      * adds new type to database or updates existing
