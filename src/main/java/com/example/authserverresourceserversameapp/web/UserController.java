@@ -34,10 +34,6 @@ public class UserController {
     public String confirmRegistration(@RequestParam String token) {
         VerificationToken verificationToken = userService.getToken(token);
         User user = verificationToken.getUser();
-        Calendar calendar = Calendar.getInstance();
-        if (verificationToken.getExpiryDate().getTime() - calendar.getTime().getTime() <= 0) {
-            return "redirect:http://localhost:4200?token=" + token;
-        }
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
         return "redirect:http://localhost:4200";
