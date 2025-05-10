@@ -30,8 +30,9 @@ public class DefaultSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+
         http.csrf().disable();
-        http.headers().frameOptions().disable();
+        http.headers().frameOptions().sameOrigin();
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"),
