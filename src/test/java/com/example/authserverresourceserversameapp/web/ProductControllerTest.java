@@ -74,7 +74,7 @@ public class ProductControllerTest {
         dto.setProducts(products);
         dto.setTotalProducts(2L);
         dto.setPageSize(10);
-        given(productService.getProducts(any(), any(), anyString(), anyString(), anyInt(), anyInt()))
+        given(productService.getProducts(anyLong(), anyLong(), anyString(), anyString(), anyInt(), anyInt()))
                 .willReturn(dto);
         this.mockMvc.perform(get("/products/product").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

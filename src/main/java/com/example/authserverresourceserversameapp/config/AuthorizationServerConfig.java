@@ -41,7 +41,6 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://localhost:4200")
-                .postLogoutRedirectUri("http://localhost:4200")
                 .scope("read")
                 .scope("write")
                 .build();

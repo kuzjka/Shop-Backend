@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
      * @return dto with list of products
      */
     @Override
-    public ResponseProductDto getProducts(Long typeId, Long brandId,
+    public ResponseProductDto getProducts(long typeId, long brandId,
                                           String sort, String dir,
                                           int page, int size) {
         ResponseProductDto dto = new ResponseProductDto();
@@ -69,12 +69,12 @@ public class ProductServiceImpl implements ProductService {
         if (sort.equals("brand")) {
             sort = "brand.name";
         }
-        if (typeId == null && brandId == null) {
+        if (typeId == 0 && brandId == 0) {
             products = productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId != null && brandId == null) {
+        } else if (typeId > 0 && brandId <= 0) {
             products = productRepository.getAllByTypeId(typeId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId == null) {
+        } else if (typeId > 0) {
             products = productRepository.getAllByBrandId(brandId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         } else {
@@ -115,12 +115,16 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getAllBrandsByTypeId(Long typeId, String dir, String sort) {
-        if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+    public List<Brand> getAllBrandsByTypeId(long typeId, String dir, String sort) {
+        List<Brand> brands;
+        if (typeId == 0) {
+            brands = brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+        } else if (brandRepository.getAllByTypesId(typeId, Sort.unsorted()) == null) {
+            brands = brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+        } else {
+            brands = brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByTypesId(typeId,
-                Sort.by(Sort.Direction.fromString(dir), sort));
+        return brands;
     }
 
     /**

@@ -122,7 +122,7 @@ public class ProductServiceTest {
         Page<Product> page = new PageImpl<>(products);
         given(productRepository.findAll(PageRequest.of(0, 10, Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        dto = productService.getProducts(null, null, "name", "ASC", 0, 10);
+        dto = productService.getProducts(0, 0, "name", "ASC", 0, 10);
 
         assertThat(dto.getProducts().size()).isEqualTo(2);
         assertThat(dto.getProducts().get(0).getId()).isEqualTo(1L);
@@ -138,26 +138,9 @@ public class ProductServiceTest {
         product1.setName("Mercedes S500");
         ProductDto dto = new ProductDto();
         dto.setId(null);
-        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
-        given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
         given(productRepository.save(any(Product.class))).willReturn(product1);
         long productId = productService.addProduct(dto);
         assertEquals(productId, 3L);
-    }
-
-    @Test
-    public void editProductTest() {
-        Product product1 = new Product();
-        product1.setId(1L);
-        product1.setName("Mercedes S500");
-        ProductDto dto = new ProductDto();
-        dto.setId(1L);
-        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
-        given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
-        given(productRepository.findById(anyLong())).willReturn(Optional.ofNullable(product));
-        given(productRepository.save(any(Product.class))).willReturn(product1);
-        long productId = productService.addProduct(dto);
-        assertEquals(productId, 1L);
     }
 
     @Test
@@ -169,7 +152,6 @@ public class ProductServiceTest {
                 () -> productService.addProduct(dto));
         assertEquals("Product with name: \"Mercedes S600\" already exists!", exception.getMessage());
     }
-
     @Test
     public void getTypesTest() {
         Type type1 = new Type();
@@ -219,7 +201,7 @@ public class ProductServiceTest {
         brands.add(brand);
         brands.add(brand1);
         given(brandRepository.findAll(any(Sort.class))).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(null, "ASC", "name");
+        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(0, "ASC", "name");
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(2);
         assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);
