@@ -12,4 +12,5 @@ public interface TypeRepository extends JpaRepository<Type, Long> {
     @Query(value = "select t from Type t where size(t.products)>0")
     List<Type> getProductTypes();
 
+
 }

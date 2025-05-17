@@ -138,7 +138,12 @@ public class ProductServiceTest {
         product1.setName("Mercedes S500");
         ProductDto dto = new ProductDto();
         dto.setId(null);
+
+
+
         given(productRepository.save(any(Product.class))).willReturn(product1);
+        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
+        given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
         long productId = productService.addProduct(dto);
         assertEquals(productId, 3L);
     }
@@ -146,7 +151,10 @@ public class ProductServiceTest {
     @Test
     public void ProductExistsExceptionTest() {
         ProductDto dto = new ProductDto();
+        dto.setId(null);
         dto.setName("Mercedes S600");
+        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
+        given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
         given(productRepository.findByName(anyString())).willThrow(new ProductExistsException("Mercedes S600"));
         ProductExistsException exception = assertThrows(ProductExistsException.class,
                 () -> productService.addProduct(dto));

@@ -74,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
         } else if (typeId > 0 && brandId <= 0) {
             products = productRepository.getAllByTypeId(typeId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0) {
+        } else if (typeId <= 0) {
             products = productRepository.getAllByBrandId(brandId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         } else {
@@ -119,9 +119,7 @@ public class ProductServiceImpl implements ProductService {
         List<Brand> brands;
         if (typeId == 0) {
             brands = brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
-        } else if (brandRepository.getAllByTypesId(typeId, Sort.unsorted()) == null) {
-            brands = brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
-        } else {
+        } else  {
             brands = brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
         }
         return brands;
@@ -135,54 +133,29 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product;
-        Type type;
-        Brand brand;
-        if (dto.getTypeId() == null) {
-            type = null;
-        } else {
-            type = typeRepository.findById(dto.getTypeId()).get();
-        }
-        if (dto.getBrandId() == null) {
-            brand = null;
-        } else {
-            brand = brandRepository.findById(dto.getBrandId()).get();
-        }
+        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (productRepository.findByName(dto.getName()) != null) {
                 throw new ProductExistsException(dto.getName());
             }
             product = new Product();
-            if (type != null) {
-                type.addProduct(product);
-            }
-            if (brand != null) {
-                brand.addProduct(product);
-            }
-            if (type != null && brand != null && !type.getBrands().contains(brand)) {
+            type.addProduct(product);
+            brand.addProduct(product);
+            if (!type.getBrands().contains(brand)) {
                 type.addBrand(brand);
             }
         } else {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            if (productType != null) {
-                productType.removeProduct(product);
-            }
-            if (productBrand != null) {
-                productBrand.removeProduct(product);
-            }
-            if (productType != null && productBrand != null) {
-                productType.removeBrand(productBrand);
-            }
-            if (type != null) {
-                type.addProduct(product);
-            }
-            if (brand != null) {
-                brand.addProduct(product);
-            }
-            if (type != null && brand != null) {
-                type.addBrand(brand);
-            }
+            productType.removeProduct(product);
+            productBrand.removeProduct(product);
+            productType.removeBrand(productBrand);
+            type.addProduct(product);
+            brand.addProduct(product);
+            type.addBrand(brand);
+
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
