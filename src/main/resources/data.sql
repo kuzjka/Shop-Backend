@@ -5,8 +5,8 @@ values (2, 'admin');
 
 
 insert into users (id, username, email, password, enabled, role_id)
-values (1, 'Anton', 'abc@def',
-        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 1);
+values (1, 'Антон', 'anton30momot@gmail.com',
+        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 2);
 insert into users (id, username, email, password, enabled, role_id)
 values (2, 'Igor', '123@456',
         '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 2);
@@ -18,7 +18,7 @@ insert into cart(id, user_id)
 values (2, 2);
 
 insert into type (id, name)
-values (1, 'None');
+values (1, 'Not selected');
 insert into type (id, name)
 values (2, 'Car');
 insert into type (id, name)
@@ -28,7 +28,7 @@ values (4, 'Plane');
 
 
 insert into brand (id, name)
-values (1, 'None');
+values (1, 'Not selected');
 insert into brand (id, name)
 values (2, 'Mercedes');
 insert into brand (id, name)
