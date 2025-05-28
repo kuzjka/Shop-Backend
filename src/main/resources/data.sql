@@ -5,8 +5,8 @@ values (2, 'admin');
 
 
 insert into users (id, username, email, password, enabled, role_id)
-values (1, '118103153367703403428', '1@3',
-        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 2);
+values (1, 'Anton', '1@3',
+        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 1);
 insert into users (id, username, email, password, enabled, role_id)
 values (2, 'Igor', '123@456',
         '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 2);

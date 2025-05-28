@@ -41,8 +41,6 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://localhost:4200")
-                .scope("read")
-                .scope("write")
                 .build();
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
@@ -58,4 +56,5 @@ public class AuthorizationServerConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }
