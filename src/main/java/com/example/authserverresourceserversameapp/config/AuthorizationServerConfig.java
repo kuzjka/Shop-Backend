@@ -56,5 +56,4 @@ public class AuthorizationServerConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
