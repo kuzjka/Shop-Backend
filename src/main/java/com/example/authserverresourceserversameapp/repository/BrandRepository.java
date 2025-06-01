@@ -11,8 +11,6 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     List<Brand> getAllByTypesId(long typeId, Sort sort);
 
-    Brand getFirstByTypesIdAndId(long typeId, long brandId);
-
 }
 
 

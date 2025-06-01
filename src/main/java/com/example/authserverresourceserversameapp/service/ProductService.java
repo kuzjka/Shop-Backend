@@ -10,14 +10,14 @@ import java.util.List;
 
 public interface ProductService {
 
-    ResponseProductDto getProducts(Long typeId, Long brandId, String sort,
+    ResponseProductDto getProducts(long typeId, long brandId, String sort,
                                    String dir, int page, int size);
 
     List<Type> getAllTypes(String dir, String sort);
 
     List<Type> getProductTypes();
 
-    List<Brand> getAllBrandsByTypeId(long typeId, String dir, String sort);
+    List<Brand> getAllBrands(long typeId, String dir, String sort);
 
     long addProduct(ProductDto dto);
 

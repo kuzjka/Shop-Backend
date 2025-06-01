@@ -116,7 +116,7 @@ public class ProductServiceTest {
         Page<Product> page = new PageImpl<>(products);
         given(productRepository.findAll(PageRequest.of(0, 10, Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        dto = productService.getProducts(null, null, "name", "ASC", 0, 10);
+        dto = productService.getProducts(0, 0, "name", "ASC", 0, 10);
 
         assertThat(dto.getProducts().size()).isEqualTo(2);
         assertThat(dto.getProducts().get(0).getId()).isEqualTo(1L);
@@ -203,7 +203,7 @@ public class ProductServiceTest {
         brands.add(brand);
         brands.add(brand1);
         given(brandRepository.findAll(any(Sort.class))).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(0, "ASC", "name");
+        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(null, "ASC", "name");
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(2);
         assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);
