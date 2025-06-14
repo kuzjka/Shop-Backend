@@ -28,19 +28,23 @@ public class OrderController {
         User user = userService.findByUsername(principal.getName());
         return orderService.getUserCart(user);
     }
+
     @PostMapping
     public Cart addItem(@RequestBody ItemDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         return orderService.addItem(dto, user);
     }
+
     @PutMapping
-    public Cart editItem(@RequestBody ItemDto dto, Principal principal) {
+    public Cart editItem(@RequestBody ItemDto dto) {
         return orderService.editItem(dto);
     }
-    @DeleteMapping
-    public long deleteItem(@RequestParam long itemId) {
+
+    @DeleteMapping("/{itemId}")
+    public long deleteItem(@PathVariable long itemId) {
         return orderService.deleteItem(itemId);
     }
+
     @GetMapping("/order")
     public List<Order> getOrder(Principal principal) {
         User user = userService.findByUsername(principal.getName());
