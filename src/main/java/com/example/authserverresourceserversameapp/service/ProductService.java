@@ -29,6 +29,8 @@ public interface ProductService {
 
     long addPhoto(PhotoDto dto);
 
+    long removePhoto(long productId, Photo photo);
+
     long removePhotos(long productId);
 
     Photo getPhoto(long photoId);

@@ -154,8 +154,6 @@ public class ProductServiceImpl implements ProductService {
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-
-
         return productRepository.save(product).getId();
     }
 
@@ -210,7 +208,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteProduct(long productId) {
         Product product = productRepository.findById(productId).get();
-        removePhotos(productId);
+        List<Photo> photos = new ArrayList<>(product.getPhotos());
+        for (Photo photo : photos) {
+            removePhoto(product.getId(), photo);
+        }
         long id = product.getId();
         Type type = product.getType();
         Brand brand = product.getBrand();
@@ -230,8 +231,11 @@ public class ProductServiceImpl implements ProductService {
     public long addPhoto(PhotoDto dto) {
         Product product = productRepository.findById(dto.getProductId()).get();
         Path photoPath;
-        removePhotos(product.getId());
         for (MultipartFile file : dto.getPhotos()) {
+            Photo exists = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
+            if (exists != null) {
+                removePhoto(product.getId(), exists);
+            }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
             newPhoto.setName(file.getOriginalFilename());
@@ -248,31 +252,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * @param productId
-     * @return
+     * @param productId id of product
+     * @param photo   photo to delete
+     *
      */
     @Override
+    public long removePhoto(long productId, Photo photo) {
+        Product product = productRepository.findById(productId).get();
+        int index = photo.getUrl().indexOf("photo_");
+        product.removePhoto(photo);
+        photoRepository.delete(photo);
+        if (index > -1) {
+            String file = photo.getUrl().substring(index);
+            Path path = Paths.get(imageDir + file);
+            if (path.toFile().exists())
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+        }
+        return productId;
+    }
+
     public long removePhotos(long productId) {
         Product product = productRepository.findById(productId).get();
         List<Photo> photos = new ArrayList<>(product.getPhotos());
-        if (!photos.isEmpty()) {
-            for (Photo photo : photos) {
-                int index = photo.getUrl().indexOf("photo_");
-                product.removePhoto(photo);
-                photoRepository.delete(photo);
-                if (index > -1) {
-                    String file = photo.getUrl().substring(index);
-                    Path path = Paths.get(imageDir + file);
-                    if (path.toFile().exists())
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                }
-            }
+        for (Photo photo : photos) {
+            removePhoto(productId, photo);
         }
-        return product.getId();
+        return productId;
     }
 
     /**
@@ -296,7 +305,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
+        Type none = typeRepository.findById(1L).get();
         long id = type.getId();
+        List<Product> products = new ArrayList<>(type.getProducts());
+        for (Product product : products) {
+            type.removeProduct(product);
+            none.addProduct(product);
+        }
         typeRepository.deleteById(id);
         return id;
     }
@@ -310,7 +325,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
+        Brand none = brandRepository.findById(1L).get();
         long id = brand.getId();
+        List<Product> products = new ArrayList<>(brand.getProducts());
+        for (Product product : products) {
+            brand.removeProduct(product);
+            none.addProduct(product);
+        }
         brandRepository.deleteById(id);
         return id;
     }

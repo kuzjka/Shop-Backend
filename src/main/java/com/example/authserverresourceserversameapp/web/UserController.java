@@ -7,8 +7,6 @@ import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.service.UserService;
 import jakarta.mail.MessagingException;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +55,7 @@ public class UserController {
             return new UserInfo(user.getUsername(), user.getEmail(), user.getRole().getName());
         }
     }
+
     @PutMapping
     @ResponseBody
     public SuccessResponse editUser(@RequestBody UserDto dto) {
