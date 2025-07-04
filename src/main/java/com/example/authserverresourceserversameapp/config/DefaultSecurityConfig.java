@@ -80,7 +80,7 @@ public class DefaultSecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .scope(OidcScopes.OPENID)
-                .redirectUri("http://localhost:4200/products")
+                .redirectUri("http://localhost:4200")
                 .build();
 
         RegisteredClient publicClient = RegisteredClient.withId(UUID.randomUUID().toString())
