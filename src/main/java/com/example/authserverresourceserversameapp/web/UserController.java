@@ -1,8 +1,10 @@
 package com.example.authserverresourceserversameapp.web;
 
+import com.example.authserverresourceserversameapp.dto.RoleInfo;
 import com.example.authserverresourceserversameapp.dto.SuccessResponse;
 import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.dto.UserInfo;
+import com.example.authserverresourceserversameapp.model.Role;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.service.UserService;
@@ -56,6 +58,26 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user")
+    @ResponseBody
+    public RoleInfo getRoleUser(Principal principal) {
+        if (principal == null) {
+            return new RoleInfo("none");
+        } else {
+            User user = this.userService.findByUsername(principal.getName());
+            return new RoleInfo(user.getRole().getName());
+        }
+    }
+    @GetMapping("/admin")
+    @ResponseBody
+    public RoleInfo getRoleAdmin(Principal principal) {
+        if (principal == null) {
+            return new RoleInfo("none");
+        } else {
+            User user = this.userService.findByUsername(principal.getName());
+            return new RoleInfo(user.getRole().getName());
+        }
+    }
     @PutMapping
     @ResponseBody
     public SuccessResponse editUser(@RequestBody UserDto dto) {
