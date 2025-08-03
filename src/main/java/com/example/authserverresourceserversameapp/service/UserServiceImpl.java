@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private static final String NOREPLY_ADDRESS = "anton30momot@gmail.com";
+    private static final String NOREPLY_ADDRESS = "noreply@test.com";
     private static final String APP_URL = "http://localhost:8080";
 
     private final JavaMailSender mailSender;
@@ -85,9 +85,6 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsDontMatchException();
         }
         User user = userRepository.getByUsername(dto.getUsername());
-        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
-            throw new WrongPasswordException();
-        }
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
     }
