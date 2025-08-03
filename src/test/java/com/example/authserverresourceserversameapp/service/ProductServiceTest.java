@@ -102,7 +102,6 @@ public class ProductServiceTest {
     }
 
 
-
     @Test
     public void getProductsTest() {
         Product product1 = new Product();
@@ -116,7 +115,7 @@ public class ProductServiceTest {
         Page<Product> page = new PageImpl<>(products);
         given(productRepository.findAll(PageRequest.of(0, 10, Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        dto = productService.getProducts(0, 0, "name", "ASC", 0, 10);
+        dto = productService.getProducts(null, null, "name", "ASC", 0, 10);
 
         assertThat(dto.getProducts().size()).isEqualTo(2);
         assertThat(dto.getProducts().get(0).getId()).isEqualTo(1L);
@@ -132,7 +131,6 @@ public class ProductServiceTest {
         product1.setName("Mercedes S500");
         ProductDto dto = new ProductDto();
         dto.setId(null);
-
 
 
         given(productRepository.save(any(Product.class))).willReturn(product1);
@@ -154,6 +152,7 @@ public class ProductServiceTest {
                 () -> productService.addProduct(dto));
         assertEquals("Product with name: \"Mercedes S600\" already exists!", exception.getMessage());
     }
+
     @Test
     public void getTypesTest() {
         Type type1 = new Type();
@@ -187,30 +186,13 @@ public class ProductServiceTest {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         given(brandRepository.getAllByTypesId(anyLong(), any(Sort.class))).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(1L, "ASC", "name");
+        List<Brand> serviceBrands = productService.getAllBrands(1L, "ASC", "name");
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(1);
         assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);
         assertThat(serviceBrands.get(0).getName()).isEqualTo("Mercedes");
     }
 
-    @Test
-    public void getBrandsByTypeIdIsNullTest() {
-        Brand brand1 = new Brand();
-        brand1.setId(2L);
-        brand1.setName("Apple");
-        List<Brand> brands = new ArrayList<>();
-        brands.add(brand);
-        brands.add(brand1);
-        given(brandRepository.findAll(any(Sort.class))).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrandsByTypeId(null, "ASC", "name");
-        assertThat(serviceBrands).isNotNull();
-        assertThat(serviceBrands.size()).isEqualTo(2);
-        assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);
-        assertThat(serviceBrands.get(0).getName()).isEqualTo("Mercedes");
-        assertThat(serviceBrands.get(1).getId()).isEqualTo(2L);
-        assertThat(serviceBrands.get(1).getName()).isEqualTo("Apple");
-    }
 
     @Test
     public void BrandExistsExceptionTest() {

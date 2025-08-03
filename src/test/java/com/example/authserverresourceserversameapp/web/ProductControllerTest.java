@@ -14,9 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -34,11 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProductController.class)
 public class ProductControllerTest {
 
-    @MockBean
+    @MockitoBean
     AppUserDetailsService userDetailsService;
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
+    @MockitoBean
     private ProductService productService;
     private Type type;
     private Brand brand;
@@ -74,7 +74,7 @@ public class ProductControllerTest {
         dto.setProducts(products);
         dto.setTotalProducts(2L);
         dto.setPageSize(10);
-        given(productService.getProducts(anyLong(), anyLong(), anyString(), anyString(), anyInt(), anyInt()))
+        given(productService.getProducts(any(), any(), anyString(), anyString(), anyInt(), anyInt()))
                 .willReturn(dto);
         this.mockMvc.perform(get("/products/product").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -114,7 +114,7 @@ public class ProductControllerTest {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
-        given(productService.getAllBrandsByTypeId(anyLong(), anyString(), anyString())).willReturn(brands);
+        given(productService.getAllBrands(anyLong(), anyString(), anyString())).willReturn(brands);
         this.mockMvc.perform(get("/products/brand?typeId=1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))

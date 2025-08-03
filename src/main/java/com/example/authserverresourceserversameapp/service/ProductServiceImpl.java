@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
      * @return dto with list of products
      */
     @Override
-    public ResponseProductDto getProducts(long typeId, long brandId,
+    public ResponseProductDto getProducts(Long typeId, Long brandId,
                                           String sort, String dir,
                                           int page, int size) {
         ResponseProductDto dto = new ResponseProductDto();
@@ -69,12 +69,12 @@ public class ProductServiceImpl implements ProductService {
         if (sort.equals("brand")) {
             sort = "brand.name";
         }
-        if (typeId <= 0 && brandId <= 0) {
+        if (typeId == null && brandId == null) {
             products = productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0 && brandId <= 0) {
+        } else if (typeId != null && brandId == null) {
             products = productRepository.getAllByTypeId(typeId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId <= 0) {
+        } else if (typeId == null) {
             products = productRepository.getAllByBrandId(brandId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         } else {
@@ -114,8 +114,8 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getAllBrands(long typeId, String dir, String sort) {
-        if (typeId == 0) {
+    public List<Brand> getAllBrands(Long typeId, String dir, String sort) {
+        if (typeId == null) {
             return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         }
         return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
@@ -253,11 +253,10 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * @param productId id of product
-     * @param photo   photo to delete
-     *
+     * @param photo     photo to delete
      */
     @Override
-    public long removePhoto(long productId, Photo photo) {
+    public void removePhoto(long productId, Photo photo) {
         Product product = productRepository.findById(productId).get();
         int index = photo.getUrl().indexOf("photo_");
         product.removePhoto(photo);
@@ -272,7 +271,6 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
         }
-        return productId;
     }
 
     public long removePhotos(long productId) {

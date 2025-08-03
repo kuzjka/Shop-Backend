@@ -9,10 +9,10 @@ import com.example.authserverresourceserversameapp.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
@@ -25,14 +25,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
+    @MockitoBean
+    AppUserDetailsService userDetailsService;
+    @MockitoBean
+    JavaMailSender mailSender;
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
-    AppUserDetailsService userDetailsService;
-    @MockBean
-    JavaMailSender mailSender;
+
     @Test
     @WithMockUser
     public void addUserTest() throws Exception {
@@ -46,6 +47,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Message for confirmation registration sand to your email")));
     }
+
     @Test
     @WithMockUser
     public void handleUserAlreadyExistsException() throws Exception {
@@ -60,6 +62,7 @@ public class UserControllerTest {
                 .andExpect(status().is(409))
                 .andExpect(jsonPath("$.message", is("User with username: user already exists!")));
     }
+
     @Test
     @WithMockUser
     public void handlePasswordsDoNotMatchException() throws Exception {
