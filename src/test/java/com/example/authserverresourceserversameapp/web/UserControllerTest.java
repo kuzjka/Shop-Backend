@@ -51,7 +51,6 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     public void handleUserAlreadyExistsException() throws Exception {
-
         User user = new User();
         user.setUsername("user");
         given(userService.registerNewUserAccount(any(UserDto.class)))
