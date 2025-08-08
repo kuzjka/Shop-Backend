@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getAllTypes(String dir, String sort) {
-        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+        return typeRepository.getAllByNameNotLike("none", Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**
@@ -116,9 +116,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getAllBrands(Long typeId, String dir, String sort) {
         if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+            return brandRepository.getAllByNameNotLike("none", Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByTypesIdAndNameNotLike(typeId, "none",
+                Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**
@@ -129,8 +130,8 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product;
-        Type type = typeRepository.findById(dto.getTypeId()).get();
-        Brand brand = brandRepository.findById(dto.getBrandId()).get();
+        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (productRepository.findByName(dto.getName()) != null) {
                 throw new ProductExistsException(dto.getName());
@@ -303,8 +304,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
-        Type none = typeRepository.findById(1L).get();
         long id = type.getId();
+        Type none = typeRepository.getOneByName("none");
         List<Product> products = new ArrayList<>(type.getProducts());
         for (Product product : products) {
             type.removeProduct(product);
@@ -323,8 +324,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
-        Brand none = brandRepository.findById(1L).get();
         long id = brand.getId();
+        Brand none = brandRepository.getOneByName("none");
         List<Product> products = new ArrayList<>(brand.getProducts());
         for (Product product : products) {
             brand.removeProduct(product);
