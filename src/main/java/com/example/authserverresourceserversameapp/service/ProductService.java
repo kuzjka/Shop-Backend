@@ -17,7 +17,9 @@ public interface ProductService {
 
     List<Type> getProductTypes();
 
-    List<Brand> getAllBrands(Long typeId, String dir, String sort);
+    List<Brand> getProductBrands(Long typeId);
+
+    List<Brand> getAllBrands(String dir, String sort);
 
     long addProduct(ProductDto dto);
 

@@ -189,8 +189,8 @@ public class ProductServiceTest {
     public void getBrandsByTypeIdTest() {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
-        given(brandRepository.getAllByTypesIdAndNameNotLike(anyLong(), anyString(), any(Sort.class))).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrands(1L, "ASC", "name");
+        given(brandRepository.getAllByNameNotLike(anyString(), any(Sort.class))).willReturn(brands);
+        List<Brand> serviceBrands = productService.getAllBrands("ASC", "name");
         assertThat(serviceBrands).isNotNull();
         assertThat(serviceBrands.size()).isEqualTo(1);
         assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);
